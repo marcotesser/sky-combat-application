@@ -1,0 +1,187 @@
+# this is an auto generated file. This will be overwritten
+query SyncGameRooms(
+  $filter: ModelGameRoomFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncGameRooms(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      id
+      seed
+      players {
+        nextToken
+        startedAt
+      }
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetGameRoom($id: ID!) {
+  getGameRoom(id: $id) {
+    id
+    seed
+    players {
+      items {
+        lastinteraction
+        name
+        score
+        positionX
+        positionY
+        dead
+        id
+        gameid
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      nextToken
+      startedAt
+    }
+    _version
+    _deleted
+    _lastChangedAt
+    createdAt
+    updatedAt
+  }
+}
+query ListGameRooms(
+  $filter: ModelGameRoomFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listGameRooms(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      seed
+      players {
+        nextToken
+        startedAt
+      }
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query SyncPlayers(
+  $filter: ModelPlayerFilterInput
+  $limit: Int
+  $nextToken: String
+  $lastSync: AWSTimestamp
+) {
+  syncPlayers(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    lastSync: $lastSync
+  ) {
+    items {
+      lastinteraction
+      name
+      score
+      positionX
+      positionY
+      dead
+      id
+      gameid
+      gameroom {
+        id
+        seed
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+    nextToken
+    startedAt
+  }
+}
+query GetPlayer($id: ID!) {
+  getPlayer(id: $id) {
+    lastinteraction
+    name
+    score
+    positionX
+    positionY
+    dead
+    id
+    gameid
+    gameroom {
+      id
+      seed
+      players {
+        nextToken
+        startedAt
+      }
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+    _version
+    _deleted
+    _lastChangedAt
+    createdAt
+    updatedAt
+  }
+}
+query ListPlayers(
+  $filter: ModelPlayerFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listPlayers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      lastinteraction
+      name
+      score
+      positionX
+      positionY
+      dead
+      id
+      gameid
+      gameroom {
+        id
+        seed
+        _version
+        _deleted
+        _lastChangedAt
+        createdAt
+        updatedAt
+      }
+      _version
+      _deleted
+      _lastChangedAt
+      createdAt
+      updatedAt
+    }
+    nextToken
+    startedAt
+  }
+}

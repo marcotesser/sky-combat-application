@@ -1,0 +1,21 @@
+{
+  "trigger": true,
+  "modules": [
+    "verification-link"
+  ],
+  "parentResource": "skycombat79ace6e4",
+  "functionName": "skycombat79ace6e4CustomMessage",
+  "resourceName": "skycombat79ace6e4CustomMessage",
+  "parentStack": "auth",
+  "triggerEnvs": "[\n  {\n    \"key\": \"RESOURCENAME\",\n    \"value\": \"resourceName\"\n  }\n]",
+  "triggerDir": "/usr/local/lib/node_modules/@aws-amplify/cli/node_modules/amplify-category-auth/provider-utils/awscloudformation/triggers/CustomMessage",
+  "triggerTemplate": "CustomMessage.json.ejs",
+  "triggerEventPath": "CustomMessage.event.json",
+  "roleName": "skycombat79ace6e4CustomMessage",
+  "skipEdit": true,
+  "REDIRECTURL": "myapp://signin",
+  "EMAILSUBJECT": "Confirm email",
+  "EMAILMESSAGE": "",
+  "RESOURCENAME": "resourceName",
+  "enableCors": false
+}
