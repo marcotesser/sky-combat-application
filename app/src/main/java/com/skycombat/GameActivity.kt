@@ -41,7 +41,7 @@ class GameActivity : Activity() {
 
     }
     /**
-     * Calls the GameOverActivity to finish the game and report the score
+     * Calls the GameOverActivity to finish the game and report the score
      * @param score : the player's score at the end of the game.
      * @see GameOverActivity
      */

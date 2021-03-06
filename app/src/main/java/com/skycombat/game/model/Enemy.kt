@@ -5,10 +5,13 @@ import android.graphics.*
 import android.util.Log
 import com.skycombat.game.GameView
 import com.skycombat.game.model.component.HealthBar
+import com.skycombat.game.model.support.GUIElement
+import com.skycombat.game.model.support.Rectangle
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.pow
 /**
- * Represents an Enemy
+ * Represents an Enemy
  * @param player : used as a base to draw the enemy
  * @param left : movement towards left
  * @param top : movement towards the top
@@ -16,19 +19,19 @@ import kotlin.math.pow
  * @param height : enemy's height
  * @param scene : the gameview onto which the enemy will be drawn
  */
-class Enemy(var player : Player, var left : Float, var top : Float, var width: Float, var height: Float , var scene : GameView) : HasHealth{
+class Enemy(var player : Player, var left : Float, var top : Float, var width: Float, var height: Float , var scene : GameView) : HasHealth, Rectangle, GUIElement{
     var paint : Paint = Paint();
     companion object{
-        val MAX_HEALTH : Float = 300f
+        val MAX_HEALTH : Float = 3000f
         val SHOT_EVERY_UPDATES : Int = 100;
     }
     var curUpdatesFromShot = 0;
-    var health : Float = MAX_HEALTH
+    private var health : Float = MAX_HEALTH
     var healthBar : HealthBar;
     init {
         paint.color = Color.RED
 
-        var hbColor : Paint = Paint()
+        val hbColor = Paint()
         hbColor.setColor(Color.RED)
         healthBar = HealthBar(
                 RectF(20f, 10f, scene.getMaxWidth().toFloat()-20, 50f),
@@ -37,21 +40,21 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         );
     }
     /**
-     * Draws the player and enemy's healthbar
+     * Draws the player and enemy's healthbar
      * @param canvas : the canvas onto which the enemy will be drawn
      * @see HealthBar
      */
-    fun draw(canvas: Canvas?) {
+    override fun draw(canvas: Canvas?) {
         canvas?.drawRect(RectF(left, top, left + width, top+height), paint)
         healthBar.draw(canvas)
     }
     /**
-     * Update bullets to the enemy
+     * Update bullets to the enemy
      * @param bullets : the bullets the enemy has shot
      * @see Bullet
      * @see HealthBar
      */
-    fun update(bullets : List<Bullet>) {
+    override fun update() {
 
         curUpdatesFromShot++
         if(curUpdatesFromShot >= SHOT_EVERY_UPDATES){
@@ -60,40 +63,30 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         }
 
 
-        var center : Float = left + width / 2;
-        var dx : Float = 2f
-        if(Math.abs(center - player.positionX) < dx ){
-            left = player.positionX - width / 2
-        } else if (center < player.positionX){
-            left += dx
-        } else {
-            left -= dx
-        }
-
-        bullets.forEach{
-            el -> run {
-                if (el.y+ Bullet.RADIUS < top+height && el.y- Bullet.RADIUS > top && el.x > left && el.x < left + width ) {
-                    el.hit()
-                    if(el.damage.toFloat() > this.health){
-                        this.health = 0f;
-                    }else {
-                        this.health -= el.damage.toFloat()
-                    }
-                }
-            }
+        val center : Float = left + width / 2;
+        val dx : Float = 2f
+        when {
+            abs(center - player.positionX) < dx -> left = player.positionX - width / 2
+            center < player.positionX -> left += dx
+            else -> left -= dx
         }
 
         healthBar.update()
     }
+
+    override fun shouldRemove(): Boolean {
+        return this.isDead()
+    }
+
     /**
-     * Shoots the bullet in the right direction
+     * Shoots the bullet in the right direction
      * @see Bullet
      */
     fun shoot() : Unit{
         scene.bullets.add(Bullet( left + width/2, top + height, Bullet.Direction.DOWN, scene))
     }
     /**
-     * Checks if the enemy is dead
+     * Checks if the enemy is dead
      * @see HealthBar
      */
     fun isDead() : Boolean{
@@ -104,8 +97,15 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         return health
     }
 
+    override fun setHealth(health: Float) {
+        this.health = health
+    }
+
     override fun getMaxHealth(): Float {
         return MAX_HEALTH
     }
 
+    override fun getPosition(): RectF {
+        return RectF(left, this.top, this.left + this.width , this.top + this.height)
+    }
 }

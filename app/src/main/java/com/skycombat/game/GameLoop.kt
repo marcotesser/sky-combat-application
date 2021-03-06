@@ -17,7 +17,7 @@ import android.graphics.Canvas
 import android.view.SurfaceHolder
 
 /**
- * Represents the Game Loop
+ * Represents the Game Loop
  * @param game : the gameview onto which the game will be drawn
  * @param surfaceHolder : the base of the gameview
  */
