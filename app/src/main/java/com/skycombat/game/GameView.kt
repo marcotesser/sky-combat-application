@@ -15,14 +15,13 @@ package com.skycombat.game
 
 import android.content.Context
 import android.graphics.Canvas
-import android.util.Log
 import android.view.*
+import com.skycombat.game.model.AbstParticle
 import com.skycombat.game.model.Bullet
 import com.skycombat.game.model.Enemy
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.LifePowerUpFactory
-import com.skycombat.game.model.powerup.PowerUp
 import com.skycombat.game.panel.FPSPanel
 import com.skycombat.game.panel.GamePanel
 import com.skycombat.game.panel.UPSPanel
@@ -40,12 +39,10 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     private val LIFE_POWERUP_FACTORY = LifePowerUpFactory(this);
 
     private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList();
-    private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
-    private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
-    // TODO : rendere privata e gestirla a eventi
-    public  val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
+    private var particles : CopyOnWriteArrayList<AbstParticle> = CopyOnWriteArrayList();
+    private var player : Player = Player(MAX_WIDTH / 2, MAX_HEIGHT / 5 * 4, this)
 
-    var player : Player = Player(MAX_WIDTH / 2, MAX_HEIGHT / 5 * 4, 40F, this)
+    private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
     private val startTime = System.currentTimeMillis();
     private var gameLoop: GameLoop = GameLoop(this, holder);
 
@@ -65,8 +62,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         player.draw(canvas)
         panels.forEach  { el -> el.draw(canvas) }
         enemies.forEach { el -> el.draw(canvas) }
-        bullets.forEach { el -> el.draw(canvas) }
-        powerUps.forEach{ el -> el.draw(canvas) }
+        particles.forEach { el -> el.draw(canvas) }
     }
     private var eventEmitted = false;
 
@@ -93,17 +89,32 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         }
 
         enemies.removeIf(Enemy::isDead)
-        powerUps.removeIf(PowerUp::isUsed)
-        bullets.removeIf(Bullet::toRemove)
+        particles.removeIf(AbstParticle::toRemove)
 
         if(enemies.size == 0){
             enemies .add(ENEMY_FACTORY.generate())
-            powerUps.add(LIFE_POWERUP_FACTORY.generate())
+            particles.add(LIFE_POWERUP_FACTORY.generate())
         }
-        player.update(bullets, powerUps)
-        enemies.forEach{ el -> el.update(bullets) }
-        bullets.forEach(Bullet::update)
-        powerUps.forEach(PowerUp::update)
+        player.update()
+
+        //enemies.forEach{ el -> el.update() }
+
+        particles.forEach{ el -> run {
+            if(el.TARGET==AbstParticle.Target.ENEMIES){
+                for(ent in enemies){
+                    if(ent.isMerging(el)){
+                        el.handleHit(ent);
+                    }
+                }
+            }else{
+                if(player.isMerging(el)){
+                    el.handleHit(player);
+                }
+            }
+            }
+        }
+
+        particles.forEach{el -> el.update()}
     }
 
 
@@ -143,20 +154,25 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
             else -> true;
         }
     }
+
+    public fun addParticle(particle: AbstParticle){
+        particles.add(particle);
+    }
+
+    fun getPlayer():Player = player
+
+    fun getEnemies() : CopyOnWriteArrayList<Enemy> = enemies
+
     /**
      * Gets the maximum Game Height
      * @return MAX_HEIGHT
      */
-    fun getMaxHeight() : Float {
-        return MAX_HEIGHT
-    }
+    fun getMaxHeight() : Float = MAX_HEIGHT
     /**
      * Gets the maximum Game Width
      * @return MAX_WIDTH
      */
-    fun getMaxWidth() : Float {
-        return MAX_WIDTH
-    }
+    fun getMaxWidth() : Float = MAX_WIDTH
     /**
      * Sets the gameoverlistener
      * @see GameOverListener

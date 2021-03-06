@@ -2,6 +2,7 @@ package com.skycombat.game.model
 
 import android.content.Context
 import android.graphics.*
+import android.transition.Scene
 import android.util.Log
 import com.skycombat.game.GameView
 import com.skycombat.game.model.component.HealthBar
@@ -12,55 +13,31 @@ import com.skycombat.game.model.component.HealthBar
  * @param direction : direction of the bullet
  * @param scene : the gameview onto which the bullet will be drawn
  */
-class Bullet(var x : Float, var y : Float, var direction : Direction, var scene : GameView) {
-    enum class Direction {
-        UP, DOWN
-    }
-    public var damage = 1000;
-    private var isHit : Boolean = false;
-    var paint : Paint = Paint();
-    private val DY : Float = 10.0f
-    companion object {
-        var RADIUS: Float = 10.0f
-    }
+class Bullet(x : Float,
+             y : Float,
+             radius:Float,
+             speed:Float,
+             scene: GameView,
+             direction : AbstParticle.Direction,
+             target: AbstParticle.Target,
+             var damage:Float = 0F
+) : AbstParticle(x,y,radius,speed,scene,direction,target){
+
+    private var paint=Paint()
     init {
-        paint.color = if( direction == Bullet.Direction.DOWN) Color.RED else Color.GREEN
+        paint.color = if(direction == AbstParticle.Direction.DOWN) Color.RED else Color.GREEN
     }
     /**
      * Draws the bullet
      * @param canvas : the canvas onto which the bullet will be drawn
      */
-    fun draw(canvas: Canvas?) {
-        canvas?.drawCircle(x, y , RADIUS , paint)
+    override fun draw(canvas: Canvas?) {
+        canvas?.drawCircle(positionX, positionY , RADIUS , paint)
     }
-    /**
-     * Updates the bullet's direction
-     */
-    fun update() {
-        y += when (direction) {
-            Direction.UP -> -DY
-            Direction.DOWN -> DY
-        }
-    }
-    /**
-     * Sets isHit to true
-     */
-    fun hit() : Unit{
-        isHit = true
-    }
-    /**
-     * Determines if something has been hit
-     * @return isHit
-     */
-    fun isHit() : Boolean{
-        return isHit
-    }
-    /**
-     * Removes if hit gets object out of context
-     * @return isHit || this.y < 0 || this.y > scene.getMaxHeight()
-     */
-    fun toRemove() : Boolean{
-        return isHit || this.y < 0 || this.y > scene.getMaxHeight()
+
+    override fun handleHit(ent: AbstEntity){
+        setHit();
+        ent.addDeltaHealth(-damage);
     }
 
 }

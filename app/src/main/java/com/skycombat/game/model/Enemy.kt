@@ -1,11 +1,8 @@
 package com.skycombat.game.model
 
-import android.content.Context
 import android.graphics.*
-import android.util.Log
 import com.skycombat.game.GameView
 import com.skycombat.game.model.component.HealthBar
-import java.util.*
 import kotlin.math.pow
 /**
  * Represents an Enemy
@@ -16,18 +13,20 @@ import kotlin.math.pow
  * @param height : enemy's height
  * @param scene : the gameview onto which the enemy will be drawn
  */
-class Enemy(var player : Player, var left : Float, var top : Float, var width: Float, var height: Float , var scene : GameView) : HasHealth{
-    var paint : Paint = Paint();
-    companion object{
-        val MAX_HEALTH : Float = 300f
-        val SHOT_EVERY_UPDATES : Int = 100;
-    }
-    var curUpdatesFromShot = 0;
-    var health : Float = MAX_HEALTH
-    var healthBar : HealthBar;
+class Enemy(positionX : Float,
+            positionY : Float,
+            private val WIDTH: Float,
+            private val HEIGHT: Float ,
+            val SPEED: Float,
+            scene : GameView
+): AbstEntity(positionX,positionY,scene), HasHealth {
+
+    override val MAX_HEALTH : Float = 300f
+    override var shotEveryUpdates : Int = 100;
+    override lateinit var healthBar : HealthBar;
+
     init {
         paint.color = Color.RED
-
         var hbColor : Paint = Paint()
         hbColor.setColor(Color.RED)
         healthBar = HealthBar(
@@ -36,41 +35,32 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
                 this
         );
     }
+
     /**
      * Draws the player and enemy's healthbar
      * @param canvas : the canvas onto which the enemy will be drawn
      * @see HealthBar
      */
-    fun draw(canvas: Canvas?) {
-        canvas?.drawRect(RectF(left, top, left + width, top+height), paint)
+    override fun draw(canvas: Canvas?) {
+        canvas?.drawRect(RectF(getLeft(), getTop(), getLeft()+getWidth(), getTop()+getHeight()), paint)
         healthBar.draw(canvas)
     }
+
+
     /**
      * Update bullets to the enemy
      * @param bullets : the bullets the enemy has shot
      * @see Bullet
      * @see HealthBar
      */
-    fun update(bullets : List<Bullet>) {
+    override fun update() {
 
-        curUpdatesFromShot++
-        if(curUpdatesFromShot >= SHOT_EVERY_UPDATES){
-            curUpdatesFromShot = 0;
-            shoot();
-        }
+        super.updateShots()
 
+        val positionFound = searchPosition()
+        setPosition(positionFound.x,positionFound.y)
 
-        var center : Float = left + width / 2;
-        var dx : Float = 2f
-        if(Math.abs(center - player.positionX) < dx ){
-            left = player.positionX - width / 2
-        } else if (center < player.positionX){
-            left += dx
-        } else {
-            left -= dx
-        }
-
-        bullets.forEach{
+        /*bullets.forEach{
             el -> run {
                 if (el.y+ Bullet.RADIUS < top+height && el.y- Bullet.RADIUS > top && el.x > left && el.x < left + width ) {
                     el.hit()
@@ -81,17 +71,41 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
                     }
                 }
             }
-        }
+        }*/
 
         healthBar.update()
     }
+
+    private fun searchPosition():PointF{
+
+        val xPlayer=scene.getPlayer().positionX
+        var pos = PointF(positionX,positionY)
+
+        if(Math.abs(positionX - xPlayer) < SPEED ){
+            pos.x = xPlayer
+        } else if (positionX < xPlayer){
+            pos.x+= SPEED
+        } else {
+            pos.x -= SPEED
+        }
+        return pos
+    }
+
     /**
      * Shoots the bullet in the right direction
      * @see Bullet
      */
-    fun shoot() : Unit{
-        scene.bullets.add(Bullet( left + width/2, top + height, Bullet.Direction.DOWN, scene))
+    override fun shoot() : Unit{
+        scene.addParticle(Bullet( positionX, getTop() + getHeight(), 15f, 20f, scene, AbstParticle.Direction.DOWN, AbstParticle.Target.PLAYER))
     }
+
+    override fun isMerging(_particle:AbstParticle):Boolean{
+        val x=_particle.getPositionX()
+        val y=_particle.getPositionY()
+        val r=_particle.getRadius()
+        return ((Math.abs(x-positionX)< r+getWidth()/2F)&&(Math.abs(y-positionY)< r+getHeight()/2F))
+    }
+
     /**
      * Checks if the enemy is dead
      * @see HealthBar
@@ -99,6 +113,12 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
     fun isDead() : Boolean{
         return this.health <= 0
     }
+
+    private fun getLeft():Float = positionX - getWidth()/2;
+    private fun getTop():Float = positionY - getHeight()/2;
+
+    override fun getWidth(): Float = WIDTH
+    override fun getHeight(): Float = HEIGHT
 
     override fun getCurrentHealth(): Float {
         return health

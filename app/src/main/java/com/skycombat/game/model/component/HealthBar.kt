@@ -1,9 +1,6 @@
 package com.skycombat.game.model.component
 
-import android.content.Context
 import android.graphics.*
-import android.util.Log
-import com.skycombat.game.GameView
 import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.Player;
 

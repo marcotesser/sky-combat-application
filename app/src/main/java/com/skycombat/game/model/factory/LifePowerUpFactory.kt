@@ -1,8 +1,7 @@
 package com.skycombat.game.model.factory
 
 import com.skycombat.game.GameView
-import com.skycombat.game.model.Enemy
-import com.skycombat.game.model.powerup.LifePowerUp
+import com.skycombat.game.model.LifePowerUp
 
 /**
  * Represents a Life PowerUp Factory
@@ -15,9 +14,12 @@ class LifePowerUpFactory(private val scene : GameView) {
      */
     fun generate() : LifePowerUp {
         return LifePowerUp(
-            50,
+            50F,
             Math.random().toFloat() * scene.getMaxWidth(),
-            0f
+            0f,
+            10f,
+            scene,
+            20F
         )
     }
 }
