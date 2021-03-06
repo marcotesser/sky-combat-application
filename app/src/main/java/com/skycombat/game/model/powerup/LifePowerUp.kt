@@ -4,15 +4,14 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
-import com.skycombat.game.GameView
 import com.skycombat.game.model.Player
 
-class LifePowerUp(var healthIncrease : Long, var x : Float, var y: Float) : PowerUp {
+class LifePowerUp(private var healthIncrease : Long, var x : Float, var y: Float) : PowerUp {
     val DY : Int = 5
     var used : Boolean = false
     override fun draw(canvas : Canvas?){
         val paint = Paint()
-        paint.setColor(Color.CYAN)
+        paint.color = Color.CYAN
         canvas?.drawCircle(x, y, PowerUp.RADIUS, paint)
     }
 

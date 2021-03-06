@@ -68,8 +68,8 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
     override fun run() {
         super.run()
         var canvas : Canvas? = null;
-        var frameCount : Int = 0
-        var updateCount : Int = 0
+        var frameCount = 0
+        var updateCount = 0
         var startTime: Long = System.currentTimeMillis()
         var elapsedTime: Long = 0
         var sleepTime: Long = 0
@@ -118,8 +118,8 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
 
 
             if(elapsedTime > 1000) {
-                averageUPS = updateCount.toDouble() / (1E-3 * elapsedTime).toDouble()
-                averageFPS = frameCount.toDouble() / (1E-3 * elapsedTime).toDouble()
+                averageUPS = updateCount.toDouble() / (1E-3 * elapsedTime)
+                averageFPS = frameCount.toDouble() / (1E-3 * elapsedTime)
                 frameCount = 0;
                 updateCount = 0;
                 startTime = System.currentTimeMillis()

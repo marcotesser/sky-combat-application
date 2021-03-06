@@ -1,14 +1,8 @@
 package com.skycombat.game.model.component
 
-import android.content.Context
 import android.graphics.*
-import android.util.Log
-import com.skycombat.game.GameView
 import com.skycombat.game.model.HasHealth
-import com.skycombat.game.model.Player;
 
-import java.util.*
-import kotlin.math.pow
 /**
  * Represents the healthbar
  * @param initialLife : amount of initial life
@@ -32,6 +26,4 @@ class HealthBar(private val initialLife: RectF, var paint: Paint, var element : 
         val maxHealth = curHealth.coerceAtLeast(element.getMaxHealth())
         life.right = initialLife.left + (initialLife.right - initialLife.left) * (curHealth / maxHealth)
     }
-
-
 }

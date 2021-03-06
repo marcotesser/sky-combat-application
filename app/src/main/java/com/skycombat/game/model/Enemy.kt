@@ -32,7 +32,7 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         paint.color = Color.RED
 
         val hbColor = Paint()
-        hbColor.setColor(Color.RED)
+        hbColor.color = Color.RED
         healthBar = HealthBar(
                 RectF(20f, 10f, scene.getMaxWidth().toFloat()-20, 50f),
                 hbColor,
@@ -64,7 +64,7 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
 
 
         val center : Float = left + width / 2;
-        val dx : Float = 2f
+        val dx = 2f
         when {
             abs(center - player.positionX) < dx -> left = player.positionX - width / 2
             center < player.positionX -> left += dx
@@ -82,7 +82,7 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
      * Shoots the bullet in the right direction
      * @see Bullet
      */
-    fun shoot() : Unit{
+    fun shoot() {
         scene.bullets.add(Bullet( left + width/2, top + height, Bullet.Direction.DOWN, scene))
     }
     /**

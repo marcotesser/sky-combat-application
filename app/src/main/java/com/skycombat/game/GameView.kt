@@ -24,11 +24,13 @@ import com.skycombat.game.model.Player
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.LifePowerUpFactory
 import com.skycombat.game.model.powerup.PowerUp
+import com.skycombat.game.model.support.Drawable
 import com.skycombat.game.model.support.GUIElement
 import com.skycombat.game.panel.FPSPanel
 import com.skycombat.game.panel.GamePanel
 import com.skycombat.game.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.function.Function
 import java.util.stream.Stream
 
 /**
@@ -65,11 +67,19 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
             return;
         }
         super.draw(canvas)
-        player.draw(canvas)
-        panels.forEach  { el -> el.draw(canvas) }
-        enemies.forEach { el -> el.draw(canvas) }
-        bullets.forEach { el -> el.draw(canvas) }
-        powerUps.forEach{ el -> el.draw(canvas) }
+        if(canvas != null){
+            Stream.concat(
+                Stream.of(player),
+                Stream.of(
+                    panels,
+                    enemies,
+                    bullets,
+                    powerUps
+                ).flatMap(
+                    List<Drawable>::stream
+                )
+            ).forEach{el -> el.draw(canvas)}
+        }
     }
 
 

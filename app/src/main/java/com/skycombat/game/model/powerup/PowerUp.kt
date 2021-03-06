@@ -1,6 +1,5 @@
 package com.skycombat.game.model.powerup
 
-import android.graphics.Canvas
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.GUIElement

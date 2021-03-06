@@ -80,5 +80,4 @@ class Bullet(var x : Float, var y : Float, var direction : Direction, var scene 
     override fun getRadius(): Float {
         return RADIUS
     }
-
 }

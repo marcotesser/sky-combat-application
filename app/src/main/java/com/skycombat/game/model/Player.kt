@@ -31,10 +31,10 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
     var healthBar : HealthBar ;
     init {
         paint.color = Color.GREEN
-        var hbColor : Paint = Paint()
-        hbColor.setColor(Color.GREEN)
+        val hbColor = Paint()
+        hbColor.color = Color.GREEN
         healthBar = HealthBar(
-                RectF(20f, scene.getMaxHeight().toFloat() - 50, scene.getMaxWidth().toFloat()-20, scene.getMaxHeight().toFloat() - 10),
+                RectF(20f, scene.getMaxHeight() - 50, scene.getMaxWidth()-20, scene.getMaxHeight() - 10),
                 hbColor,
                 this
         );

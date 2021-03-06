@@ -17,7 +17,7 @@ class EnemyFactory(private val scene : GameView) {
         val height = 100F;
         return Enemy(
             scene.player ,
-            (scene.getMaxWidth().toFloat() - width) / 2,
+            (scene.getMaxWidth() - width) / 2,
             100F,
             width,
             height,

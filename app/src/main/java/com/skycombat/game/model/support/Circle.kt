@@ -1,7 +1,6 @@
 package com.skycombat.game.model.support
 
 import android.graphics.PointF
-import com.skycombat.game.model.Bullet
 import kotlin.math.pow
 import kotlin.math.sqrt
 

@@ -8,8 +8,8 @@ import com.skycombat.game.GameView
 
 class FPSPanel(var x: Float, var y: Float, var gameLoop : GameLoop, var scene : GameView) : GamePanel{
     override fun draw(canvas: Canvas?) {
-        var avg: String = gameLoop.getAverageFPS().toInt().toString();
-        val paint : Paint = Paint()
+        val avg: String = gameLoop.getAverageFPS().toInt().toString();
+        val paint = Paint()
         paint.color = Color.RED
         paint.textSize = 50F;
         canvas?.drawText("FPS: $avg", 20F, scene.getMaxHeight().toFloat()/2, paint)
