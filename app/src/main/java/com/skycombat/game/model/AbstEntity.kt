@@ -16,7 +16,7 @@ abstract class AbstEntity(var positionX: Float, var positionY: Float, var scene:
     abstract val MAX_HEALTH : Float
 
     init {
-        health = MAX_HEALTH
+        health = 200f//MAX_HEALTH
     }
 
     protected fun updateShots(){

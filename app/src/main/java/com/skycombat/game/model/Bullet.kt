@@ -20,7 +20,7 @@ class Bullet(x : Float,
              scene: GameView,
              direction : AbstParticle.Direction,
              target: AbstParticle.Target,
-             var damage:Float = 0F
+             var damage:Float = 20F
 ) : AbstParticle(x,y,radius,speed,scene,direction,target){
 
     private var paint=Paint()

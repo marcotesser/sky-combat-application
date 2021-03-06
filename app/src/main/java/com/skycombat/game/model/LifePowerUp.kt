@@ -10,7 +10,7 @@ class LifePowerUp (x : Float,
                    radius:Float,
                    speed:Float,
                    scene: GameView,
-                   var healthIncrease:Float = 0F
+                   var healthIncrease:Float = 20F
 ) : AbstParticle(x,y,radius,speed,scene){
 
     override fun draw(canvas : Canvas?){

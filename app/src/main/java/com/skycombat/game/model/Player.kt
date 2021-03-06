@@ -16,7 +16,7 @@ class Player( positionX : Float, positionY : Float, scene : GameView)
 
     override val MAX_HEALTH : Float = 1000f
     override var shotEveryUpdates : Int = 60
-    val RADIUS : Float = 0.1F
+    val RADIUS : Float = 50F
     override lateinit var healthBar : HealthBar;
 
     init {
@@ -98,7 +98,7 @@ class Player( positionX : Float, positionY : Float, scene : GameView)
      * @see Bullet
      */
     override fun shoot() : Unit{
-        scene.addParticle(Bullet( positionX , positionY - RADIUS, 15f, 25f, scene, AbstParticle.Direction.UP, AbstParticle.Target.ENEMIES))
+        scene.addParticle(Bullet( positionX , positionY - RADIUS, 15f, 15f, scene, AbstParticle.Direction.UP, AbstParticle.Target.ENEMIES))
     }
 
     override fun getCurrentHealth(): Float {

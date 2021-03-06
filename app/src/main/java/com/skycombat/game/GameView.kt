@@ -82,6 +82,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
                 stop()
                 GAME_OVER_LISTENERS.forEach { el ->
                     el.gameOver(System.currentTimeMillis() - startTime)
+
                 }
             }
             eventEmitted = true;
@@ -97,7 +98,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         }
         player.update()
 
-        //enemies.forEach{ el -> el.update() }
+        enemies.forEach{ el -> el.update() }
 
         particles.forEach{ el -> run {
             if(el.TARGET==AbstParticle.Target.ENEMIES){
@@ -148,7 +149,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return when(event?.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
-                player.setPosition(event.x, player.positionY)
+                player.setPosition(event.x, player.positionY) //ATTENZIONEEEEEEEEEEEEEEEEEEEEEEEEEEE x-y
                 true
             }
             else -> true;

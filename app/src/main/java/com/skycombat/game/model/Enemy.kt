@@ -96,7 +96,7 @@ class Enemy(positionX : Float,
      * @see Bullet
      */
     override fun shoot() : Unit{
-        scene.addParticle(Bullet( positionX, getTop() + getHeight(), 15f, 20f, scene, AbstParticle.Direction.DOWN, AbstParticle.Target.PLAYER))
+        scene.addParticle(Bullet( positionX, getTop() + getHeight(), 15f, 15f, scene, AbstParticle.Direction.DOWN, AbstParticle.Target.PLAYER))
     }
 
     override fun isMerging(_particle:AbstParticle):Boolean{

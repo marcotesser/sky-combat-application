@@ -16,7 +16,7 @@ class LifePowerUpFactory(private val scene : GameView) {
         return LifePowerUp(
             50F,
             Math.random().toFloat() * scene.getMaxWidth(),
-            0f,
+            10f,
             10f,
             scene,
             20F
