@@ -14,11 +14,9 @@ package com.skycombat.game
 
 
 import android.content.Context
-import android.content.Entity
 import android.graphics.Canvas
-import android.util.Log
 import android.view.*
-import com.skycombat.game.model.Bullet
+import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.Enemy
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.factory.EnemyFactory
@@ -30,7 +28,6 @@ import com.skycombat.game.panel.FPSPanel
 import com.skycombat.game.panel.GamePanel
 import com.skycombat.game.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
-import java.util.function.Function
 import java.util.stream.Stream
 
 /**

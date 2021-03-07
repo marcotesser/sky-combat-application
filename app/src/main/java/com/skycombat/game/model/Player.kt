@@ -1,17 +1,13 @@
 package com.skycombat.game.model
 
-import android.content.Context
 import android.graphics.*
-import android.util.Log
 import com.skycombat.game.GameView
+import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.component.HealthBar
-import com.skycombat.game.model.powerup.PowerUp
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.GUIElement
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.math.pow
-import kotlin.math.sqrt
+
 /**
  * Represents an Player
  * @param positionX : position on the x axis

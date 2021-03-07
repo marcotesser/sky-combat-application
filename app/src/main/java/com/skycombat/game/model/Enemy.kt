@@ -1,15 +1,14 @@
 package com.skycombat.game.model
 
-import android.content.Context
 import android.graphics.*
-import android.util.Log
 import com.skycombat.game.GameView
+import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.component.HealthBar
 import com.skycombat.game.model.support.GUIElement
 import com.skycombat.game.model.support.Rectangle
 import java.util.*
 import kotlin.math.abs
-import kotlin.math.pow
+
 /**
  * Represents an Enemy
  * @param player : used as a base to draw the enemy

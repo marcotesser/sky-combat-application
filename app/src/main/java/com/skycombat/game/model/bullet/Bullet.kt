@@ -1,10 +1,7 @@
-package com.skycombat.game.model
+package com.skycombat.game.model.bullet
 
-import android.content.Context
 import android.graphics.*
-import android.util.Log
 import com.skycombat.game.GameView
-import com.skycombat.game.model.component.HealthBar
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.GUIElement
 
