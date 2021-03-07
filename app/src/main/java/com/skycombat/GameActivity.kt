@@ -11,6 +11,7 @@ import android.view.Window
 import android.view.WindowManager
 import com.skycombat.game.GameView
 import com.skycombat.game.GameOverListener
+import com.skycombat.game.model.ViewContext
 
 class GameActivity : Activity() {
 
@@ -29,7 +30,7 @@ class GameActivity : Activity() {
         val WINDOW_MANAGER = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         WINDOW_MANAGER.defaultDisplay.getMetrics(METRICS)
 
-
+        ViewContext.setContext(METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat());
         gameView = GameView(this, METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat())
         gameView!!.setGameOverListener (object: GameOverListener() {
             override fun gameOver(score : Long) {

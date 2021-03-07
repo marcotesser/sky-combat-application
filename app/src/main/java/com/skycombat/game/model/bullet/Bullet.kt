@@ -1,9 +1,17 @@
 package com.skycombat.game.model.bullet
 
 import android.graphics.*
+import android.os.Parcel
+import android.os.Parcelable
 import com.skycombat.game.GameView
+import com.skycombat.game.model.Enemy
+import com.skycombat.game.model.HasHealth
+import com.skycombat.game.model.Player
+import com.skycombat.game.model.ViewContext
+import com.skycombat.game.model.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.support.CollisionParticle
 import com.skycombat.game.model.support.Circle
-import com.skycombat.game.model.support.GUIElement
+import com.skycombat.game.model.support.Entity
 
 /**
  * Represents a bullet
@@ -12,69 +20,75 @@ import com.skycombat.game.model.support.GUIElement
  * @param direction : direction of the bullet
  * @param scene : the gameview onto which the bullet will be drawn
  */
-class Bullet(var x : Float, var y : Float, var direction : Direction, var scene : GameView) : Circle, GUIElement {
-    enum class Direction {
-        UP, DOWN
-    }
-    companion object {
-        var RADIUS: Float = 10.0f
+abstract class Bullet(var x : Float, var y : Float, var target: Target, var collisionStrategy: CollisionStrategy)
+    : CollisionParticle, Entity {
+
+    enum class Target {
+        PLAYER, ENEMY
     }
 
-    public var damage = 100;
+    val context: ViewContext = ViewContext.getInstance()
+
     private var isHit : Boolean = false;
-    var paint : Paint = Paint();
-    private val DY : Float = 10.0f
 
-    init {
-        paint.color = if( direction == Direction.DOWN) Color.RED else Color.GREEN
-    }
+    var paint : Paint = Paint();
+
     /**
-     * Draws the bullet
-     * @param canvas : the canvas onto which the bullet will be drawn
-     */
-    override fun draw(canvas: Canvas?) {
-        canvas?.drawCircle(x, y , RADIUS , paint)
-    }
-    /**
-     * Updates the bullet's direction
+     * Updates the bullet's movement
      */
     override fun update() {
-        y += when (direction) {
-            Direction.UP -> -DY
-            Direction.DOWN -> DY
+        y += when (target) {
+            Target.ENEMY -> -getSpeed()
+            Target.PLAYER -> getSpeed()
         }
     }
 
-    override fun shouldRemove(): Boolean {
-        return this.toRemove()
-    }
-
-    /**
-     * Sets isHit to true
-     */
-    fun hit() : Unit{
-        isHit = true
-    }
-    /**
-     * Determines if something has been hit
-     * @return isHit
-     */
-    fun isHit() : Boolean{
-        return isHit
-    }
     /**
      * Removes if hit gets object out of context
      * @return isHit || this.y < 0 || this.y > scene.getMaxHeight()
      */
-    fun toRemove() : Boolean{
-        return isHit || this.y < 0 || this.y > scene.getMaxHeight()
+    override fun shouldRemove(): Boolean {
+        return isHit || this.y < 0 || this.y > context.getHeightScreen()
     }
 
-    override fun getCenter(): PointF {
-        return PointF(this.x, this.y)
+    abstract fun getDamage():Float
+    abstract fun getSpeed():Float
+
+    override fun applyCollisionEffects(entityHitted: HasHealth){
+            //if((target == Target.ENEMY && entityHitted is Enemy) || (target == Target.PLAYER && entityHitted is Player)) {
+                if(collisionStrategy.shouldCollide(entityHitted)){
+                isHit = true
+                entityHitted.updateHealth(-getDamage())
+            }
     }
 
-    override fun getRadius(): Float {
-        return RADIUS
+
+
+/*
+    constructor(parcel: Parcel) : this(
+        parcel.readFloat(),
+        parcel.readFloat(),
+        TODO("target")
+    ){
+        isHit = parcel.readByte() != 0.toByte()
     }
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeFloat(x)
+        parcel.writeFloat(y)
+        parcel.writeFloat(getSpeed())
+        parcel.writeFloat(getDamage())
+        parcel.writeByte(if (isHit) 1 else 0)
+    }
+    override fun describeContents(): Int {
+        return 0
+    }
+    companion object CREATOR : Parcelable.Creator<Bullet> {
+        override fun createFromParcel(parcel: Parcel): Bullet {
+            return Bullet(parcel)
+        }
+        override fun newArray(size: Int): Array<Bullet?> {
+            return arrayOfNulls(size)
+        }
+    }
+ */
 }

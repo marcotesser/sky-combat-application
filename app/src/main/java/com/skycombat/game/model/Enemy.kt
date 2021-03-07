@@ -3,7 +3,11 @@ package com.skycombat.game.model
 import android.graphics.*
 import com.skycombat.game.GameView
 import com.skycombat.game.model.bullet.Bullet
+import com.skycombat.game.model.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.bullet.strategy.EnemyCollisionStrategy
 import com.skycombat.game.model.component.HealthBar
+import com.skycombat.game.model.event.ShootObserver
+import com.skycombat.game.model.event.ShootListener
 import com.skycombat.game.model.support.GUIElement
 import com.skycombat.game.model.support.Rectangle
 import java.util.*
@@ -24,6 +28,9 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         val MAX_HEALTH : Float = 3000f
         val SHOT_EVERY_UPDATES : Int = 100;
     }
+    var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, EnemyCollisionStrategy())
+    var shootObserver = ShootObserver()
+    var context: ViewContext = ViewContext.getInstance()
     var curUpdatesFromShot = 0;
     private var health : Float = MAX_HEALTH
     var healthBar : HealthBar;
@@ -33,7 +40,7 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         val hbColor = Paint()
         hbColor.color = Color.RED
         healthBar = HealthBar(
-                RectF(20f, 10f, scene.getMaxWidth().toFloat()-20, 50f),
+                RectF(20f, 10f, context.getWidthScreen()-20, 50f),
                 hbColor,
                 this
         );
@@ -77,12 +84,16 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         return this.isDead()
     }
 
+    fun addOnShootListener(shootListener: ShootListener){
+        shootObserver.attach(shootListener);
+    }
+
     /**
      * Shoots the bullet in the right direction
      * @see Bullet
      */
     fun shoot() {
-        scene.bullets.add(Bullet( left + width/2, top + height, Bullet.Direction.DOWN, scene))
+        shootObserver.notify(weapon.generateBullet())
     }
     /**
      * Checks if the enemy is dead

@@ -18,12 +18,16 @@ import android.graphics.Canvas
 import android.view.*
 import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.Enemy
+import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.Player
+import com.skycombat.game.model.event.ShootListener
 import com.skycombat.game.model.factory.EnemyFactory
-import com.skycombat.game.model.factory.LifePowerUpFactory
+import com.skycombat.game.model.factory.PowerUpFactory
 import com.skycombat.game.model.powerup.PowerUp
+import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.Drawable
 import com.skycombat.game.model.support.GUIElement
+import com.skycombat.game.model.support.Rectangle
 import com.skycombat.game.panel.FPSPanel
 import com.skycombat.game.panel.GamePanel
 import com.skycombat.game.panel.UPSPanel
@@ -38,20 +42,26 @@ import java.util.stream.Stream
  */
 class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_HEIGHT : Float ) : SurfaceView(context), SurfaceHolder.Callback {
     private val GAME_OVER_LISTENERS : ArrayList<GameOverListener> = ArrayList()
-    private val ENEMY_FACTORY = EnemyFactory(this);
-    private val LIFE_POWERUP_FACTORY = LifePowerUpFactory(this);
 
     private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList();
     private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
     // TODO : rendere privata e gestirla a eventi
     public val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
+    var player : Player = Player()
 
-    var player : Player = Player(MAX_WIDTH / 2, MAX_HEIGHT / 5 * 4, 40F, this)
+    private val ENEMY_FACTORY = EnemyFactory(this);
+    private val POWERUP_FACTORY = PowerUpFactory(100000); // TODO(Fake SEED to implement)
+
     private val startTime = System.currentTimeMillis();
     private var gameLoop: GameLoop = GameLoop(this, holder);
 
     init {
+        player.addOnShootListener(object :ShootListener{
+            override fun onShoot(bullet: Bullet) {
+                bullets.add(bullet)
+            }
+        })
         holder.addCallback(this);
         focusable = View.FOCUSABLE;
 
@@ -67,12 +77,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         if(canvas != null){
             Stream.concat(
                 Stream.of(player),
-                Stream.of(
-                    panels,
-                    enemies,
-                    bullets,
-                    powerUps
-                ).flatMap(
+                Stream.of(panels, enemies, bullets, powerUps).flatMap(
                     List<Drawable>::stream
                 )
             ).forEach{el -> el.draw(canvas)}
@@ -83,7 +88,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     /**
      * Updates the view of the whole game
      * @see EnemyFactory
-     * @see LifePowerUpFactory
+     * @see PowerUpFactory
      * @see GameOverListener
      * @see Bullet
      * @see Enemy
@@ -93,7 +98,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         if (player.isDead()) {
             stop()
             GAME_OVER_LISTENERS.forEach { el ->
-                el.gameOver(System.currentTimeMillis() - startTime)
+                el.gameOver(getCurrentTimeFromStart())
             }
             return;
         }
@@ -102,28 +107,23 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         }
 
         if(enemies.size == 0){
-            enemies .add(ENEMY_FACTORY.generate())
-            powerUps.add(LIFE_POWERUP_FACTORY.generate())
-        }
-        powerUps
-            .filter {
-                el -> el.collide(player)
-            }
-            .forEach{
-                el -> el.apply(player)
-            }
+            var enemy=ENEMY_FACTORY.generate()
+            enemies.add(enemy)
+            enemy.addOnShootListener(object : ShootListener{
+                override fun onShoot(bullet: Bullet) {
+                    bullets.add(bullet)
+                }
 
+            })
+            powerUps.add(POWERUP_FACTORY.generate())
+        }
 
         Stream.concat(enemies.stream(), Stream.of(player)).forEach{
-            entity ->
-                bullets
-                    .filter {
-                        el -> entity.collide(el)
-                    }
-                    .forEach{
-                        el ->
-                            el.hit()
-                            entity.updateHealth( -1 * el.damage.toFloat())
+            entity -> Stream.concat(bullets.stream(), powerUps.stream())
+                    .filter { el ->
+                        entity.collide(el)
+                    }.forEach{
+                        el -> el.applyCollisionEffects(entity)
                     }
 
         }
@@ -132,6 +132,10 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         enemies.forEach(Enemy::update)
         bullets.forEach(Bullet::update)
         powerUps.forEach(PowerUp::update)
+    }
+
+    private fun getCurrentTimeFromStart(): Long{
+        return System.currentTimeMillis() - startTime
     }
 
 
@@ -170,20 +174,6 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
             }
             else -> true;
         }
-    }
-    /**
-     * Gets the maximum Game Height
-     * @return MAX_HEIGHT
-     */
-    fun getMaxHeight() : Float {
-        return MAX_HEIGHT
-    }
-    /**
-     * Gets the maximum Game Width
-     * @return MAX_WIDTH
-     */
-    fun getMaxWidth() : Float {
-        return MAX_WIDTH
     }
     /**
      * Sets the gameoverlistener

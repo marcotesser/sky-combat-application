@@ -3,16 +3,10 @@ package com.skycombat.game.model.powerup
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PointF
-import android.transition.Scene
-import com.skycombat.game.GameView
-import com.skycombat.game.model.Enemy
 import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.Player
-import com.skycombat.game.model.ViewContext
-import com.skycombat.game.model.support.CollisionParticle
 
-class LifePowerUp(x: Float, y: Float, speed:Float, var healthIncrease: Float)
+class GunsPowerUp(x: Float, y: Float, speed:Float)
     :PowerUp(x,y,speed) {
 
     var paint = Paint()
@@ -24,8 +18,9 @@ class LifePowerUp(x: Float, y: Float, speed:Float, var healthIncrease: Float)
 
     override fun applyCollisionEffects(entityHitted: HasHealth){
         if(entityHitted is Player) {
-            entityHitted.updateHealth(healthIncrease)
+            //TODO(Settaggio della nuova arma passata con un nuovo parametro)
             this.used = true;
         }
     }
+
 }
