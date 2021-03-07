@@ -23,7 +23,7 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
     }
     var curUpdatesFromShot = 0;
 
-    private var health : Float = MAX_HEALTH
+    internal var health : Float = MAX_HEALTH
     var healthBar : HealthBar ;
     init {
         paint.color = Color.GREEN

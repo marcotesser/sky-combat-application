@@ -36,27 +36,29 @@ import java.util.stream.Stream
  * @param MAX_WIDTH : the max width of the gameview
  * @param MAX_HEIGHT : the max height of the gameview
  */
-class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_HEIGHT : Float ) : SurfaceView(context), SurfaceHolder.Callback {
-    private val GAME_OVER_LISTENERS : ArrayList<GameOverListener> = ArrayList()
-    private val ENEMY_FACTORY = EnemyFactory(this);
-    private val LIFE_POWERUP_FACTORY = LifePowerUpFactory(this);
+open class GameView(context: Context, private val MAX_WIDTH : Float, private val MAX_HEIGHT : Float ) : SurfaceView(context), SurfaceHolder.Callback {
+    protected open val GAME_OVER_LISTENERS : ArrayList<GameOverListener> = ArrayList()
+    protected open val ENEMY_FACTORY = EnemyFactory(this);
+    protected open val LIFE_POWERUP_FACTORY = LifePowerUpFactory(this);
 
-    private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList();
-    private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
-    private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
+    protected open var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList();
+    protected open var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
+    protected open var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
     // TODO : rendere privata e gestirla a eventi
-    public val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
+    val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
 
     var player : Player = Player(MAX_WIDTH / 2, MAX_HEIGHT / 5 * 4, 40F, this)
-    private val startTime = System.currentTimeMillis();
-    private var gameLoop: GameLoop = GameLoop(this, holder);
+    protected open val startTime = System.currentTimeMillis();
+    protected open var gameLoop: GameLoop = GameLoop(this, holder);
 
     init {
         holder.addCallback(this);
         focusable = View.FOCUSABLE;
 
-        panels.add(FPSPanel(20F, MAX_HEIGHT/2, gameLoop, this ))
-        panels.add(UPSPanel(20F, MAX_HEIGHT/2 + 100, gameLoop, this ))
+        if(panels!=null && gameLoop!=null) {
+            panels.add(FPSPanel(20F, `MAX_HEIGHT` / 2, gameLoop, this))
+            panels.add(UPSPanel(20F, MAX_HEIGHT / 2 + 100, gameLoop, this))
+        }
     }
 
     override fun draw(canvas: Canvas?) {
@@ -88,8 +90,8 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
      * @see Bullet
      * @see Enemy
      * @see Player
-     */
-    fun update() {
+1     */
+    open fun update() {
         if (player.isDead()) {
             stop()
             GAME_OVER_LISTENERS.forEach { el ->
