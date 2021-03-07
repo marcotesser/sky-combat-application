@@ -14,7 +14,7 @@
 package com.skycombat.game
 
 /**
- * Represents the Game Over Listener
+ * Represents the Game Over Listener
  */
 abstract class GameOverListener {
 

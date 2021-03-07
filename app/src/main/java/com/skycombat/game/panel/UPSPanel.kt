@@ -10,8 +10,8 @@ import com.skycombat.game.panel.GamePanel
 class UPSPanel(var x: Float, var y: Float, var gameLoop : GameLoop, var scene : GameView) :
     GamePanel {
     override fun draw(canvas: Canvas?) {
-        var avg: String = gameLoop.getAverageUPS().toInt().toString();
-        val paint : Paint = Paint()
+        val avg: String = gameLoop.getAverageUPS().toInt().toString();
+        val paint = Paint()
         paint.color = Color.RED
         paint.textSize = 50F;
         canvas?.drawText("UPS: $avg", x, y, paint)

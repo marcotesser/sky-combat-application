@@ -15,21 +15,23 @@ package com.skycombat.game
 
 import android.content.Context
 import android.graphics.Canvas
-import android.util.Log
 import android.view.*
-import com.skycombat.game.model.Bullet
+import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.Enemy
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.LifePowerUpFactory
 import com.skycombat.game.model.powerup.PowerUp
+import com.skycombat.game.model.support.Drawable
+import com.skycombat.game.model.support.GUIElement
 import com.skycombat.game.panel.FPSPanel
 import com.skycombat.game.panel.GamePanel
 import com.skycombat.game.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
+import java.util.stream.Stream
 
 /**
- * Represents the Game View
+ * Represents the Game View
  * @param context : the context onto which the game will be drawn
  * @param MAX_WIDTH : the max width of the gameview
  * @param MAX_HEIGHT : the max height of the gameview
@@ -43,7 +45,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
     // TODO : rendere privata e gestirla a eventi
-    public  val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
+    public val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
 
     var player : Player = Player(MAX_WIDTH / 2, MAX_HEIGHT / 5 * 4, 40F, this)
     private val startTime = System.currentTimeMillis();
@@ -58,17 +60,24 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     }
 
     override fun draw(canvas: Canvas?) {
-        if (player.health <= 0) {
+        if (player.getCurrentHealth() <= 0) {
             return;
         }
         super.draw(canvas)
-        player.draw(canvas)
-        panels.forEach  { el -> el.draw(canvas) }
-        enemies.forEach { el -> el.draw(canvas) }
-        bullets.forEach { el -> el.draw(canvas) }
-        powerUps.forEach{ el -> el.draw(canvas) }
+        if(canvas != null){
+            Stream.concat(
+                Stream.of(player),
+                Stream.of(
+                    panels,
+                    enemies,
+                    bullets,
+                    powerUps
+                ).flatMap(
+                    List<Drawable>::stream
+                )
+            ).forEach{el -> el.draw(canvas)}
+        }
     }
-    private var eventEmitted = false;
 
 
     /**
@@ -81,27 +90,46 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
      * @see Player
      */
     fun update() {
-        if (player.health <= 0) {
-            if(!eventEmitted) {
-                stop()
-                GAME_OVER_LISTENERS.forEach { el ->
-                    el.gameOver(System.currentTimeMillis() - startTime)
-                }
+        if (player.isDead()) {
+            stop()
+            GAME_OVER_LISTENERS.forEach { el ->
+                el.gameOver(System.currentTimeMillis() - startTime)
             }
-            eventEmitted = true;
             return;
         }
-
-        enemies.removeIf(Enemy::isDead)
-        powerUps.removeIf(PowerUp::isUsed)
-        bullets.removeIf(Bullet::toRemove)
+        listOf(enemies, powerUps, bullets).forEach{
+            ar -> ar.removeIf(GUIElement::shouldRemove)
+        }
 
         if(enemies.size == 0){
             enemies .add(ENEMY_FACTORY.generate())
             powerUps.add(LIFE_POWERUP_FACTORY.generate())
         }
-        player.update(bullets, powerUps)
-        enemies.forEach{ el -> el.update(bullets) }
+        powerUps
+            .filter {
+                el -> el.collide(player)
+            }
+            .forEach{
+                el -> el.apply(player)
+            }
+
+
+        Stream.concat(enemies.stream(), Stream.of(player)).forEach{
+            entity ->
+                bullets
+                    .filter {
+                        el -> entity.collide(el)
+                    }
+                    .forEach{
+                        el ->
+                            el.hit()
+                            entity.updateHealth( -1 * el.damage.toFloat())
+                    }
+
+        }
+
+        player.update()
+        enemies.forEach(Enemy::update)
         bullets.forEach(Bullet::update)
         powerUps.forEach(PowerUp::update)
     }
