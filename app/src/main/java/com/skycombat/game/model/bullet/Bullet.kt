@@ -51,7 +51,7 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
             entityHitted.updateHealth(-getDamage())
         }
     }
-    
+
 }
 
 

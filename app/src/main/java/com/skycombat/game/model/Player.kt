@@ -27,7 +27,7 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
         val RADIUS: Float = 20F;
     }
     var updatesFromEndShield: Long= 0
-    private var health : Float = MAX_HEALTH
+    override var health : Float = MAX_HEALTH
     var positionX:Float
     var positionY:Float
 
@@ -55,10 +55,6 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
 
     override fun shouldRemove(): Boolean {
         return this.isDead()
-    }
-
-    fun isDead(): Boolean{
-        return this.health <= 0
     }
 
     fun applyShield(duration: Long){
@@ -104,14 +100,6 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
 
     fun setBulletType(bulletType: Weapon.BulletType){
         weapon.setBulletType(bulletType)
-    }
-
-    override fun getCurrentHealth(): Float {
-        return health
-    }
-
-    override fun setHealth(health: Float) {
-        this.health = health
     }
 
     override fun getMaxHealth(): Float {

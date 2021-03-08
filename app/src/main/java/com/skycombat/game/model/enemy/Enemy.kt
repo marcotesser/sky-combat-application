@@ -35,14 +35,13 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
     override var shootObserver = ShootObserver()
     override var weapon:Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
 
-    private var health : Float
+    override var health : Float = getMaxHealth()
     var verticalAttitude: Int =1
     var horizontalAttitude: Int =1
 
     init {
         paint.color = Color.RED
         healthBar = EnemyHealthBar(this);
-        health=getMaxHealth()
     }
     /**
      * Draws the player and enemy's healthbar
@@ -72,25 +71,8 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
 
     abstract fun getHeight():Float
 
-
     override fun shouldRemove(): Boolean {
-        return this.isDead()
-    }
-
-    /**
-     * Checks if the enemy is dead
-     * @see HealthBar
-     */
-    fun isDead() : Boolean{
-        return this.health <= 0
-    }
-
-    override fun getCurrentHealth(): Float {
-        return health
-    }
-
-    override fun setHealth(health: Float) {
-        this.health = health
+        return isDead()
     }
 
     override fun getPosition(): RectF {
