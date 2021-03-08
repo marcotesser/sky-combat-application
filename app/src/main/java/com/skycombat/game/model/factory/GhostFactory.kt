@@ -9,12 +9,13 @@ class GhostFactory(private val scene : GameView) {
      * @return Enemy to the scene
      * @see Player
      */
-    fun generate(positionX : Float, positionY : Float, radius: Float, id: String) : Ghost {
+    fun generate(positionX : Float, positionY : Float, radius: Float, id: String, name: String) : Ghost {
         return Ghost(
             positionX,
             positionY,
             radius,
             id,
+            name,
             scene
         )
     }

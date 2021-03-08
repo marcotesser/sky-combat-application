@@ -1,6 +1,11 @@
 package com.skycombat.game.model
 
 import android.graphics.*
+import android.util.Log
+import com.amplifyframework.api.graphql.model.ModelMutation
+import com.amplifyframework.core.Amplify
+import com.amplifyframework.core.model.temporal.Temporal
+import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.GameView
 import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.component.HealthBar
@@ -85,6 +90,21 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
             positionX = scene.getMaxWidth() - radius
         }
         positionY = y;
+
+        var playerOnline = Player.builder()
+            .name(GameSession.player?.name)
+            .id(GameSession.player?.id)
+            .gameroom(GameSession.player?.gameroom)
+            .positionX((x).toDouble())
+            .positionY((y).toDouble())
+            .score((Math.random() * 10000).toInt())
+            .lastinteraction(Temporal.Timestamp.now())
+            .build()
+        Amplify.API.mutate(
+            ModelMutation.update(playerOnline),
+            { response -> Log.i("MyAmplifyApp", "updated position with id: " + response.data.id) },
+            { error -> Log.e("MyAmplifyApp", "update position failed", error) }
+        )
     }
     /**
      * Shoots the bullet in the right direction

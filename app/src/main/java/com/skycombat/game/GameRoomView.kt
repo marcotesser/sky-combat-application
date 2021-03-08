@@ -185,7 +185,7 @@ import java.util.stream.Stream
                         new = false
 
                 if(new)
-                    ghosts.add(GHOST_FACTORY.generate((el.positionX).toFloat(), (el.positionY).toFloat(), 50f, (el.id).toString()))
+                    ghosts.add(GHOST_FACTORY.generate((el.positionX).toFloat(), (el.positionY).toFloat(), 50f, (el.id).toString(), el.name))
             }
         }
 
@@ -215,20 +215,7 @@ import java.util.stream.Stream
         return when(event?.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
                 player.setPosition(event.x, player.positionY)
-                var playerOnline = Player.builder()
-                    .name(currentPlayer?.name)
-                    .id(currentPlayer?.id)
-                    .gameroom(currentPlayer?.gameroom)
-                    .positionX((event.x).toDouble())
-                    .positionY((player.positionY).toDouble())
-                    .score((Math.random() * 10000).toInt())
-                    .lastinteraction(Temporal.Timestamp.now())
-                    .build()
-                Amplify.API.mutate(
-                    ModelMutation.update(playerOnline),
-                    { response -> Log.i("MyAmplifyApp", "updated position with id: " + response.data.id) },
-                    { error -> Log.e("MyAmplifyApp", "update position failed", error) }
-                )
+
                 true
             }
             else -> true;
