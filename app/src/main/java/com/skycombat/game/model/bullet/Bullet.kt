@@ -1,6 +1,7 @@
 package com.skycombat.game.model.bullet
 
 import android.graphics.*
+import com.skycombat.R
 import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
@@ -21,8 +22,6 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
     var target = collisionStrategy.getTargetCollidable()
 
     private var isHit: Boolean = false;
-
-    var paint: Paint = Paint();
 
     /**
      * Updates the bullet's movement

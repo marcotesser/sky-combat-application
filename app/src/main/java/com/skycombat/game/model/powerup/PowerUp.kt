@@ -1,5 +1,7 @@
 package com.skycombat.game.model.powerup
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.PointF
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.ViewContext
@@ -10,14 +12,19 @@ abstract class PowerUp(var x : Float, var y : Float, var speed:Float)
     : Circle, GUIElement {
 
     companion object {
-        val RADIUS: Float = 20f;
+        val RADIUS: Float = 50f;
     }
 
+    abstract var powerUpImg: Bitmap
     val context: ViewContext = ViewContext.getInstance()
     var used : Boolean = false
 
     override fun update(){
         this.y += speed
+    }
+
+    override fun draw(canvas : Canvas?){
+        canvas?.drawBitmap(powerUpImg,x-getRadius(),y-getRadius(),null)
     }
 
     override fun shouldRemove(): Boolean {

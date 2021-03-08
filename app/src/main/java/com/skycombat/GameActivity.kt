@@ -30,7 +30,6 @@ class GameActivity : Activity() {
         val WINDOW_MANAGER = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         WINDOW_MANAGER.defaultDisplay.getMetrics(METRICS)
 
-        ViewContext.setContext(METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat());
         gameView = GameView(this, METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat())
         gameView!!.setGameOverListener (object: GameOverListener() {
             override fun gameOver(score : Long) {
@@ -58,7 +57,8 @@ class GameActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        // super.onBackPressed()
+        this.finish()
+        super.onBackPressed()
     }
 
 }

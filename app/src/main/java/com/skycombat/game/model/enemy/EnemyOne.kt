@@ -1,19 +1,24 @@
 package com.skycombat.game.model.enemy
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.PointF
+import com.skycombat.R
 import com.skycombat.game.model.Weapon
 
 class EnemyOne(left : Float, top : Float, bulletType: Weapon.BulletType) : Enemy(left,top,bulletType) {
 
     companion object{
-        val MAX_HEALTH : Float = 3000f
-        val WIDTH : Float = 30F
-        val HEIGHT : Float = 20F
+        val MAX_HEALTH : Float = 200f
+        val WIDTH : Float = 230F
+        val HEIGHT : Float = 200F
     }
 
     override fun getMaxHealth(): Float {
         return MAX_HEALTH
     }
+
+    override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy)),WIDTH.toInt(),HEIGHT.toInt(),false)
 
     override fun MovHandle(){
         val randleft = left + (Math.random() * (horizontalAttitude * 10)).toFloat()

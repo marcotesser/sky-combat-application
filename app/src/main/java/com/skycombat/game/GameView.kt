@@ -14,11 +14,15 @@ package com.skycombat.game
 
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
+import com.skycombat.R
 import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.enemy.Enemy
 import com.skycombat.game.model.Player
+import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.event.ShootListener
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.PowerUpFactory
@@ -45,15 +49,25 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
     // TODO : rendere privata e gestirla a eventi
     public val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
-    var player : Player = Player()
+    var player : Player
 
-    private val ENEMY_FACTORY = EnemyFactory(this);
-    private val POWERUP_FACTORY = PowerUpFactory(100000); // TODO(Fake SEED to implement)
+    private val ENEMY_FACTORY: EnemyFactory
+    private val POWERUP_FACTORY: PowerUpFactory
 
     private val startTime = System.currentTimeMillis();
     private var gameLoop: GameLoop = GameLoop(this, holder);
 
+    var islandsImg: Bitmap
+    var cloudsImg: Bitmap
+    var backY : Float= 0f
+    var backY2 : Float= 0f
+
     init {
+        ViewContext.setContext(MAX_WIDTH, MAX_HEIGHT, resources);
+        player = Player()
+        ENEMY_FACTORY = EnemyFactory(this);
+        POWERUP_FACTORY = PowerUpFactory(100000); // TODO(Fake SEED to implement)
+
         player.addOnShootListener(object :ShootListener{
             override fun onShoot(bullet: Bullet) {
                 bullets.add(bullet)
@@ -61,9 +75,11 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         })
         holder.addCallback(this);
         focusable = View.FOCUSABLE;
-
         panels.add(FPSPanel(20F, MAX_HEIGHT/2, gameLoop, this ))
         panels.add(UPSPanel(20F, MAX_HEIGHT/2 + 100, gameLoop, this ))
+
+        islandsImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.islands)),MAX_WIDTH.toInt(),MAX_WIDTH.toInt()*3,false)
+        cloudsImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.clouds)),MAX_WIDTH.toInt(),MAX_WIDTH.toInt()*3,false)
     }
 
     override fun draw(canvas: Canvas?) {
@@ -71,6 +87,12 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
             return;
         }
         super.draw(canvas)
+        //draw dello sfondo
+        canvas?.drawBitmap(islandsImg, 0f, backY ,null)
+        canvas?.drawBitmap(islandsImg, 0f, backY-MAX_WIDTH.toInt()*3 ,null)
+        canvas?.drawBitmap(cloudsImg, 0f, backY2 ,null)
+        canvas?.drawBitmap(cloudsImg, 0f, (backY2-MAX_WIDTH.toInt()*3) ,null)
+
         if(canvas != null){
             Stream.concat(
                 Stream.of(player),
@@ -121,6 +143,18 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         enemies.forEach(Enemy::update)
         bullets.forEach(Bullet::update)
         powerUps.forEach(PowerUp::update)
+
+        //movimento sfondo
+        if(backY<MAX_WIDTH.toInt()*3) {
+            backY += 8
+        }else{
+            backY=0f
+        }
+        if(backY2<MAX_WIDTH.toInt()*3) {
+            backY2 += 12
+        }else{
+            backY2=0f
+        }
     }
 
     private fun getCurrentTimeFromStart(): Long{

@@ -1,8 +1,7 @@
 package com.skycombat.game.model.bullet
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.RectF
+import android.graphics.*
+import com.skycombat.R
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Rectangle
 
@@ -10,19 +9,22 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
 : Bullet(left+WIDTH/2F,top+HEIGHT/2, collisionStrategy), Rectangle{
 
     companion object {
-        const val DAMAGE: Float = 2.0F
-        const val SPEED: Float = 7.0F
-        const val WIDTH: Float = 0.5F
-        const val HEIGHT: Float = 30F
+        const val DAMAGE: Float = 70.0F
+        const val SPEED: Float = 4.0F
+        const val WIDTH: Float = 10F
+        const val HEIGHT: Float = 200F
     }
 
+    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bulletlaser)), WIDTH.toInt(),HEIGHT.toInt(),false)
+
+    /**
+     * Draws the bullet
+     * @param canvas : the canvas onto which the bullet will be drawn
+     */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawRect(RectF(left, top, left + WIDTH, top+HEIGHT), paint)
+        canvas?.drawBitmap(bulletImg,left,top,null)
     }
 
-    init {
-        paint.color = if( target == CollisionStrategy.Target.PLAYER) Color.MAGENTA else Color.YELLOW
-    }
     override fun getDamage():Float{
         return DAMAGE
     }

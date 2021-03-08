@@ -52,11 +52,11 @@ class PowerUpFactory(var seed:Long) {
 
     private fun nextPowerUpSpeed(): Float{
         // TODO(in funzione di numPowerUpGenerated)
-        return 2F
+        return 8F
     }
     private fun nextLifePowerUpIncreaseHelth():Float{
         // TODO(in funzione di numPowerUpGenerated)
-        return 2F
+        return 100F
     }
     private fun nextShieldPowerUpDuration():Long{
         // TODO(in funzione di numPowerUpGenerated)

@@ -1,6 +1,7 @@
 package com.skycombat.game.model
 
 import android.graphics.*
+import com.skycombat.R
 import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.bullet.strategy.PlayerCollisionStrategy
 import com.skycombat.game.model.component.HealthBar
@@ -21,15 +22,16 @@ import java.util.*
  */
 class Player() : HasHealth, Circle, GUIElement, CanShoot {
 
-    val paint : Paint = Paint();
+    //val paint : Paint = Paint();
     companion object{
-        val MAX_HEALTH : Float = 1000f
-        val RADIUS: Float = 20F;
+        val MAX_HEALTH : Float = 500f
+        val RADIUS: Float = 90F;
     }
     var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH
     var positionX:Float
     var positionY:Float
+    var playerImg : Bitmap
 
     var healthBar : HealthBar;
     var context: ViewContext = ViewContext.getInstance()
@@ -40,8 +42,9 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
     init {
         positionX=context.getWidthScreen()/2F
         positionY= context.getHeightScreen()/ 5 * 4
-        paint.color = Color.GREEN
+        //paint.color = Color.GREEN
         healthBar = PlayerHealthBar(this);
+        playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)),RADIUS.toInt()*2,RADIUS.toInt()*2,false)
     }
     /**
      * Draws the player and player's healthbar
@@ -49,7 +52,7 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawCircle(positionX, positionY, RADIUS, paint)
+        canvas?.drawBitmap(playerImg,positionX- RADIUS/2,positionY- RADIUS/2,null)
         healthBar.draw(canvas)
     }
 

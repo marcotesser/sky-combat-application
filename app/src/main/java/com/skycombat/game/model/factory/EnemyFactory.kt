@@ -21,10 +21,8 @@ class EnemyFactory(private val scene : GameView) {
      * @see Player
      */
     fun generate() : Enemy {
-        val width = 150F;
-        val height = 100F;
         return EnemyOne(
-            (context.getWidthScreen() - width) / 2,
+            (context.getWidthScreen() - EnemyOne.WIDTH) / 2,
             100F,
             Weapon.BulletType.CLASSIC
         )
