@@ -2,6 +2,7 @@ package com.skycombat.game.model.factory
 
 import com.skycombat.game.GameView
 import com.skycombat.game.model.ViewContext
+import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.powerup.GunsPowerUp
 import com.skycombat.game.model.powerup.LifePowerUp
 import com.skycombat.game.model.powerup.PowerUp
@@ -43,7 +44,9 @@ class PowerUpFactory(var seed:Long) {
             PowerUpType.GUNS -> return GunsPowerUp(
                 positionX,
                 0F,
-                nextPowerUpSpeed())
+                nextPowerUpSpeed(),
+                nextGunsPowerUpBulletType()
+                )
         }
     }
 
@@ -58,6 +61,10 @@ class PowerUpFactory(var seed:Long) {
     fun nextShieldPowerUpDuration():Long{
         // TODO(in funzione di numPowerUpGenerated)
         return 500
+    }
+    fun nextGunsPowerUpBulletType():Weapon.BulletType{
+        // TODO(in funzione di numPowerUpGenerated)
+        return Weapon.BulletType.CLASSIC
     }
     fun nextPowerUpType(): PowerUpType{
         // TODO(In funzione del seed e di numPowerUpGenerated)

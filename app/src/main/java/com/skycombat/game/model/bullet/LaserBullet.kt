@@ -6,8 +6,8 @@ import android.graphics.RectF
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Rectangle
 
-class LaserBullet(var left : Float,var top : Float, target: Target, collisionStrategy: CollisionStrategy)
-: Bullet(left+WIDTH/2F,top+HEIGHT/2,target, collisionStrategy), Rectangle{
+class LaserBullet(var left : Float,var top : Float, collisionStrategy: CollisionStrategy)
+: Bullet(left+WIDTH/2F,top+HEIGHT/2, collisionStrategy), Rectangle{
 
     companion object {
         const val DAMAGE: Float = 2.0F
@@ -21,7 +21,7 @@ class LaserBullet(var left : Float,var top : Float, target: Target, collisionStr
     }
 
     init {
-        paint.color = if( target == Target.PLAYER) Color.MAGENTA else Color.YELLOW
+        paint.color = if( target == CollisionStrategy.Target.PLAYER) Color.MAGENTA else Color.YELLOW
     }
     override fun getDamage():Float{
         return DAMAGE

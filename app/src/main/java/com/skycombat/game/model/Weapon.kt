@@ -4,8 +4,8 @@ import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.bullet.ClassicBullet
 import com.skycombat.game.model.bullet.LaserBullet
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.enemy.Enemy
 import com.skycombat.game.model.support.Updatable
-import kotlin.reflect.KClass
 
 class Weapon( val owner: Any, var bulletType:BulletType, var collisionStrategy: CollisionStrategy): Updatable {
 
@@ -31,22 +31,20 @@ class Weapon( val owner: Any, var bulletType:BulletType, var collisionStrategy: 
     }
 
     fun generateBullet():Bullet{
-        var x:Float?= null; var y:Float?=null; var target:Bullet.Target?=null;
+        var x:Float?= null; var y:Float?=null;
 
         if(owner is Player){
             x=owner.positionX
             y=owner.positionY - Player.RADIUS -2F
-            target=Bullet.Target.ENEMY
 
         }else if(owner is Enemy){
             x=owner.getPosition().centerX()
-            y=owner.top+owner.height +2F
-            target=Bullet.Target.PLAYER
+            y=owner.top+owner.getHeight() +2F
         }
 
         when(bulletType){
-            BulletType.CLASSIC -> return ClassicBullet(x!!, y!!, target!!,collisionStrategy)
-            BulletType.LASER -> return LaserBullet(x!!, y!!, target!!,collisionStrategy)
+            BulletType.CLASSIC -> return ClassicBullet(x!!, y!!,collisionStrategy)
+            BulletType.LASER -> return LaserBullet(x!!, y!!,collisionStrategy)
         }
     }
 

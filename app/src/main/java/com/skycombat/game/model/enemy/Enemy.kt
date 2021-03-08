@@ -1,17 +1,19 @@
-package com.skycombat.game.model
+package com.skycombat.game.model.enemy
 
 import android.graphics.*
-import com.skycombat.game.GameView
+import com.skycombat.game.model.HasHealth
+import com.skycombat.game.model.ViewContext
+import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.bullet.Bullet
-import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.bullet.strategy.EnemyCollisionStrategy
+import com.skycombat.game.model.bullet.strategy.PlayerCollisionStrategy
+import com.skycombat.game.model.component.EnemyHealthBar
 import com.skycombat.game.model.component.HealthBar
 import com.skycombat.game.model.event.ShootObserver
 import com.skycombat.game.model.event.ShootListener
 import com.skycombat.game.model.support.GUIElement
 import com.skycombat.game.model.support.Rectangle
 import java.util.*
-import kotlin.math.abs
 
 /**
  * Represents an Enemy
@@ -22,28 +24,22 @@ import kotlin.math.abs
  * @param height : enemy's height
  * @param scene : the gameview onto which the enemy will be drawn
  */
-class Enemy(var player : Player, var left : Float, var top : Float, var width: Float, var height: Float , var scene : GameView) : HasHealth, Rectangle, GUIElement{
+abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType) : HasHealth, Rectangle, GUIElement{
     var paint : Paint = Paint();
-    companion object{
-        val MAX_HEALTH : Float = 3000f
-        val SHOT_EVERY_UPDATES : Int = 100;
-    }
-    var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, EnemyCollisionStrategy())
-    var shootObserver = ShootObserver()
-    var context: ViewContext = ViewContext.getInstance()
-    var curUpdatesFromShot = 0;
-    private var health : Float = MAX_HEALTH
+
     var healthBar : HealthBar;
+    var context: ViewContext = ViewContext.getInstance()
+    var shootObserver = ShootObserver()
+    var weapon:Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
+
+    private var health : Float
+    var verticalAttitude: Int =1
+    var horizontalAttitude: Int =1
+
     init {
         paint.color = Color.RED
-
-        val hbColor = Paint()
-        hbColor.color = Color.RED
-        healthBar = HealthBar(
-                RectF(20f, 10f, context.getWidthScreen()-20, 50f),
-                hbColor,
-                this
-        );
+        healthBar = EnemyHealthBar(this);
+        health=getMaxHealth()
     }
     /**
      * Draws the player and enemy's healthbar
@@ -51,7 +47,7 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawRect(RectF(left, top, left + width, top+height), paint)
+        canvas?.drawRect(RectF(left, top, left + getWidth(), top+getHeight()), paint)
         healthBar.draw(canvas)
     }
     /**
@@ -62,23 +58,26 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
      */
     override fun update() {
 
-        curUpdatesFromShot++
-        if(curUpdatesFromShot >= SHOT_EVERY_UPDATES){
-            curUpdatesFromShot = 0;
-            shoot();
-        }
-
-
-        val center : Float = left + width / 2;
-        val dx = 2f
-        when {
-            abs(center - player.positionX) < dx -> left = player.positionX - width / 2
-            center < player.positionX -> left += dx
-            else -> left -= dx
-        }
+        MovHandle()
 
         healthBar.update()
     }
+    /*
+    val center : Float = left + width / 2;
+    val dx = 2f
+    when {
+        abs(center - positionPlayer.x) < dx -> left = positionPlayer.x- width / 2
+        center < positionPlayer.x -> left += dx
+        else -> left -= dx
+    }
+     */
+
+    abstract fun MovHandle()
+
+    abstract fun getWidth():Float
+
+    abstract fun getHeight():Float
+
 
     override fun shouldRemove(): Boolean {
         return this.isDead()
@@ -111,11 +110,7 @@ class Enemy(var player : Player, var left : Float, var top : Float, var width: F
         this.health = health
     }
 
-    override fun getMaxHealth(): Float {
-        return MAX_HEALTH
-    }
-
     override fun getPosition(): RectF {
-        return RectF(left, this.top, this.left + this.width , this.top + this.height)
+        return RectF(left, this.top, this.left + getWidth() , this.top + getHeight())
     }
 }

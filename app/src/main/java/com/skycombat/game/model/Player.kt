@@ -2,10 +2,9 @@ package com.skycombat.game.model
 
 import android.graphics.*
 import com.skycombat.game.model.bullet.Bullet
-import com.skycombat.game.model.bullet.strategy.CollisionStrategy
-import com.skycombat.game.model.bullet.strategy.EnemyCollisionStrategy
 import com.skycombat.game.model.bullet.strategy.PlayerCollisionStrategy
 import com.skycombat.game.model.component.HealthBar
+import com.skycombat.game.model.component.PlayerHealthBar
 import com.skycombat.game.model.event.ShootObserver
 import com.skycombat.game.model.event.ShootListener
 import com.skycombat.game.model.support.Circle
@@ -40,13 +39,7 @@ class Player() : HasHealth, Circle, GUIElement {
         positionX=context.getWidthScreen()/2F
         positionY= context.getHeightScreen()/ 5 * 4
         paint.color = Color.GREEN
-        val hbColor = Paint()
-        hbColor.color = Color.GREEN
-        healthBar = HealthBar(
-                RectF(20f, context.getHeightScreen() - 50, context.getWidthScreen()-20, context.getHeightScreen() - 10),
-                hbColor,
-                this
-        );
+        healthBar = PlayerHealthBar(this);
     }
     /**
      * Draws the player and player's healthbar
@@ -113,6 +106,10 @@ class Player() : HasHealth, Circle, GUIElement {
      */
     fun shoot() {
         shootObserver.notify(weapon.generateBullet())
+    }
+
+    fun setBulletType(bulletType: Weapon.BulletType){
+        weapon.setBulletType(bulletType)
     }
 
     override fun getCurrentHealth(): Float {

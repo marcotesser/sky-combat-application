@@ -1,16 +1,10 @@
 package com.skycombat.game.model.bullet
 
 import android.graphics.*
-import android.os.Parcel
-import android.os.Parcelable
-import com.skycombat.game.GameView
-import com.skycombat.game.model.Enemy
 import com.skycombat.game.model.HasHealth
-import com.skycombat.game.model.Player
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.CollisionParticle
-import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.Entity
 
 /**
@@ -20,14 +14,11 @@ import com.skycombat.game.model.support.Entity
  * @param direction : direction of the bullet
  * @param scene : the gameview onto which the bullet will be drawn
  */
-abstract class Bullet(var x : Float, var y : Float, var target: Target, var collisionStrategy: CollisionStrategy)
+abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: CollisionStrategy)
     : CollisionParticle, Entity {
 
-    enum class Target {
-        PLAYER, ENEMY
-    }
-
     val context: ViewContext = ViewContext.getInstance()
+    var target = collisionStrategy.getTargetCollidable()
 
     private var isHit : Boolean = false;
 
@@ -38,8 +29,8 @@ abstract class Bullet(var x : Float, var y : Float, var target: Target, var coll
      */
     override fun update() {
         y += when (target) {
-            Target.ENEMY -> -getSpeed()
-            Target.PLAYER -> getSpeed()
+            CollisionStrategy.Target.ENEMY -> -getSpeed()
+            CollisionStrategy.Target.PLAYER -> getSpeed()
         }
     }
 

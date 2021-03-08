@@ -5,8 +5,10 @@ import android.graphics.Color
 import android.graphics.Paint
 import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.Player
+import com.skycombat.game.model.Weapon
+import com.skycombat.game.model.bullet.Bullet
 
-class GunsPowerUp(x: Float, y: Float, speed:Float)
+class GunsPowerUp(x: Float, y: Float, speed:Float, var bulletType: Weapon.BulletType)
     :PowerUp(x,y,speed) {
 
     var paint = Paint()
@@ -18,7 +20,7 @@ class GunsPowerUp(x: Float, y: Float, speed:Float)
 
     override fun applyCollisionEffects(entityHitted: HasHealth){
         if(entityHitted is Player) {
-            //TODO(Settaggio della nuova arma passata con un nuovo parametro)
+            entityHitted.setBulletType(bulletType)
             this.used = true;
         }
     }

@@ -9,8 +9,8 @@ import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.CollisionParticle
 
-class ClassicBullet(x : Float, y : Float, target: Target, collisionStrategy: CollisionStrategy)
-    : Bullet(x,y,target, collisionStrategy), Circle{
+class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
+    : Bullet(x,y, collisionStrategy), Circle{
 
     companion object {
         const val RADIUS: Float = 10.0F
@@ -26,7 +26,7 @@ class ClassicBullet(x : Float, y : Float, target: Target, collisionStrategy: Col
     }
 
     init {
-        paint.color = if( target == Target.PLAYER) Color.RED else Color.GREEN
+        paint.color = if( target == CollisionStrategy.Target.PLAYER) Color.RED else Color.GREEN
     }
 
     override fun getDamage():Float{

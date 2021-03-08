@@ -3,14 +3,8 @@ package com.skycombat.game.model.powerup
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PointF
-import android.transition.Scene
-import com.skycombat.game.GameView
-import com.skycombat.game.model.Enemy
 import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.Player
-import com.skycombat.game.model.ViewContext
-import com.skycombat.game.model.support.CollisionParticle
 
 class LifePowerUp(x: Float, y: Float, speed:Float, var healthIncrease: Float)
     :PowerUp(x,y,speed) {

@@ -7,4 +7,8 @@ class PlayerCollisionStrategy : CollisionStrategy{
     override fun shouldCollide(livingEntity: HasHealth): Boolean {
         return livingEntity !is Player
     }
+
+    override fun getTargetCollidable(): CollisionStrategy.Target {
+        return CollisionStrategy.Target.ENEMY
+    }
 }
