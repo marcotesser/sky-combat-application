@@ -3,11 +3,8 @@ package com.skycombat.game.model.bullet
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.PointF
-import com.skycombat.game.GameView
-import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Circle
-import com.skycombat.game.model.support.CollisionParticle
 
 class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
     : Bullet(x,y, collisionStrategy), Circle{

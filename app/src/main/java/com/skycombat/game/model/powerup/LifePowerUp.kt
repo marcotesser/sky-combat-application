@@ -16,10 +16,8 @@ class LifePowerUp(x: Float, y: Float, speed:Float, var healthIncrease: Float)
         canvas?.drawCircle(x, y, PowerUp.RADIUS, paint)
     }
 
-    override fun applyCollisionEffects(entityHitted: HasHealth){
-        if(entityHitted is Player) {
-            entityHitted.updateHealth(healthIncrease)
-            this.used = true;
-        }
+    override fun applyPowerUPEffects(player: Player){
+        player.updateHealth(healthIncrease)
+        this.used = true;
     }
 }

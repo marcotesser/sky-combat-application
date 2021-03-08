@@ -18,11 +18,9 @@ class GunsPowerUp(x: Float, y: Float, speed:Float, var bulletType: Weapon.Bullet
         canvas?.drawCircle(x, y, PowerUp.RADIUS, paint)
     }
 
-    override fun applyCollisionEffects(entityHitted: HasHealth){
-        if(entityHitted is Player) {
-            entityHitted.setBulletType(bulletType)
-            this.used = true;
-        }
+    override fun applyPowerUPEffects(player: Player){
+        player.setBulletType(bulletType)
+        this.used = true;
     }
 
 }

@@ -2,6 +2,7 @@ package com.skycombat.game.model.enemy
 
 import android.graphics.*
 import com.skycombat.game.model.HasHealth
+import com.skycombat.game.model.Player
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.bullet.Bullet
@@ -11,6 +12,7 @@ import com.skycombat.game.model.component.EnemyHealthBar
 import com.skycombat.game.model.component.HealthBar
 import com.skycombat.game.model.event.ShootObserver
 import com.skycombat.game.model.event.ShootListener
+import com.skycombat.game.model.support.CanShoot
 import com.skycombat.game.model.support.GUIElement
 import com.skycombat.game.model.support.Rectangle
 import java.util.*
@@ -24,13 +26,14 @@ import java.util.*
  * @param height : enemy's height
  * @param scene : the gameview onto which the enemy will be drawn
  */
-abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType) : HasHealth, Rectangle, GUIElement{
+abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType)
+    : HasHealth, Rectangle, GUIElement, CanShoot {
     var paint : Paint = Paint();
 
     var healthBar : HealthBar;
     var context: ViewContext = ViewContext.getInstance()
-    var shootObserver = ShootObserver()
-    var weapon:Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
+    override var shootObserver = ShootObserver()
+    override var weapon:Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
 
     private var health : Float
     var verticalAttitude: Int =1
@@ -62,15 +65,6 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
 
         healthBar.update()
     }
-    /*
-    val center : Float = left + width / 2;
-    val dx = 2f
-    when {
-        abs(center - positionPlayer.x) < dx -> left = positionPlayer.x- width / 2
-        center < positionPlayer.x -> left += dx
-        else -> left -= dx
-    }
-     */
 
     abstract fun MovHandle()
 
@@ -83,17 +77,6 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
         return this.isDead()
     }
 
-    fun addOnShootListener(shootListener: ShootListener){
-        shootObserver.attach(shootListener);
-    }
-
-    /**
-     * Shoots the bullet in the right direction
-     * @see Bullet
-     */
-    fun shoot() {
-        shootObserver.notify(weapon.generateBullet())
-    }
     /**
      * Checks if the enemy is dead
      * @see HealthBar
@@ -112,5 +95,9 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
 
     override fun getPosition(): RectF {
         return RectF(left, this.top, this.left + getWidth() , this.top + getHeight())
+    }
+
+    override fun startPointOfShoot(): PointF {
+        return PointF(getPosition().centerX(), top + getHeight() + 2F)
     }
 }

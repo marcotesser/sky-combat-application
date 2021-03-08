@@ -50,23 +50,23 @@ class PowerUpFactory(var seed:Long) {
         }
     }
 
-    fun nextPowerUpSpeed(): Float{
+    private fun nextPowerUpSpeed(): Float{
         // TODO(in funzione di numPowerUpGenerated)
         return 2F
     }
-    fun nextLifePowerUpIncreaseHelth():Float{
+    private fun nextLifePowerUpIncreaseHelth():Float{
         // TODO(in funzione di numPowerUpGenerated)
         return 2F
     }
-    fun nextShieldPowerUpDuration():Long{
+    private fun nextShieldPowerUpDuration():Long{
         // TODO(in funzione di numPowerUpGenerated)
         return 500
     }
-    fun nextGunsPowerUpBulletType():Weapon.BulletType{
+    private fun nextGunsPowerUpBulletType():Weapon.BulletType{
         // TODO(in funzione di numPowerUpGenerated)
         return Weapon.BulletType.CLASSIC
     }
-    fun nextPowerUpType(): PowerUpType{
+    private fun nextPowerUpType(): PowerUpType{
         // TODO(In funzione del seed e di numPowerUpGenerated)
         return PowerUpType.LIFE
     }

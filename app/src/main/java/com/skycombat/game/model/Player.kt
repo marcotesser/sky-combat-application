@@ -7,6 +7,7 @@ import com.skycombat.game.model.component.HealthBar
 import com.skycombat.game.model.component.PlayerHealthBar
 import com.skycombat.game.model.event.ShootObserver
 import com.skycombat.game.model.event.ShootListener
+import com.skycombat.game.model.support.CanShoot
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.GUIElement
 import java.util.*
@@ -18,7 +19,7 @@ import java.util.*
  * @param radius : player's radius
  * @param scene : the gameview onto which the player will be drawn
  */
-class Player() : HasHealth, Circle, GUIElement {
+class Player() : HasHealth, Circle, GUIElement, CanShoot {
 
     val paint : Paint = Paint();
     companion object{
@@ -31,9 +32,10 @@ class Player() : HasHealth, Circle, GUIElement {
     var positionY:Float
 
     var healthBar : HealthBar;
-    var weapon:Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy())
     var context: ViewContext = ViewContext.getInstance()
-    var shootObserver = ShootObserver()
+
+    override var weapon:Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy())
+    override var shootObserver = ShootObserver()
 
     init {
         positionX=context.getWidthScreen()/2F
@@ -70,11 +72,6 @@ class Player() : HasHealth, Circle, GUIElement {
         return !hasShield();
     }
 
-    fun addOnShootListener(shootListener: ShootListener){
-        shootObserver.attach(shootListener);
-    }
-
-
     override fun update() {
 
         weapon.update()
@@ -104,9 +101,6 @@ class Player() : HasHealth, Circle, GUIElement {
      * Shoots the bullet in the right direction
      * @see Bullet
      */
-    fun shoot() {
-        shootObserver.notify(weapon.generateBullet())
-    }
 
     fun setBulletType(bulletType: Weapon.BulletType){
         weapon.setBulletType(bulletType)
@@ -130,6 +124,10 @@ class Player() : HasHealth, Circle, GUIElement {
 
     override fun getRadius(): Float {
         return RADIUS
+    }
+
+    override fun startPointOfShoot(): PointF {
+        return PointF(positionX, positionY - RADIUS - 2F)
     }
 
 }

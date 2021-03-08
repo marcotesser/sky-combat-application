@@ -16,11 +16,9 @@ class ShieldPowerUp(x: Float, y: Float, speed:Float, var duration: Long)
         canvas?.drawCircle(x, y, PowerUp.RADIUS, paint)
     }
 
-    override fun applyCollisionEffects(entityHitted: HasHealth){
-        if(entityHitted is Player) {
-            entityHitted.applyShield(duration)
-            this.used = true;
-        }
+    override fun applyPowerUPEffects(player: Player){
+        player.applyShield(duration)
+        this.used = true;
     }
 
     }

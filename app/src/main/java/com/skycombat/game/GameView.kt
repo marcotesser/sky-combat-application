@@ -115,15 +115,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
             powerUps.add(POWERUP_FACTORY.generate())
         }
 
-        Stream.concat(enemies.stream(), Stream.of(player)).forEach{
-            entity -> Stream.concat(bullets.stream(), powerUps.stream())
-                    .filter { el ->
-                        entity.collide(el)
-                    }.forEach{
-                        el -> el.applyCollisionEffects(entity)
-                    }
-
-        }
+        handleCollisions()
 
         player.update()
         enemies.forEach(Enemy::update)
@@ -133,6 +125,20 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
 
     private fun getCurrentTimeFromStart(): Long{
         return System.currentTimeMillis() - startTime
+    }
+
+    private fun handleCollisions(){
+        powerUps.filter { el -> el.collide(player)
+        }.forEach{ el -> el.applyPowerUPEffects(player)
+        }
+
+        Stream.concat(enemies.stream(), Stream.of(player)).forEach{
+                entity ->
+            bullets.filter { el -> entity.collide(el)
+            }.forEach{ el -> el.applyCollisionEffects(entity)
+            }
+
+        }
     }
 
 

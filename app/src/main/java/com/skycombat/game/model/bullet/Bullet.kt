@@ -4,8 +4,8 @@ import android.graphics.*
 import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
-import com.skycombat.game.model.support.CollisionParticle
 import com.skycombat.game.model.support.Entity
+import com.skycombat.game.model.support.GUIElement
 
 /**
  * Represents a bullet
@@ -15,14 +15,14 @@ import com.skycombat.game.model.support.Entity
  * @param scene : the gameview onto which the bullet will be drawn
  */
 abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: CollisionStrategy)
-    : CollisionParticle, Entity {
+    : GUIElement, Entity {
 
     val context: ViewContext = ViewContext.getInstance()
     var target = collisionStrategy.getTargetCollidable()
 
-    private var isHit : Boolean = false;
+    private var isHit: Boolean = false;
 
-    var paint : Paint = Paint();
+    var paint: Paint = Paint();
 
     /**
      * Updates the bullet's movement
@@ -42,17 +42,17 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
         return isHit || this.y < 0 || this.y > context.getHeightScreen()
     }
 
-    abstract fun getDamage():Float
-    abstract fun getSpeed():Float
+    abstract fun getDamage(): Float
+    abstract fun getSpeed(): Float
 
-    override fun applyCollisionEffects(entityHitted: HasHealth){
-            //if((target == Target.ENEMY && entityHitted is Enemy) || (target == Target.PLAYER && entityHitted is Player)) {
-                if(collisionStrategy.shouldCollide(entityHitted)){
-                isHit = true
-                entityHitted.updateHealth(-getDamage())
-            }
+    fun applyCollisionEffects(entityHitted: HasHealth) {
+        if (collisionStrategy.shouldCollide(entityHitted)) {
+            isHit = true
+            entityHitted.updateHealth(-getDamage())
+        }
     }
-
+    
+}
 
 
 /*
@@ -82,4 +82,3 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
         }
     }
  */
-}

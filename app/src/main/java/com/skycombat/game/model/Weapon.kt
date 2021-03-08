@@ -5,9 +5,10 @@ import com.skycombat.game.model.bullet.ClassicBullet
 import com.skycombat.game.model.bullet.LaserBullet
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.enemy.Enemy
+import com.skycombat.game.model.support.CanShoot
 import com.skycombat.game.model.support.Updatable
 
-class Weapon( val owner: Any, var bulletType:BulletType, var collisionStrategy: CollisionStrategy): Updatable {
+class Weapon( val owner: CanShoot, var bulletType: BulletType, var collisionStrategy: CollisionStrategy): Updatable {
 
     /*
     La seguente enumerazione espone i tipo di proiettile gestiti da questo generatore di proiettili
@@ -31,20 +32,15 @@ class Weapon( val owner: Any, var bulletType:BulletType, var collisionStrategy: 
     }
 
     fun generateBullet():Bullet{
-        var x:Float?= null; var y:Float?=null;
-
-        if(owner is Player){
-            x=owner.positionX
-            y=owner.positionY - Player.RADIUS -2F
-
-        }else if(owner is Enemy){
-            x=owner.getPosition().centerX()
-            y=owner.top+owner.getHeight() +2F
-        }
+        var startPointOfShoot = owner.startPointOfShoot()
 
         when(bulletType){
-            BulletType.CLASSIC -> return ClassicBullet(x!!, y!!,collisionStrategy)
-            BulletType.LASER -> return LaserBullet(x!!, y!!,collisionStrategy)
+            BulletType.CLASSIC -> return ClassicBullet(
+                startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
+            )
+            BulletType.LASER -> return LaserBullet(
+                startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
+            )
         }
     }
 
@@ -52,8 +48,7 @@ class Weapon( val owner: Any, var bulletType:BulletType, var collisionStrategy: 
         curUpdatesFromShot++
         if(curUpdatesFromShot >= UPDATES_BETWEEN_SHOTS[bulletType]!!){
             curUpdatesFromShot = 0;
-            if(owner is Player) owner.shoot();
-            if(owner is Enemy) owner.shoot();
+            owner.shoot();
         }
     }
 }
