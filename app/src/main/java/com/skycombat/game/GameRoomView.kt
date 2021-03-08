@@ -74,7 +74,7 @@ import java.util.stream.Stream
         Timer().scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 var temp : ArrayList<com.amplifyframework.datastore.generated.model.Player> = ArrayList()
-                Amplify.API.query(
+                val amp = Amplify.API.query(
                     ModelQuery.list(
                         Player::class.java,
                         Player.GAMEROOM.eq(GameSession.GameRoom?.id)
@@ -114,6 +114,7 @@ import java.util.stream.Stream
                     },
                     { error -> Log.e("MyAmplifyApp", "Query failure", error) }
                 )
+                amp?.cancel()
             }
         }, 5000, 5000)
     }

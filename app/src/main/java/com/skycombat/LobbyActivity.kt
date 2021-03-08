@@ -30,9 +30,6 @@ class LobbyActivity : AppCompatActivity() {
                         GameSession.GameRoom = onCreated.data.gameroom
                         GameSession.otherPlayers = ArrayList()
 
-                        runOnUiThread{
-                            sub!!.cancel()
-                        }
 
                         val intent = Intent(this, GameRoomActivity::class.java)
                         startActivity(intent)
@@ -47,6 +44,7 @@ class LobbyActivity : AppCompatActivity() {
                 { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
                 { Log.i("ApiQuickStart", "Subscription completed") }
             )
+            sub?.cancel()
         }
     }
 }

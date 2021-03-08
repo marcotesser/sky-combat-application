@@ -32,22 +32,24 @@ class Ghost(var positionX : Float, var positionY : Float, private var radius : F
 //            .name(name)
 //            .id(id)
 //            .build()
-        Timer().scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                Amplify.API.subscribe(
-                    ModelSubscription.onUpdate(Player::class.java),
-                    { Log.i("ApiQuickStart", "Subscription established") },
-                    { updated ->
-                     Log.i("idk", updated.data.toString())
-                     if(updated.data.id.equals(id)){
-                            setPosition((updated.data.positionX).toFloat(), (updated.data.positionX).toFloat())
-                        }
-                 },
-                    { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
-                    { Log.i("ApiQuickStart", "Subscription completed") }
-                )
-            }
-        }, 1000, 1000)
+
+        subscriptionPositioning()
+    }
+
+    fun subscriptionPositioning() {
+        val amp = Amplify.API.subscribe(
+            ModelSubscription.onUpdate(Player::class.java),
+            { Log.i("ApiQuickStart", "Subscription established") },
+            { updated ->
+                Log.i("idk", updated.data.toString())
+                if(updated.data.id.equals(id)){
+                    setPosition((updated.data.positionX).toFloat(), (updated.data.positionX).toFloat())
+                }
+            },
+            { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
+            { Log.i("ApiQuickStart", "Subscription completed") }
+        )
+        amp?.cancel()
     }
 
     override fun draw(canvas: Canvas?) {
@@ -55,17 +57,7 @@ class Ghost(var positionX : Float, var positionY : Float, private var radius : F
     }
 
     override fun update() {
-//        Amplify.API.query(
-//            ModelQuery.get(
-//                Player::class.java, id.toString()
-//            ),
-//            { response ->
-//                setPosition((response.data.positionX).toFloat(), (response.data.positionX).toFloat())
-//
-//                Log.i("idk", response.toString())
-//            },
-//            { error -> Log.e("MyAmplifyApp", "Positioning ghost failure", error) }
-//        )
+
     }
 
     override fun shouldRemove(): Boolean {
