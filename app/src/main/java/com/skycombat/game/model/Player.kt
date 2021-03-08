@@ -1,9 +1,14 @@
 package com.skycombat.game.model
 
 import android.graphics.*
-import com.skycombat.game.GameView
+import com.skycombat.R
 import com.skycombat.game.model.bullet.Bullet
+import com.skycombat.game.model.bullet.strategy.PlayerCollisionStrategy
 import com.skycombat.game.model.component.HealthBar
+import com.skycombat.game.model.component.PlayerHealthBar
+import com.skycombat.game.model.event.ShootObserver
+import com.skycombat.game.model.event.ShootListener
+import com.skycombat.game.model.support.CanShoot
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.GUIElement
 import java.util.*
@@ -15,25 +20,31 @@ import java.util.*
  * @param radius : player's radius
  * @param scene : the gameview onto which the player will be drawn
  */
-class Player(var positionX : Float, var positionY : Float, private var radius : Float, var scene : GameView) : HasHealth, Circle, GUIElement {
-    val paint : Paint = Paint();
-    companion object{
-        val MAX_HEALTH : Float = 1000f
-        val SHOT_EVERY_UPDATES : Int = 60;
-    }
-    var curUpdatesFromShot = 0;
+class Player() : HasHealth, Circle, GUIElement, CanShoot {
 
-    private var health : Float = MAX_HEALTH
-    var healthBar : HealthBar ;
+    //val paint : Paint = Paint();
+    companion object{
+        val MAX_HEALTH : Float = 500f
+        val RADIUS: Float = 90F;
+    }
+    var updatesFromEndShield: Long= 0
+    override var health : Float = MAX_HEALTH
+    var positionX:Float
+    var positionY:Float
+    var playerImg : Bitmap
+
+    var healthBar : HealthBar;
+    var context: ViewContext = ViewContext.getInstance()
+
+    override var weapon:Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy())
+    override var shootObserver = ShootObserver()
+
     init {
-        paint.color = Color.GREEN
-        val hbColor = Paint()
-        hbColor.color = Color.GREEN
-        healthBar = HealthBar(
-                RectF(20f, scene.getMaxHeight() - 50, scene.getMaxWidth()-20, scene.getMaxHeight() - 10),
-                hbColor,
-                this
-        );
+        positionX=context.getWidthScreen()/2F
+        positionY= context.getHeightScreen()/ 5 * 4
+        //paint.color = Color.GREEN
+        healthBar = PlayerHealthBar(this);
+        playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)),RADIUS.toInt()*2,RADIUS.toInt()*2,false)
     }
     /**
      * Draws the player and player's healthbar
@@ -41,7 +52,7 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawCircle(positionX, positionY, radius, paint)
+        canvas?.drawBitmap(playerImg,positionX- RADIUS/2,positionY- RADIUS/2,null)
         healthBar.draw(canvas)
     }
 
@@ -49,23 +60,22 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
         return this.isDead()
     }
 
-    fun isDead(): Boolean{
-        return this.health <= 0
+    fun applyShield(duration: Long){
+        updatesFromEndShield = duration
+    }
+    fun hasShield():Boolean{
+        return updatesFromEndShield >0
     }
 
-    /**
-     * Update bullets and powerups relative to the player
-     * @param bullets : the bullets the player has shot
-     * @param powerUps : the powerUps appearing on the screen
-     * @see Bullet
-     * @see HealthBar
-     */
+    override fun isDamageable():Boolean{
+        return !hasShield();
+    }
+
     override fun update() {
-        curUpdatesFromShot++
-        if(curUpdatesFromShot >= SHOT_EVERY_UPDATES){
-            curUpdatesFromShot = 0;
-            shoot();
-        }
+
+        weapon.update()
+
+        if(updatesFromEndShield >0) updatesFromEndShield --
 
         healthBar.update()
     }
@@ -77,12 +87,12 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
      * @param y : player's Y position
      */
     fun setPosition(x: Float, y: Float) {
-        if(x > radius && x < scene.getMaxWidth() - radius){
+        if(x > RADIUS && x < context.getWidthScreen() - RADIUS){
             positionX = x
-        } else if (x < radius) {
-            positionX = radius;
+        } else if (x < RADIUS) {
+            positionX = RADIUS;
         } else {
-            positionX = scene.getMaxWidth() - radius
+            positionX = context.getWidthScreen() - RADIUS
         }
         positionY = y;
     }
@@ -90,16 +100,9 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
      * Shoots the bullet in the right direction
      * @see Bullet
      */
-    fun shoot() {
-        scene.bullets.add(Bullet( positionX , positionY - radius - Bullet.RADIUS - 2, Bullet.Direction.UP, scene))
-    }
 
-    override fun getCurrentHealth(): Float {
-        return health
-    }
-
-    override fun setHealth(health: Float) {
-        this.health = health
+    fun setBulletType(bulletType: Weapon.BulletType){
+        weapon.setBulletType(bulletType)
     }
 
     override fun getMaxHealth(): Float {
@@ -111,7 +114,11 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
     }
 
     override fun getRadius(): Float {
-        return this.radius
+        return RADIUS
+    }
+
+    override fun startPointOfShoot(): PointF {
+        return PointF(positionX, positionY - RADIUS - 2F)
     }
 
 }

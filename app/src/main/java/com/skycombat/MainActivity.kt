@@ -9,6 +9,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -35,15 +36,26 @@ class MainActivity : AppCompatActivity() {
     var players : ArrayList<Player> = ArrayList<Player>();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportActionBar?.hide()
+
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
         setContentView(R.layout.activity_main)
-        findViewById<Button>(R.id.gioca).setOnClickListener {
+        findViewById<ImageButton>(R.id.singleplayer).setOnClickListener {
             startActivity(Intent(this, GameActivity::class.java))
         }
+        //sono stati nascosti perchè inutili per l'app finale, non eliminati perchè magari utili per dev
+            findViewById<Button>(R.id.registrazione).visibility = View.GONE
+            findViewById<Button>(R.id.play).visibility = View.GONE
+            findViewById<Button>(R.id.changescore).visibility = View.GONE
+            findViewById<Button>(R.id.add_to_lobby).visibility = View.GONE
+
         // crea stanza e ci associa un giocatore
-        findViewById<Button>(R.id.add_to_lobby).setOnClickListener {
+        findViewById<ImageButton>(R.id.multiplayer).setOnClickListener {
             Log.i("idk", AWSMobileClient.getInstance().tokens.idToken.tokenString)
 
             val url = "https://kqkytn0s9f.execute-api.eu-central-1.amazonaws.com/V1/add-to-pendency"
@@ -71,8 +83,9 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-
-
+        findViewById<ImageButton>(R.id.showplayers).setOnClickListener {
+            startActivity(Intent(this, LeaderboardsActivity::class.java))
+        }
 
 
         // aggiorna il proprio punteggio
@@ -126,6 +139,7 @@ class MainActivity : AppCompatActivity() {
 
 
         // ottieni i giocatori
+        /*
         findViewById<Button>(R.id.showplayers).setOnClickListener{
             Amplify.API.query(
                     ModelQuery.list(Player::class.java),
@@ -139,6 +153,8 @@ class MainActivity : AppCompatActivity() {
                     { error -> Log.e("MyAmplifyApp", "Query failure", error) }
             )
         }
+         */
+
         findViewById<Button>(R.id.play).setOnClickListener {
             Amplify.Auth.fetchAuthSession({ el ->
                 if (el.isSignedIn) {
@@ -159,9 +175,9 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.registrazione).setOnClickListener{
             register()
         }
-        findViewById<Button>(R.id.login).setOnClickListener{ login() }
-        findViewById<Button>(R.id.logout).setOnClickListener{ logout() }
-        findViewById<Button>(R.id.settings).setOnClickListener{
+        findViewById<ImageButton>(R.id.login).setOnClickListener{ login() }
+        findViewById<ImageButton>(R.id.logout).setOnClickListener{ logout() }
+        findViewById<ImageButton>(R.id.settings).setOnClickListener{
             //startActivity(Intent(this, SettingsActivity::class.java))
         }
         updateUI();
@@ -217,33 +233,35 @@ class MainActivity : AppCompatActivity() {
             toast.show()
         }
     }
-    private fun updateUI(){
+    private fun updateUI(){    // DA CAPIRE PERCHE' VA IN EXCEPTION
         this.runOnUiThread {
-            try {
-                if(Amplify.Auth.currentUser != null) {
-                    findViewById<Button>(R.id.login).visibility = View.GONE
-                    findViewById<Button>(R.id.registrazione).visibility = View.GONE
-                    findViewById<Button>(R.id.logout).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.play).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.add_to_lobby).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.showplayers).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.changescore).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.changescore).text = "Cambia score di ${Amplify.Auth.currentUser.username}"
-                } else {
-                    findViewById<Button>(R.id.logout).visibility = View.GONE
-                    findViewById<Button>(R.id.login).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.registrazione).visibility = View.VISIBLE
-                    findViewById<Button>(R.id.play).visibility = View.GONE
-                    findViewById<Button>(R.id.add_to_lobby).visibility = View.GONE
-                    findViewById<Button>(R.id.showplayers).visibility = View.GONE
-                    findViewById<Button>(R.id.changescore).visibility = View.GONE
-                }
-            } catch (ex: Exception) {
-                findViewById<Button>(R.id.logout).visibility = View.GONE
-                findViewById<Button>(R.id.login).visibility = View.VISIBLE
-                findViewById<Button>(R.id.registrazione).visibility = View.VISIBLE
-
+            //try {
+            if(Amplify.Auth.currentUser != null) {
+                findViewById<ImageButton>(R.id.login).visibility = View.GONE
+                //findViewById<Button>(R.id.registrazione).visibility = View.GONE
+                findViewById<ImageButton>(R.id.logout).visibility = View.VISIBLE
+                findViewById<ImageButton>(R.id.multiplayer).isEnabled=true
+                //findViewById<Button>(R.id.play).visibility = View.VISIBLE
+                //findViewById<Button>(R.id.add_to_lobby).visibility = View.VISIBLE
+                findViewById<ImageButton>(R.id.showplayers).visibility = View.VISIBLE
+                //findViewById<Button>(R.id.changescore).visibility = View.VISIBLE
+                //findViewById<Button>(R.id.changescore).text = "Cambia score di ${Amplify.Auth.currentUser.username}"
+            } else {
+                findViewById<ImageButton>(R.id.logout).visibility = View.GONE
+                findViewById<ImageButton>(R.id.login).visibility = View.VISIBLE
+                findViewById<ImageButton>(R.id.multiplayer).isEnabled=false
+                //findViewById<Button>(R.id.registrazione).visibility = View.VISIBLE
+                findViewById<Button>(R.id.play).visibility = View.GONE
+                findViewById<Button>(R.id.add_to_lobby).visibility = View.GONE
+                //findViewById<ImageButton>(R.id.showplayers).visibility = View.GONE
+                //findViewById<Button>(R.id.changescore).visibility = View.GONE
             }
+            /*} catch (ex: Exception) {
+                findViewById<ImageButton>(R.id.logout).visibility = View.VISIBLE
+                findViewById<ImageButton>(R.id.login).visibility = View.VISIBLE
+                findViewById<Button>(R.id.registrazione).visibility = View.GONE
+
+            }*/
         }
     }
 

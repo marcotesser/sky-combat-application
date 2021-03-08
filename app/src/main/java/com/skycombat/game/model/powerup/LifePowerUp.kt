@@ -1,41 +1,17 @@
 package com.skycombat.game.model.powerup
 
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.PointF
+import android.graphics.*
+import com.skycombat.R
+import com.skycombat.game.model.HasHealth
 import com.skycombat.game.model.Player
 
-class LifePowerUp(private var healthIncrease : Long, var x : Float, var y: Float) : PowerUp {
-    val DY : Int = 5
-    var used : Boolean = false
-    override fun draw(canvas : Canvas?){
-        val paint = Paint()
-        paint.color = Color.CYAN
-        canvas?.drawCircle(x, y, PowerUp.RADIUS, paint)
-    }
+class LifePowerUp(x: Float, y: Float, speed:Float, var healthIncrease: Float)
+    :PowerUp(x,y,speed) {
 
-    override fun shouldRemove(): Boolean {
-        return this.used
-    }
+    override var powerUpImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.lifepowerup)),RADIUS.toInt()*2,RADIUS.toInt()*2,false)
 
-    override fun getCenter(): PointF {
-        return PointF(this.x, this.y)
-    }
-
-    override fun getRadius(): Float {
-        return PowerUp.RADIUS
-    }
-
-    override fun update(){
-        this.y += DY
-    }
-    override fun apply(player: Player) {
+    override fun applyPowerUPEffects(player: Player){
+        player.updateHealth(healthIncrease)
         this.used = true;
-        player.updateHealth(this.healthIncrease.toFloat())
-    }
-
-    override fun isUsed(): Boolean {
-        return used
     }
 }
