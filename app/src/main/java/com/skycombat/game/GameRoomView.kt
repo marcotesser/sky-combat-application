@@ -77,7 +77,7 @@ import java.util.stream.Stream
                 Amplify.API.query(
                     ModelQuery.list(
                         Player::class.java,
-                        Player.GAMEROOM.eq(GameSession.GameRoom)
+                        Player.GAMEROOM.eq(GameSession.GameRoom?.id)
                     ),
                     { response ->
                                 if(response != null)
