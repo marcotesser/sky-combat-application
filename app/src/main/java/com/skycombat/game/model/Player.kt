@@ -102,7 +102,7 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
         }
         positionY = y;
 
-        updateRemotePosition(x, y)
+        updateRemotePosition(x/context.getWidthScreen(), y/context.getHeightScreen())
     }
 
 

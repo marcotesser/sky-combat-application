@@ -12,15 +12,18 @@ import com.skycombat.game.GameOverListener
 import com.skycombat.game.gameview.GameViewMultiplayer
 import com.skycombat.game.gameview.GameViewSingleplayer
 
-class GameActivity(var gameType:GameType) : Activity() {
+class GameActivity() : Activity() {
     enum class GameType{
         SINGLEPLAYER, MULTIPLAYER
     }
+
 
     //gameView will be the mainview and it will manage the game's logic
     private var gameView: GameView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val gameType = this.getIntent().getSerializableExtra("gameType")
+
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         window.setFlags(

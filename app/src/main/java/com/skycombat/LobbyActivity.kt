@@ -22,13 +22,15 @@ class LobbyActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         val idPlayer = intent.getStringExtra("id-player")
+        println("primo step sub")
         if(idPlayer != null) {
+            println("secondo step sub")
             var sub: ApiOperation<*>? = null;
             sub = Amplify.API.subscribe(
                     ModelSubscription.onCreate(Player::class.java),
-                    { Log.i("ApiQuickStart", "Subscription established") },
+                    { Log.i("ApiQuickStart", "Lobby Subscription established") },
                     { onCreated ->
-                        Log.i("idk", onCreated.data.toString())
+                        Log.i("idk", onCreated.data.name.toString() +" id: "+onCreated.data.id.toString())
                         if(onCreated.data.id.equals(idPlayer)){
                             Log.i("idk","È la mia partitaaaaa")
 
@@ -40,11 +42,6 @@ class LobbyActivity : AppCompatActivity() {
                             intent.putExtra("gameType",GameActivity.GameType.MULTIPLAYER )   // SAMU ADD
                             startActivity(intent)
 
-                            /*GameSession.player = onCreated.data
-                            runOnUiThread{
-                                sub!!.cancel()
-                            }*/
-                            //startActivity(Intent(this, GameRoomActivity::class.java))
                         }
                     },
                     { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },

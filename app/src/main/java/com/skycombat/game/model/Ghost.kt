@@ -41,8 +41,8 @@ class Ghost(var id: String) :
         var x:Float;var y:Float
         GameSession.otherPlayers?.forEach { el ->
             if(el.id == id) {
-                x = (el.positionX).toFloat()
-                y = (el.positionY).toFloat()
+                x = (el.positionX * context.getWidthScreen()).toFloat()
+                y = (el.positionY * context.getHeightScreen()).toFloat()
                 setPosition(x, y)
 
                 stillInGameChecker = true

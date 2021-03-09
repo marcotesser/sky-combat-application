@@ -46,7 +46,9 @@ class MainActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_main)
         findViewById<ImageButton>(R.id.singleplayer).setOnClickListener {
-            startActivity(Intent(this, GameActivity::class.java))
+            val intent = Intent(this, GameActivity::class.java)
+            intent.putExtra("gameType",GameActivity.GameType.SINGLEPLAYER )
+            startActivity(intent)
         }
         //sono stati nascosti perchè inutili per l'app finale, non eliminati perchè magari utili per dev
             findViewById<Button>(R.id.registrazione).visibility = View.GONE
@@ -108,28 +110,28 @@ class MainActivity : AppCompatActivity() {
 
 
         // ottieni i giocatori e una volta ottenuti, ascoltare le loro modifiche
-        runOnUiThread{
-            Amplify.API.query(
-                    ModelQuery.list(Player::class.java),
-                    { response ->
-                        players = ArrayList(response.data.items.toList())
-                        val subscription: ApiOperation<*>? = Amplify.API.subscribe(
-                                ModelSubscription.onUpdate(Player::class.java),                         //_______________________
-                                { Log.i("ApiQuickStart", "Subscription established") },
-                                { onUpdate ->
-                                    Log.i("test", onUpdate.toString())//----update.data() getPlayers()
-                                    players.removeIf { p -> p.id == onUpdate.data.id }
-                                    players.add(onUpdate.data)
-                                    updateOutput()
-                                },
-                                { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
-                                { Log.i("ApiQuickStart", "Subscription completed") }
-                        )
-                    },
-                    { error -> Log.e("MyAmplifyApp", "Query failure", error) }
-            )
-
-        }
+//        runOnUiThread{
+//            Amplify.API.query(
+//                    ModelQuery.list(Player::class.java),
+//                    { response ->
+//                        players = ArrayList(response.data.items.toList())
+//                        val subscription: ApiOperation<*>? = Amplify.API.subscribe(
+//                                ModelSubscription.onUpdate(Player::class.java),                         //_______________________
+//                                { Log.i("ApiQuickStart", "Subscription established") },
+//                                { onUpdate ->
+//                                    Log.i("test", onUpdate.toString())//----update.data() getPlayers()
+//                                    players.removeIf { p -> p.id == onUpdate.data.id }
+//                                    players.add(onUpdate.data)
+//                                    updateOutput()
+//                                },
+//                                { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
+//                                { Log.i("ApiQuickStart", "Subscription completed") }
+//                        )
+//                    },
+//                    { error -> Log.e("MyAmplifyApp", "Query failure", error) }
+//            )
+//
+//        }
 
 
 
