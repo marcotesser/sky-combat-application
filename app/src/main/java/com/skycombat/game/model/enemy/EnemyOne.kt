@@ -5,8 +5,9 @@ import android.graphics.BitmapFactory
 import android.graphics.PointF
 import com.skycombat.R
 import com.skycombat.game.model.Weapon
+import com.skycombat.game.model.enemy.movement.Movement
 
-class EnemyOne(left : Float, top : Float, bulletType: Weapon.BulletType) : Enemy(left,top,bulletType) {
+class EnemyOne(left : Float, top : Float, bulletType: Weapon.BulletType,movement : Movement) : Enemy(left,top,bulletType,movement) {
 
     companion object{
         val MAX_HEALTH : Float = 200f

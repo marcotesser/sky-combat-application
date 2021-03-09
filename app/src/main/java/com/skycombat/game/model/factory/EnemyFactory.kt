@@ -7,6 +7,7 @@ import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.enemy.EnemyOne
 import com.skycombat.game.model.enemy.EnemyTwo
+import com.skycombat.game.model.enemy.movement.Movement1
 
 /**
  * Represents an Enemy Factory
@@ -55,13 +56,13 @@ class EnemyFactory(var seed: Long) {
             return EnemyOne(
                 (context.getWidthScreen() - width) / 2,
                 100F,
-                bulletType)
+                bulletType, Movement1())
         }else {
 
             return EnemyTwo(
                 (context.getWidthScreen() - width) / 2,
                 100F,
-                bulletType)
+                bulletType, Movement1())
         }
     }
 

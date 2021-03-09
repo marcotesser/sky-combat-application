@@ -10,6 +10,7 @@ import com.skycombat.game.model.bullet.strategy.EnemyCollisionStrategy
 import com.skycombat.game.model.bullet.strategy.PlayerCollisionStrategy
 import com.skycombat.game.model.component.EnemyHealthBar
 import com.skycombat.game.model.component.HealthBar
+import com.skycombat.game.model.enemy.movement.Movement
 import com.skycombat.game.model.event.ShootObserver
 import com.skycombat.game.model.event.ShootListener
 import com.skycombat.game.model.support.CanShoot
@@ -26,13 +27,14 @@ import java.util.*
  * @param height : enemy's height
  * @param scene : the gameview onto which the enemy will be drawn
  */
-abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType)
+abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType,movement: Movement)
     : HasHealth, Rectangle, GUIElement, CanShoot {
     abstract var enemyImg : Bitmap
     var healthBar : HealthBar;
     var context: ViewContext = ViewContext.getInstance()
     override var shootObserver = ShootObserver()
     override var weapon:Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
+    var mov=movement
 
     override var health : Float = getMaxHealth()
     var verticalAttitude: Int =1
@@ -59,7 +61,9 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
      */
     override fun update() {
 
-        MovHandle()
+        //MovHandle()
+
+        mov.move(this)
 
         healthBar.update()
 
@@ -83,4 +87,6 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
     override fun startPointOfShoot(): PointF {
         return PointF(getPosition().centerX(), top + getHeight() + 2F)
     }
+
+
 }
