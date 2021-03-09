@@ -11,7 +11,7 @@ class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
     companion object {
         const val RADIUS: Float = 15.0F
         const val DAMAGE: Float = 50.0F
-        const val SPEED: Float = 8.0F
+        const val SPEED: Float = 20.0F
     }
 
     var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet2)),getRadius().toInt()*2,getRadius().toInt()*2,false)

@@ -28,10 +28,8 @@ import java.util.*
  */
 abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType)
     : HasHealth, Rectangle, GUIElement, CanShoot {
-    //var paint : Paint = Paint();
     abstract var enemyImg : Bitmap
     var healthBar : HealthBar;
-    var shootcounter : Int = 0;
     var context: ViewContext = ViewContext.getInstance()
     override var shootObserver = ShootObserver()
     override var weapon:Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
@@ -41,7 +39,6 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
     var horizontalAttitude: Int =1
 
     init {
-        //paint.color = Color.RED
         healthBar = EnemyHealthBar(this);
     }
     /**
@@ -65,7 +62,8 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
         MovHandle()
 
         healthBar.update()
-        shootcounter++
+
+        weapon.update()
     }
 
     abstract fun MovHandle()

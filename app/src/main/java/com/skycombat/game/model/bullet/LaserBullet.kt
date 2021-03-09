@@ -10,7 +10,7 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
 
     companion object {
         const val DAMAGE: Float = 70.0F
-        const val SPEED: Float = 4.0F
+        const val SPEED: Float = 8.0F
         const val WIDTH: Float = 10F
         const val HEIGHT: Float = 200F
     }
