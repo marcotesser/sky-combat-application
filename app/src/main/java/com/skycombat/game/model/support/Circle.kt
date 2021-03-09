@@ -8,11 +8,7 @@ interface Circle : Entity{
     fun getCenter() : PointF;
     fun getRadius() : Float;
     override fun collide(el : Rectangle) : Boolean{
-        val op = el.getPosition()
-        return getCenter().y+ getRadius() < op.top+(op.height()) &&
-                getCenter().y - getRadius() > op.top &&
-                getCenter().x > op.left &&
-                getCenter().x < op.right
+        return el.collide(this)
     }
     override fun collide(el : Circle) : Boolean{
         val dist = sqrt((

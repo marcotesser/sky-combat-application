@@ -5,14 +5,14 @@ import com.skycombat.R
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Rectangle
 
-class LaserBullet(var left : Float,var top : Float, collisionStrategy: CollisionStrategy)
-: Bullet(left+WIDTH/2F,top+HEIGHT/2, collisionStrategy), Rectangle{
+class LaserBullet(left : Float,top : Float, collisionStrategy: CollisionStrategy)
+: Bullet(left+WIDTH/2F,top+HEIGHT/2F, collisionStrategy), Rectangle{
 
     companion object {
         const val DAMAGE: Float = 70.0F
-        const val SPEED: Float = 8.0F
+        const val SPEED: Float = 20.0F
         const val WIDTH: Float = 30F
-        const val HEIGHT: Float = 200F
+        const val HEIGHT: Float = 400F
     }
 
     var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.laser)), WIDTH.toInt(),HEIGHT.toInt(),false)
@@ -22,7 +22,8 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
      * @param canvas : the canvas onto which the bullet will be drawn
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawBitmap(bulletImg,x,y,null)
+        canvas?.drawBitmap(bulletImg,x-WIDTH/2F,y-HEIGHT/2F,null)
+        var paint = Paint()
     }
 
     override fun getDamage():Float{
@@ -33,7 +34,7 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
     }
 
     override fun getPosition(): RectF {
-        return RectF(left, this.top, this.left + WIDTH , this.top + HEIGHT)
+        return RectF(x-WIDTH/2F, y-HEIGHT/2F, x+WIDTH/2F , y+HEIGHT/2F)
     }
 
 }
