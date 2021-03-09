@@ -69,20 +69,20 @@ class Ghost(var positionX : Float, var positionY : Float, private var radius : F
         var stillInGameChecker: Boolean = false
         GameSession.otherPlayers?.forEach { el ->
             if(el.id == id) {
-                if (lastInteraction == el.lastinteraction) {
-                    if (latencyUpdates > 200) {
-                        val xInterpolated = MathUtils.lerp(
-                            x2,
-                            x,
-                            0.3f
-                        )
-                        x2 = x
-                        x = xInterpolated
-
-                        latencyUpdates = 0
-                    } else
-                        latencyUpdates++
-                } else {
+//                if (lastInteraction == el.lastinteraction) {
+//                    if (latencyUpdates > 200) {
+//                        val xInterpolated = MathUtils.lerp(
+//                            x2,
+//                            x,
+//                            0.3f
+//                        )
+//                        x2 = x
+//                        x = xInterpolated
+//
+//                        latencyUpdates = 0
+//                    } else
+//                        latencyUpdates++
+//                } else {
                     lastInteraction = el.lastinteraction
                     x2 = x
                     x = (el.positionX).toFloat()
@@ -93,7 +93,7 @@ class Ghost(var positionX : Float, var positionY : Float, private var radius : F
 
                     setPosition(x, y)
 
-                }
+//                }
                 stillInGameChecker = true
             }
         }
