@@ -43,4 +43,8 @@ class EnemyOne(left : Float, top : Float, bulletType: Weapon.BulletType) : Enemy
     override fun getHeight(): Float {
         return HEIGHT
     }
+    override fun update() {
+        super.update()
+        if(shootcounter/20 == 1) shoot()
+    }
 }

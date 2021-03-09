@@ -65,7 +65,7 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
     init {
         ViewContext.setContext(MAX_WIDTH, MAX_HEIGHT, resources);
         player = Player()
-        ENEMY_FACTORY = EnemyFactory(this);
+        ENEMY_FACTORY = EnemyFactory(100000);
         POWERUP_FACTORY = PowerUpFactory(100000); // TODO(Fake SEED to implement)
 
         player.addOnShootListener(object :ShootListener{
