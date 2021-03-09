@@ -32,6 +32,7 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
     var positionX:Float
     var positionY:Float
     var playerImg : Bitmap
+    var playerShieldImg : Bitmap
 
     var healthBar : HealthBar;
     var context: ViewContext = ViewContext.getInstance()
@@ -45,6 +46,8 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
         //paint.color = Color.GREEN
         healthBar = PlayerHealthBar(this);
         playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)),RADIUS.toInt()*2,RADIUS.toInt()*2,false)
+        playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)),RADIUS.toInt()*2,RADIUS.toInt()*2,false)
+
     }
     /**
      * Draws the player and player's healthbar
@@ -52,7 +55,11 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawBitmap(playerImg,positionX- RADIUS/2,positionY- RADIUS/2,null)
+        if(hasShield()){
+            canvas?.drawBitmap(playerShieldImg,positionX- RADIUS/2,positionY- RADIUS/2,null)
+        }else{
+            canvas?.drawBitmap(playerImg,positionX- RADIUS/2,positionY- RADIUS/2,null)
+        }
         healthBar.draw(canvas)
     }
 

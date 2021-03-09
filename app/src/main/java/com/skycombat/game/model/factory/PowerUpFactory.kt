@@ -20,6 +20,8 @@ class PowerUpFactory(var seed:Long) {
 
     var numPowerUpGenerated: Int = 0
     var context: ViewContext = ViewContext.getInstance()
+    var flagBullet=true
+    var flagPowerup=0
 
     /**
      * Generates the powerups
@@ -64,11 +66,29 @@ class PowerUpFactory(var seed:Long) {
     }
     private fun nextGunsPowerUpBulletType():Weapon.BulletType{
         // TODO(in funzione di numPowerUpGenerated)
-        return Weapon.BulletType.CLASSIC
+        if(flagBullet){
+            flagBullet=false
+            return Weapon.BulletType.LASER
+        }else{
+            flagBullet=true
+            return Weapon.BulletType.CLASSIC
+        }
+
     }
     private fun nextPowerUpType(): PowerUpType{
         // TODO(In funzione del seed e di numPowerUpGenerated)
-        return PowerUpType.LIFE
+            var PowerUp: PowerUpType=PowerUpType.LIFE
+        when(flagPowerup) {
+                0-> {flagPowerup++
+                    PowerUp= PowerUpType.LIFE}
+                1-> {flagPowerup++
+                    PowerUp= PowerUpType.GUNS}
+                2-> {flagPowerup=0
+                    PowerUp= PowerUpType.SHIELD}
+            }
+        return PowerUp
+
+        }
     }
 
     /*
@@ -77,5 +97,3 @@ class PowerUpFactory(var seed:Long) {
         return generate(allTypes.elementAt((Math.random()*100).toInt()%allTypes.size))
     }
     */
-
-}

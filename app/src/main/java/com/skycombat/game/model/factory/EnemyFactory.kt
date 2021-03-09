@@ -6,6 +6,7 @@ import com.skycombat.game.model.Player
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.enemy.EnemyOne
+import com.skycombat.game.model.enemy.EnemyTwo
 
 /**
  * Represents an Enemy Factory
@@ -28,13 +29,10 @@ class EnemyFactory(var seed: Long) {
     fun generate() : Enemy {
 
         numEnemyGenerated++
+        var bulletType :Weapon.BulletType
 
         val width = 150F;
         val height = 100F;
-        return EnemyOne(
-            (context.getWidthScreen() - width) / 2,
-            100F,
-            Weapon.BulletType.CLASSIC)
             /*
             return when {
                 numEnemyGenerated < 2 -> EnemyOne(
@@ -47,6 +45,24 @@ class EnemyFactory(var seed: Long) {
                     Weapon.BulletType.LASER)
             }
         );*/
+        if(numEnemyGenerated%3==0){
+            bulletType = Weapon.BulletType.LASER
+        }else{
+            bulletType = Weapon.BulletType.CLASSIC
+        }
+        if(numEnemyGenerated%2==0){
+            bulletType=Weapon.BulletType.CLASSIC
+            return EnemyOne(
+                (context.getWidthScreen() - width) / 2,
+                100F,
+                bulletType)
+        }else {
+
+            return EnemyTwo(
+                (context.getWidthScreen() - width) / 2,
+                100F,
+                bulletType)
+        }
     }
 
     fun getnumenemygenerated() : Int{

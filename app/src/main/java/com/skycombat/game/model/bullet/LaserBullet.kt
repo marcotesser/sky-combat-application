@@ -11,7 +11,7 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
     companion object {
         const val DAMAGE: Float = 70.0F
         const val SPEED: Float = 8.0F
-        const val WIDTH: Float = 10F
+        const val WIDTH: Float = 30F
         const val HEIGHT: Float = 200F
     }
 
@@ -22,7 +22,7 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
      * @param canvas : the canvas onto which the bullet will be drawn
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawBitmap(bulletImg,left,top,null)
+        canvas?.drawBitmap(bulletImg,x,y,null)
     }
 
     override fun getDamage():Float{
