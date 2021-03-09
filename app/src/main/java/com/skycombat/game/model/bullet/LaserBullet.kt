@@ -15,7 +15,7 @@ class LaserBullet(var left : Float,var top : Float, collisionStrategy: Collision
         const val HEIGHT: Float = 200F
     }
 
-    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bulletlaser)), WIDTH.toInt(),HEIGHT.toInt(),false)
+    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.laser)), WIDTH.toInt(),HEIGHT.toInt(),false)
 
     /**
      * Draws the bullet

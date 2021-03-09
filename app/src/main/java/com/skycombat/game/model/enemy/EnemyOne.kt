@@ -18,7 +18,7 @@ class EnemyOne(left : Float, top : Float, bulletType: Weapon.BulletType) : Enemy
         return MAX_HEALTH
     }
 
-    override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemy)),WIDTH.toInt(),HEIGHT.toInt(),false)
+    override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemyone)),WIDTH.toInt(),HEIGHT.toInt(),false)
 
     override fun MovHandle(){
         val randleft = left + (Math.random() * (horizontalAttitude * 10)).toFloat()
