@@ -10,6 +10,7 @@ import com.amplifyframework.api.graphql.model.ModelSubscription
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.R
+import com.skycombat.game.GameSession
 
 class LobbyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,7 +31,13 @@ class LobbyActivity : AppCompatActivity() {
                         Log.i("idk", onCreated.data.toString())
                         if(onCreated.data.id.equals(idPlayer)){
                             Log.i("idk","È la mia partitaaaaa")
+
+                            GameSession.player = onCreated.data // SAMU ADD
+                            GameSession.GameRoom = onCreated.data.gameroom // SAMU ADD
+                            GameSession.otherPlayers = ArrayList() // SAMU ADD
+
                             val intent = Intent(this, GameActivity::class.java)
+                            intent.putExtra("gameType",GameActivity.GameType.MULTIPLAYER )   // SAMU ADD
                             startActivity(intent)
 
                             /*GameSession.player = onCreated.data
@@ -43,6 +50,8 @@ class LobbyActivity : AppCompatActivity() {
                     { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
                     { Log.i("ApiQuickStart", "Subscription completed") }
             )
+
+            sub?.cancel()           // SAMU ADD
         }
     }
 }

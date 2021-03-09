@@ -3,17 +3,19 @@ package com.skycombat
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
-import com.skycombat.game.GameView
+import com.skycombat.game.gameview.GameView
 import com.skycombat.game.GameOverListener
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.gameview.GameViewMultiplayer
+import com.skycombat.game.gameview.GameViewSingleplayer
 
-class GameActivity : Activity() {
+class GameActivity(var gameType:GameType) : Activity() {
+    enum class GameType{
+        SINGLEPLAYER, MULTIPLAYER
+    }
 
     //gameView will be the mainview and it will manage the game's logic
     private var gameView: GameView? = null
@@ -30,15 +32,16 @@ class GameActivity : Activity() {
         val WINDOW_MANAGER = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         WINDOW_MANAGER.defaultDisplay.getMetrics(METRICS)
 
-        gameView = GameView(this, METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat())
+        when(gameType){
+            GameType.MULTIPLAYER -> gameView = GameViewMultiplayer(this, METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat())
+            GameType.SINGLEPLAYER -> gameView = GameViewSingleplayer(this, METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat())
+        }
         gameView!!.setGameOverListener (object: GameOverListener() {
             override fun gameOver(score : Long) {
                 callGameOverActivity(score )
             }
         })
-
         setContentView(gameView)
-
     }
     /**
      * Calls the GameOverActivity to finish the game and report the score

@@ -15,6 +15,7 @@ package com.skycombat.game
 
 import android.graphics.Canvas
 import android.view.SurfaceHolder
+import com.skycombat.game.gameview.GameView
 
 /**
  * Represents the Game Loop

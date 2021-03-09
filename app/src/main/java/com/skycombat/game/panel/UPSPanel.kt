@@ -4,8 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import com.skycombat.game.GameLoop
-import com.skycombat.game.GameView
-import com.skycombat.game.panel.GamePanel
+import com.skycombat.game.gameview.GameView
 
 class UPSPanel(var x: Float, var y: Float, var gameLoop : GameLoop, var scene : GameView) :
     GamePanel {

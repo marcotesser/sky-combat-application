@@ -10,7 +10,7 @@
  * ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
  *
  */
-package com.skycombat.game
+package com.skycombat.game.gameview
 
 
 import android.content.Context
@@ -19,6 +19,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
 import com.skycombat.R
+import com.skycombat.game.GameLoop
+import com.skycombat.game.GameOverListener
 import com.skycombat.game.model.bullet.Bullet
 import com.skycombat.game.model.enemy.Enemy
 import com.skycombat.game.model.Player
@@ -41,21 +43,21 @@ import java.util.stream.Stream
  * @param MAX_WIDTH : the max width of the gameview
  * @param MAX_HEIGHT : the max height of the gameview
  */
-class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_HEIGHT : Float ) : SurfaceView(context), SurfaceHolder.Callback {
-    private val GAME_OVER_LISTENERS : ArrayList<GameOverListener> = ArrayList()
+abstract class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_HEIGHT : Float ) : SurfaceView(context), SurfaceHolder.Callback {
 
-    private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList();
-    private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
-    private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
-    // TODO : rendere privata e gestirla a eventi
-    public val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
+    protected val GAME_OVER_LISTENERS : ArrayList<GameOverListener> = ArrayList()
+    protected var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList();
+    protected var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList();
+    protected var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList();
+    protected val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList();
+
     var player : Player
 
-    private val ENEMY_FACTORY: EnemyFactory
-    private val POWERUP_FACTORY: PowerUpFactory
+    protected val ENEMY_FACTORY: EnemyFactory
+    protected val POWERUP_FACTORY: PowerUpFactory
 
-    private val startTime = System.currentTimeMillis();
-    private var gameLoop: GameLoop = GameLoop(this, holder);
+    protected val startTime = System.currentTimeMillis();
+    protected var gameLoop: GameLoop = GameLoop(this, holder);
 
     var islandsImg: Bitmap
     var cloudsImg: Bitmap
@@ -93,16 +95,12 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
         canvas?.drawBitmap(cloudsImg, 0f, backY2 ,null)
         canvas?.drawBitmap(cloudsImg, 0f, (backY2-MAX_WIDTH.toInt()*3) ,null)
 
-        if(canvas != null){
-            Stream.concat(
-                Stream.of(player),
-                Stream.of(panels, enemies, bullets, powerUps).flatMap(
-                    List<Drawable>::stream
-                )
-            ).forEach{el -> el.draw(canvas)}
-        }
+        drawEntity(canvas)
     }
 
+    abstract fun drawEntity(canvas: Canvas?)
+
+    abstract fun updateEntity()
 
     /**
      * Updates the view of the whole game
@@ -121,14 +119,13 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
             }
             return;
         }
-        listOf(enemies, powerUps, bullets).forEach{
-            ar -> ar.removeIf(GUIElement::shouldRemove)
-        }
 
-        if(enemies.size == 0){
-            var enemy=ENEMY_FACTORY.generate()
+        updateEntity()
+
+        if (enemies.size == 0) {
+            var enemy = ENEMY_FACTORY.generate()
             enemies.add(enemy)
-            enemy.addOnShootListener(object : ShootListener{
+            enemy.addOnShootListener(object : ShootListener {
                 override fun onShoot(bullet: Bullet) {
                     bullets.add(bullet)
                 }
@@ -139,29 +136,24 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
 
         handleCollisions()
 
-        player.update()
-        enemies.forEach(Enemy::update)
-        bullets.forEach(Bullet::update)
-        powerUps.forEach(PowerUp::update)
-
         //movimento sfondo
-        if(backY<MAX_WIDTH.toInt()*3) {
+        if (backY < MAX_WIDTH.toInt() * 3) {
             backY += 8
-        }else{
-            backY=0f
+        } else {
+            backY = 0f
         }
-        if(backY2<MAX_WIDTH.toInt()*3) {
+        if (backY2 < MAX_WIDTH.toInt() * 3) {
             backY2 += 12
-        }else{
-            backY2=0f
+        } else {
+            backY2 = 0f
         }
     }
 
-    private fun getCurrentTimeFromStart(): Long{
+    protected fun getCurrentTimeFromStart(): Long{
         return System.currentTimeMillis() - startTime
     }
 
-    private fun handleCollisions(){
+    protected fun handleCollisions(){
         powerUps.filter { el -> el.collide(player)
         }.forEach{ el -> el.applyPowerUPEffects(player)
         }

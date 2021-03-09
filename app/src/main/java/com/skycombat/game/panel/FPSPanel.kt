@@ -4,7 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import com.skycombat.game.GameLoop
-import com.skycombat.game.GameView
+import com.skycombat.game.gameview.GameView
 import com.skycombat.game.model.ViewContext
 
 class FPSPanel(var x: Float, var y: Float, var gameLoop : GameLoop, var scene : GameView) : GamePanel{

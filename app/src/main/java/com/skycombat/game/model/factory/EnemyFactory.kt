@@ -1,6 +1,5 @@
 package com.skycombat.game.model.factory
 
-import com.skycombat.game.GameView
 import com.skycombat.game.model.enemy.Enemy
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.ViewContext

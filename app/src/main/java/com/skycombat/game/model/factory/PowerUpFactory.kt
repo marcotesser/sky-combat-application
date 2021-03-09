@@ -1,6 +1,5 @@
 package com.skycombat.game.model.factory
 
-import com.skycombat.game.GameView
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.powerup.GunsPowerUp
