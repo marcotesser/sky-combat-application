@@ -25,7 +25,7 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
     //val paint : Paint = Paint();
     companion object{
         val MAX_HEALTH : Float = 500f
-        val RADIUS: Float = 90F;
+        val RADIUS: Float = 70F;
     }
     var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH

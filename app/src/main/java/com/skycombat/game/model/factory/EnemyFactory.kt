@@ -1,13 +1,14 @@
 package com.skycombat.game.model.factory
 
-import com.skycombat.game.GameView
 import com.skycombat.game.model.enemy.Enemy
 import com.skycombat.game.model.Player
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.enemy.EnemyOne
+import com.skycombat.game.model.enemy.EnemyThree
 import com.skycombat.game.model.enemy.EnemyTwo
-import com.skycombat.game.model.enemy.movement.Movement1
+import com.skycombat.game.model.enemy.movement.Movement
+import kotlin.random.Random
 
 /**
  * Represents an Enemy Factory
@@ -16,25 +17,28 @@ import com.skycombat.game.model.enemy.movement.Movement1
 class EnemyFactory(var seed: Long) {
 
     val context: ViewContext = ViewContext.getInstance()
+    var randEnemy = 1
+    var randMovement = 1
 
     enum class EnemyType {
         EnemyOne, EnemyTwo, EnemyThree
     }
 
     var numEnemyGenerated: Int = 0
+
     /**
      * Generates the enemies
      * @return Enemy to the scene
      * @see Player
      */
-    fun generate() : Enemy {
+    fun generate(): Enemy {
 
         numEnemyGenerated++
-        var bulletType :Weapon.BulletType
+        var bulletType: Weapon.BulletType
 
         val width = 150F;
         val height = 100F;
-            /*
+        /*
             return when {
                 numEnemyGenerated < 2 -> EnemyOne(
                     (context.getWidthScreen() - width) / 2,
@@ -46,30 +50,33 @@ class EnemyFactory(var seed: Long) {
                     Weapon.BulletType.LASER)
             }
         );*/
-        if(numEnemyGenerated%3==0){
+        if (numEnemyGenerated % 3 == 0) {
             bulletType = Weapon.BulletType.LASER
-        }else{
+        } else {
             bulletType = Weapon.BulletType.CLASSIC
         }
-        if(numEnemyGenerated%2==0){
-            bulletType=Weapon.BulletType.CLASSIC
-            return EnemyOne(
-                (context.getWidthScreen() - width) / 2,
-                100F,
-                bulletType, Movement1())
-        }else {
+        randEnemy= Random.nextInt(1,4)
+        randMovement= Random.nextInt(1,5)
+        when (randEnemy) {
+            1 -> {
+                return EnemyOne(
+                    bulletType, Movement(randMovement)) }
+            2 -> {
+                return EnemyTwo(
+                    bulletType, Movement(randMovement)) }
+            3 -> {
+                return EnemyThree(
+                    bulletType, Movement(randMovement)) }
+            else->return EnemyThree(
+                bulletType, Movement(randMovement)) }
+    }
 
-            return EnemyTwo(
-                (context.getWidthScreen() - width) / 2,
-                100F,
-                bulletType, Movement1())
+        fun getnumenemygenerated(): Int {
+            return numEnemyGenerated
         }
-    }
 
-    fun getnumenemygenerated() : Int{
-        return numEnemyGenerated
-    }
 }
+
 
 /*class PowerUpFactory(var seed:Long) {
     enum class PowerUpType {

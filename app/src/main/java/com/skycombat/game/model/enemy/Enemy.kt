@@ -27,7 +27,7 @@ import java.util.*
  * @param height : enemy's height
  * @param scene : the gameview onto which the enemy will be drawn
  */
-abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.BulletType,movement: Movement)
+abstract class Enemy(bulletType: Weapon.BulletType,movement: Movement)
     : HasHealth, Rectangle, GUIElement, CanShoot {
     abstract var enemyImg : Bitmap
     var healthBar : HealthBar;
@@ -37,8 +37,7 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
     var mov=movement
 
     override var health : Float = getMaxHealth()
-    var verticalAttitude: Int =1
-    var horizontalAttitude: Int =1
+
 
     init {
         healthBar = EnemyHealthBar(this);
@@ -49,7 +48,7 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawBitmap(enemyImg,left,top,null)
+        canvas?.drawBitmap(enemyImg,mov.left,mov.top,null)
         healthBar.draw(canvas)
     }
 
@@ -70,22 +69,21 @@ abstract class Enemy(var left : Float, var top : Float, bulletType: Weapon.Bulle
         weapon.update()
     }
 
-    abstract fun MovHandle()
-
     abstract fun getWidth():Float
 
     abstract fun getHeight():Float
 
     override fun shouldRemove(): Boolean {
-        return isDead()
+        return isDead() || mov.left < -150f || mov.top > context.getHeightScreen()
+                || mov.left > context.getWidthScreen()|| mov.top <-150f
     }
 
     override fun getPosition(): RectF {
-        return RectF(left, this.top, this.left + getWidth() , this.top + getHeight())
+        return RectF(mov.left, mov.top, mov.left + getWidth() , mov.top + getHeight())
     }
 
     override fun startPointOfShoot(): PointF {
-        return PointF(getPosition().centerX(), top + getHeight() + 2F)
+        return PointF(getPosition().centerX(), mov.top + getHeight() + 2F)
     }
 
 

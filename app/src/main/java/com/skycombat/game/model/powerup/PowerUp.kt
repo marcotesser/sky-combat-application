@@ -28,7 +28,7 @@ abstract class PowerUp(var x : Float, var y : Float, var speed:Float)
     }
 
     override fun shouldRemove(): Boolean {
-        return this.used || this.y < 0 || this.y > context.getHeightScreen()
+        return this.used || this.y > context.getHeightScreen()
     }
 
     override fun getCenter(): PointF {

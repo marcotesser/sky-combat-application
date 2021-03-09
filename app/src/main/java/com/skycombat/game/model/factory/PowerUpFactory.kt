@@ -7,6 +7,7 @@ import com.skycombat.game.model.powerup.GunsPowerUp
 import com.skycombat.game.model.powerup.LifePowerUp
 import com.skycombat.game.model.powerup.PowerUp
 import com.skycombat.game.model.powerup.ShieldPowerUp
+import kotlin.random.Random
 
 /**
  * Represents a Life PowerUp Factory
@@ -77,14 +78,12 @@ class PowerUpFactory(var seed:Long) {
     }
     private fun nextPowerUpType(): PowerUpType{
         // TODO(In funzione del seed e di numPowerUpGenerated)
-            var PowerUp: PowerUpType=PowerUpType.LIFE
+        var PowerUp: PowerUpType=PowerUpType.LIFE
+        flagPowerup= Random.nextInt(0,3)
         when(flagPowerup) {
-                0-> {flagPowerup++
-                    PowerUp= PowerUpType.LIFE}
-                1-> {flagPowerup++
-                    PowerUp= PowerUpType.GUNS}
-                2-> {flagPowerup=0
-                    PowerUp= PowerUpType.SHIELD}
+                0-> {PowerUp= PowerUpType.LIFE}
+                1-> {PowerUp= PowerUpType.GUNS}
+                2-> {PowerUp= PowerUpType.SHIELD}
             }
         return PowerUp
 
