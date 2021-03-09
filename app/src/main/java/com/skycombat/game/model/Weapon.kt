@@ -39,7 +39,11 @@ class Weapon( val owner: CanShoot, var bulletType: BulletType, var collisionStra
                 startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
             )
             BulletType.LASER -> return LaserBullet(
-                startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
+                startPointOfShoot.x,
+                startPointOfShoot.y
+                    + if(collisionStrategy.getTargetCollidable()==CollisionStrategy.Target.ENEMY)
+                    - LaserBullet.HEIGHT  else 0F,
+                collisionStrategy
             )
         }
     }
