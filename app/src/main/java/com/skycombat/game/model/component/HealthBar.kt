@@ -15,12 +15,17 @@ abstract class HealthBar() : GUIComponent{
 
     var paint = Paint()
     lateinit var life: RectF;
+    var percentage:Float =1F
 
     /**
      * Draws the healthbar
      * @param canvas : the canvas onto which the enemy will be drawn
      */
     override fun draw(canvas: Canvas?) {
+        paint.color = Color.rgb(
+            if(percentage<0.5F) 1F else 1F-percentage,
+            if(percentage<0.5F) percentage else 1F,
+            0F)
         canvas?.drawRect(life, paint)
     }
 

@@ -9,9 +9,9 @@ class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
     : Bullet(x,y, collisionStrategy), Circle{
 
     companion object {
-        const val RADIUS: Float = 15.0F
+        const val RADIUS: Float = 20.0F
         const val DAMAGE: Float = 50.0F
-        const val SPEED: Float = 20.0F
+        const val SPEED: Float = 30.0F
     }
 
     var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet2)),getRadius().toInt()*2,getRadius().toInt()*2,false)
