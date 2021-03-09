@@ -80,34 +80,30 @@ import java.util.stream.Stream
                         Player.GAMEROOM.eq(GameSession.GameRoom?.id)
                     ),
                     { response ->
-                                if(response != null)
-                                response.data.forEach { p ->
-                                    var i=0
-                                    GameSession.otherPlayers?.forEach { el -> if((el.id).toString() == (p.id).toString()) {
-                                        var ghost = Player.builder()
-                                            .name(el?.name)
-                                            .id(el?.id)
-                                            .lastinteraction(p.lastinteraction)
-                                            .score(p.score)
-                                            .dead(p.dead)
-                                            .positionX(p.positionX)
-                                            .positionY(p.positionY)
-                                            .gameroom(el?.gameroom)
-                                            .build()
+                                if(response != null){
+                                    response.data.forEach { p ->
 
-                                        temp.add(ghost)
+                                        if(p.id != currentPlayer?.id) {
+                                            var ghost = Player.builder()
+                                                .name(p.name)
+                                                .id(p.id)
+                                                .lastinteraction(p.lastinteraction)
+                                                .score(p.score)
+                                                .dead(p.dead)
+                                                .positionX(p.positionX)
+                                                .positionY(p.positionY)
+                                                .gameroom(p.gameroom)
+                                                .build()
 
-                                        i++
+                                            temp.add(ghost)
                                         }
-                                    }
 
-                                    GameSession.otherPlayers = null
-                                    GameSession.otherPlayers = temp
 
-                                    if(i==0) {
-                                        val cumpa: Player = p
-                                        GameSession.otherPlayers?.add(cumpa)
-                                    }
+                                        }
+
+                                        GameSession.otherPlayers = null
+                                        GameSession.otherPlayers = temp
+
                                 }
 
                         Log.i("idk", response.toString())

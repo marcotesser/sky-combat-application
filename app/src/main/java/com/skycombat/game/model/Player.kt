@@ -28,6 +28,8 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
     }
     var curUpdatesFromShot = 0;
 
+    var contMutate : Int = 0
+
     internal var health : Float = MAX_HEALTH
     var healthBar : HealthBar ;
     init {
@@ -91,20 +93,32 @@ class Player(var positionX : Float, var positionY : Float, private var radius : 
         }
         positionY = y;
 
-        var playerOnline = Player.builder()
-            .name(GameSession.player?.name)
-            .id(GameSession.player?.id)
-            .gameroom(GameSession.player?.gameroom)
-            .positionX((x).toDouble())
-            .positionY((y).toDouble())
-            .score((Math.random() * 10000).toInt())
-            .lastinteraction(Temporal.Timestamp.now())
-            .build()
-        Amplify.API.mutate(
-            ModelMutation.update(playerOnline),
-            { response -> Log.i("MyAmplifyApp", "updated position with id: " + response.data.id) },
-            { error -> Log.e("MyAmplifyApp", "update position failed", error) }
-        )
+
+        if(contMutate >= 1000) {
+            var playerOnline = Player.builder()
+                .name(GameSession.player?.name)
+                .id(GameSession.player?.id)
+                .gameroom(GameSession.player?.gameroom)
+                .positionX((x).toDouble())
+                .positionY((y).toDouble())
+                .score((Math.random() * 10000).toInt())
+                .lastinteraction(Temporal.Timestamp.now())
+                .build()
+            val amp = Amplify.API.mutate(
+                ModelMutation.update(playerOnline),
+                { response ->
+                    Log.i(
+                        "MyAmplifyApp",
+                        "updated position with id: " + response.data.id
+                    )
+                },
+                { error -> Log.e("MyAmplifyApp", "update position failed", error) }
+            )
+            amp?.cancel()
+            contMutate=0
+        }
+        else
+            contMutate++
     }
     /**
      * Shoots the bullet in the right direction
