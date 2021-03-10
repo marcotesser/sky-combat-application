@@ -1,13 +1,13 @@
 package com.skycombat.game.model.factory
 
-import com.skycombat.game.model.enemy.Enemy
-import com.skycombat.game.model.Player
+import com.skycombat.game.model.gui.element.enemy.Enemy
+import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.ViewContext
-import com.skycombat.game.model.Weapon
-import com.skycombat.game.model.enemy.EnemyOne
-import com.skycombat.game.model.enemy.EnemyThree
-import com.skycombat.game.model.enemy.EnemyTwo
-import com.skycombat.game.model.enemy.movement.Movement
+import com.skycombat.game.model.gui.Weapon
+import com.skycombat.game.model.gui.element.enemy.EnemyOne
+import com.skycombat.game.model.gui.element.enemy.EnemyThree
+import com.skycombat.game.model.gui.element.enemy.EnemyTwo
+import com.skycombat.game.model.gui.element.enemy.movement.Movement
 import kotlin.random.Random
 
 /**

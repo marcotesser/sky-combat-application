@@ -3,15 +3,13 @@ package com.skycombat
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
-import com.skycombat.game.GameView
-import com.skycombat.game.GameOverListener
 import com.skycombat.game.model.ViewContext
+import com.skycombat.game.scene.GameView
+import com.skycombat.game.scene.GameOverListener
 
 class GameActivity : Activity() {
 
@@ -20,7 +18,7 @@ class GameActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.setFlags(
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
@@ -29,8 +27,9 @@ class GameActivity : Activity() {
         val METRICS = DisplayMetrics()
         val WINDOW_MANAGER = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         WINDOW_MANAGER.defaultDisplay.getMetrics(METRICS)
+        ViewContext.setContext(METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat(), resources)
 
-        gameView = GameView(this, METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat())
+        gameView = GameView(this)
         gameView!!.setGameOverListener (object: GameOverListener() {
             override fun gameOver(score : Long) {
                 callGameOverActivity(score )
@@ -46,14 +45,14 @@ class GameActivity : Activity() {
      * @see GameOverActivity
      */
     private fun callGameOverActivity(score : Long) {
-        val INTENT : Intent = Intent(this, GameOverActivity::class.java);
+        val INTENT : Intent = Intent(this, GameOverActivity::class.java)
         INTENT.putExtra("score", score)
         startActivity(INTENT)
     }
 
     override fun onPause() {
         super.onPause()
-        gameView?.pause();
+        gameView?.pause()
     }
 
     override fun onBackPressed() {

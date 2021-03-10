@@ -1,12 +1,11 @@
 package com.skycombat.game.model.factory
 
-import com.skycombat.game.GameView
 import com.skycombat.game.model.ViewContext
-import com.skycombat.game.model.Weapon
-import com.skycombat.game.model.powerup.GunsPowerUp
-import com.skycombat.game.model.powerup.LifePowerUp
-import com.skycombat.game.model.powerup.PowerUp
-import com.skycombat.game.model.powerup.ShieldPowerUp
+import com.skycombat.game.model.gui.Weapon
+import com.skycombat.game.model.gui.element.powerup.GunsPowerUp
+import com.skycombat.game.model.gui.element.powerup.LifePowerUp
+import com.skycombat.game.model.gui.element.powerup.PowerUp
+import com.skycombat.game.model.gui.element.powerup.ShieldPowerUp
 import kotlin.random.Random
 
 /**
@@ -55,7 +54,7 @@ class PowerUpFactory(var seed:Long) {
     private fun nextShieldPowerUpDuration():Long{
         return 500 + numPowerUpGenerated.toLong()*10
     }
-    private fun nextGunsPowerUpBulletType():Weapon.BulletType{
+    private fun nextGunsPowerUpBulletType(): Weapon.BulletType{
         var improvment = if(numPowerUpGenerated < 20) 6*numPowerUpGenerated/20 else 6
         when(random.nextInt(1, 4+improvment)){
             1 -> return Weapon.BulletType.CLASSIC
