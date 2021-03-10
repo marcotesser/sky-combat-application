@@ -17,14 +17,15 @@ import com.skycombat.game.model.gui.properties.HasHealth
 /**
  * Represents an Enemy
  */
-abstract class Enemy(bulletType: Weapon.BulletType, movement: Movement)
+abstract class Enemy(bulletType: Weapon.BulletType, val movement: Movement)
     : HasHealth, Rectangle, GUIElement, CanShoot {
     abstract var enemyImg : Bitmap
-    var healthBar : HealthBar = EnemyHealthBar(this)
+    var left: Float = -100f
+    var top: Float = -100f
     var context: ViewContext = ViewContext.getInstance()
     override var shootObservable = ShootObservable()
     override var weapon: Weapon = Weapon(this, bulletType, EnemyCollisionStrategy(), Bullet.Direction.DOWN)
-    var mov=movement
+    var healthBar : HealthBar = EnemyHealthBar(this)
 
     override var health : Float = this.getMaxHealth()
 
@@ -35,7 +36,7 @@ abstract class Enemy(bulletType: Weapon.BulletType, movement: Movement)
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        canvas?.drawBitmap(enemyImg,mov.left,mov.top,null)
+        canvas?.drawBitmap(enemyImg, left, top,null)
         healthBar.draw(canvas)
     }
 
@@ -44,7 +45,7 @@ abstract class Enemy(bulletType: Weapon.BulletType, movement: Movement)
      */
     override fun update() {
 
-        mov.move(this)
+        movement.move(this)
 
         healthBar.update()
 
@@ -56,16 +57,16 @@ abstract class Enemy(bulletType: Weapon.BulletType, movement: Movement)
     abstract fun getHeight():Float
 
     override fun shouldRemove(): Boolean {
-        return isDead() || mov.left < -150f || mov.top > context.getHeightScreen()
-                || mov.left > context.getWidthScreen()|| mov.top <-150f
+        return isDead() || left < -150f || top > context.getHeightScreen()
+                || left > context.getWidthScreen()|| top <-150f
     }
 
     override fun getPosition(): RectF {
-        return RectF(mov.left, mov.top, mov.left + getWidth() , mov.top + getHeight())
+        return RectF(left, top, left + getWidth() , top + getHeight())
     }
 
     override fun startPointOfShoot(): PointF {
-        return PointF(getPosition().centerX(), mov.top + getHeight() + 2F)
+        return PointF(getPosition().centerX(), top + getHeight() + 2F)
     }
 
 
