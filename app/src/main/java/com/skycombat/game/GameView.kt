@@ -146,12 +146,12 @@ class GameView(context: Context, private val MAX_WIDTH : Float,private val MAX_H
 
         //movimento sfondo
         if(backY<MAX_WIDTH.toInt()*3) {
-            backY += 8
+            backY += 5
         }else{
             backY=0f
         }
         if(backY2<MAX_WIDTH.toInt()*3) {
-            backY2 += 12
+            backY2 += 7
         }else{
             backY2=0f
         }

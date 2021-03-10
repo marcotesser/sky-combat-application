@@ -19,10 +19,9 @@ class PowerUpFactory(var seed:Long) {
         LIFE, SHIELD, GUNS
     }
 
+    val random = Random(seed);
     var numPowerUpGenerated: Int = 0
     var context: ViewContext = ViewContext.getInstance()
-    var flagBullet=true
-    var flagPowerup=0
 
     /**
      * Generates the powerups
@@ -37,62 +36,42 @@ class PowerUpFactory(var seed:Long) {
             PowerUpType.LIFE -> return LifePowerUp(
                 positionX,
                 0F,
-                nextPowerUpSpeed(),
                 nextLifePowerUpIncreaseHelth() )
             PowerUpType.SHIELD -> return ShieldPowerUp(
                 positionX,
                 0F,
-                nextPowerUpSpeed(),
                 nextShieldPowerUpDuration() )
             PowerUpType.GUNS -> return GunsPowerUp(
                 positionX,
                 0F,
-                nextPowerUpSpeed(),
                 nextGunsPowerUpBulletType()
                 )
         }
     }
 
-    private fun nextPowerUpSpeed(): Float{
-        // TODO(in funzione di numPowerUpGenerated)
-        return 8F
-    }
-    private fun nextLifePowerUpIncreaseHelth():Float{
-        // TODO(in funzione di numPowerUpGenerated)
-        return 100F
+    fun nextLifePowerUpIncreaseHelth():Float{
+        return 500F + numPowerUpGenerated*10F
     }
     private fun nextShieldPowerUpDuration():Long{
-        // TODO(in funzione di numPowerUpGenerated)
-        return 500
+        return 500 + numPowerUpGenerated.toLong()*10
     }
     private fun nextGunsPowerUpBulletType():Weapon.BulletType{
-        // TODO(in funzione di numPowerUpGenerated)
-        if(flagBullet){
-            flagBullet=false
-            return Weapon.BulletType.LASER
-        }else{
-            flagBullet=true
-            return Weapon.BulletType.CLASSIC
+        var improvment = if(numPowerUpGenerated < 20) 6*numPowerUpGenerated/20 else 6
+        when(random.nextInt(1, 4+improvment)){
+            1 -> return Weapon.BulletType.CLASSIC
+            2,5 -> return Weapon.BulletType.GUST
+            3,6,8 -> return Weapon.BulletType.MULTIPLE
+            4,7,9 -> return Weapon.BulletType.LASER
+            else -> return Weapon.BulletType.CLASSIC
         }
-
     }
     private fun nextPowerUpType(): PowerUpType{
-        // TODO(In funzione del seed e di numPowerUpGenerated)
-        var PowerUp: PowerUpType=PowerUpType.LIFE
-        flagPowerup= Random.nextInt(0,3)
-        when(flagPowerup) {
-                0-> {PowerUp= PowerUpType.LIFE}
-                1-> {PowerUp= PowerUpType.GUNS}
-                2-> {PowerUp= PowerUpType.SHIELD}
-            }
-        return PowerUp
 
+        when(random.nextInt(0,3)) {
+                0 -> return PowerUpType.LIFE
+                1 -> return PowerUpType.GUNS
+                2 -> return PowerUpType.SHIELD
+                else -> return PowerUpType.LIFE
+            }
         }
     }
-
-    /*
-    fun generateRandom(): PowerUp{
-        var allTypes = PowerUpType.values()
-        return generate(allTypes.elementAt((Math.random()*100).toInt()%allTypes.size))
-    }
-    */

@@ -8,11 +8,12 @@ import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.support.Circle
 import com.skycombat.game.model.support.GUIElement
 
-abstract class PowerUp(var x : Float, var y : Float, var speed:Float)
+abstract class PowerUp(var x : Float, var y : Float)
     : Circle, GUIElement {
 
     companion object {
         val RADIUS: Float = 50f;
+        val SPEED: Float = 8F
     }
 
     abstract var powerUpImg: Bitmap
@@ -20,7 +21,7 @@ abstract class PowerUp(var x : Float, var y : Float, var speed:Float)
     var used : Boolean = false
 
     override fun update(){
-        this.y += speed
+        this.y += SPEED
     }
 
     override fun draw(canvas : Canvas?){

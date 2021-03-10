@@ -5,17 +5,17 @@ import com.skycombat.R
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Rectangle
 
-class LaserBullet(left : Float,top : Float, collisionStrategy: CollisionStrategy)
-: Bullet(left+WIDTH/2F,top+HEIGHT/2F, collisionStrategy), Rectangle{
+class MultipleBullet (left : Float,top : Float, collisionStrategy: CollisionStrategy)
+    : Bullet(left+WIDTH/2F,top+HEIGHT/2F, collisionStrategy), Rectangle{
 
     companion object {
-        const val DAMAGE: Float = 80.0F
-        const val SPEED: Float = 80.0F
-        const val WIDTH: Float = 30F
-        const val HEIGHT: Float = 400F
+        const val DAMAGE: Float = 50.0F
+        const val SPEED: Float = 50.0F
+        const val WIDTH: Float = 140F
+        const val HEIGHT: Float = 40F
     }
 
-    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.laser)), WIDTH.toInt(),HEIGHT.toInt(),false)
+    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet3)), WIDTH.toInt(),HEIGHT.toInt(),false)
 
     /**
      * Draws the bullet

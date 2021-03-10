@@ -16,14 +16,11 @@ import kotlin.random.Random
  */
 class EnemyFactory(var seed: Long) {
 
+    val random = Random(seed);
     val context: ViewContext = ViewContext.getInstance()
     var randEnemy = 1
     var randMovement = 1
-
-    enum class EnemyType {
-        EnemyOne, EnemyTwo, EnemyThree
-    }
-
+    var randGuns = 1
     var numEnemyGenerated: Int = 0
 
     /**
@@ -35,28 +32,17 @@ class EnemyFactory(var seed: Long) {
 
         numEnemyGenerated++
         var bulletType: Weapon.BulletType
+        randEnemy= random.nextInt(1,4)
+        randMovement= random.nextInt(1,5)
+        randGuns= random.nextInt(1, 4)
 
-        val width = 150F;
-        val height = 100F;
-        /*
-            return when {
-                numEnemyGenerated < 2 -> EnemyOne(
-                    (context.getWidthScreen() - width) / 2,
-                    100F,
-                    Weapon.BulletType.CLASSIC)
-                else -> EnemyOne(
-                    (context.getWidthScreen() - width) / 2,
-                    100F,
-                    Weapon.BulletType.LASER)
-            }
-        );*/
-        if (numEnemyGenerated % 3 == 0) {
-            bulletType = Weapon.BulletType.LASER
-        } else {
-            bulletType = Weapon.BulletType.CLASSIC
+        when (randGuns) {
+            1 -> bulletType = Weapon.BulletType.LASER
+            2 -> bulletType = Weapon.BulletType.MULTIPLE
+            3 -> bulletType = Weapon.BulletType.GUST
+            4 -> bulletType = Weapon.BulletType.CLASSIC
+            else -> bulletType = Weapon.BulletType.CLASSIC
         }
-        randEnemy= Random.nextInt(1,4)
-        randMovement= Random.nextInt(1,5)
         when (randEnemy) {
             1 -> {
                 return EnemyOne(
@@ -71,69 +57,8 @@ class EnemyFactory(var seed: Long) {
                 bulletType, Movement(randMovement)) }
     }
 
-        fun getnumenemygenerated(): Int {
-            return numEnemyGenerated
-        }
+    fun getnumenemygenerated(): Int {
+        return numEnemyGenerated
+    }
 
 }
-
-
-/*class PowerUpFactory(var seed:Long) {
-    enum class PowerUpType {
-        LIFE, SHIELD, GUNS
-    }
-    var numPowerUpGenerated: Int = 0
-    var context: ViewContext = ViewContext.getInstance()
-    /**
-     * Generates the powerups
-     * @return LifePowerUp with an health increase
-     */
-    fun generate(): PowerUp {
-        numPowerUpGenerated++
-        val positionX :Float= Math.random().toFloat() * context.getWidthScreen()
-        when(nextPowerUpType()) {
-            PowerUpType.LIFE -> return LifePowerUp(
-                positionX,
-                0F,
-                nextPowerUpSpeed(),
-                nextLifePowerUpIncreaseHelth() )
-            PowerUpType.SHIELD -> return ShieldPowerUp(
-                positionX,
-                0F,
-                nextPowerUpSpeed(),
-                nextShieldPowerUpDuration() )
-            PowerUpType.GUNS -> return GunsPowerUp(
-                positionX,
-                0F,
-                nextPowerUpSpeed(),
-                nextGunsPowerUpBulletType()
-                )
-        }
-    }
-    private fun nextPowerUpSpeed(): Float{
-        // TODO(in funzione di numPowerUpGenerated)
-        return 2F
-    }
-    private fun nextLifePowerUpIncreaseHelth():Float{
-        // TODO(in funzione di numPowerUpGenerated)
-        return 2F
-    }
-    private fun nextShieldPowerUpDuration():Long{
-        // TODO(in funzione di numPowerUpGenerated)
-        return 500
-    }
-    private fun nextGunsPowerUpBulletType():Weapon.BulletType{
-        // TODO(in funzione di numPowerUpGenerated)
-        return Weapon.BulletType.CLASSIC
-    }
-    private fun nextPowerUpType(): PowerUpType{
-        // TODO(In funzione del seed e di numPowerUpGenerated)
-        return PowerUpType.LIFE
-    }
-    /*
-    fun generateRandom(): PowerUp{
-        var allTypes = PowerUpType.values()
-        return generate(allTypes.elementAt((Math.random()*100).toInt()%allTypes.size))
-    }
-    */
-}*/

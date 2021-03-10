@@ -7,8 +7,8 @@ import com.skycombat.game.model.Player
 import com.skycombat.game.model.Weapon
 import com.skycombat.game.model.bullet.Bullet
 
-class GunsPowerUp(x: Float, y: Float, speed:Float, var bulletType: Weapon.BulletType)
-    :PowerUp(x,y,speed) {
+class GunsPowerUp(x: Float, y: Float, var bulletType: Weapon.BulletType)
+    :PowerUp(x,y) {
 
     override var powerUpImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.gunpowerup)),RADIUS.toInt()*2,RADIUS.toInt()*2,false)
 

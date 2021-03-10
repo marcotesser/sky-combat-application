@@ -1,20 +1,23 @@
 package com.skycombat.game.model.bullet
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.PointF
 import com.skycombat.R
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.support.Circle
 
-class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
-    : Bullet(x,y, collisionStrategy), Circle{
+class GustBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
+    : Bullet(x,y, collisionStrategy), Circle {
 
     companion object {
         const val RADIUS: Float = 20.0F
-        const val DAMAGE: Float = 50.0F
-        const val SPEED: Float = 45.0F
+        const val DAMAGE: Float = 20.0F
+        const val SPEED: Float = 50.0F
     }
 
-    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet2)),getRadius().toInt()*2,getRadius().toInt()*2,false)
+    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet4)),getRadius().toInt()*2,getRadius().toInt()*2,false)
 
     /**
      * Draws the bullet

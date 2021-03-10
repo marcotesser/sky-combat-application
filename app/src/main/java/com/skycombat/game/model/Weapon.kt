@@ -1,8 +1,6 @@
 package com.skycombat.game.model
 
-import com.skycombat.game.model.bullet.Bullet
-import com.skycombat.game.model.bullet.ClassicBullet
-import com.skycombat.game.model.bullet.LaserBullet
+import com.skycombat.game.model.bullet.*
 import com.skycombat.game.model.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.enemy.Enemy
 import com.skycombat.game.model.support.CanShoot
@@ -14,13 +12,15 @@ class Weapon( val owner: CanShoot, var bulletType: BulletType, var collisionStra
     La seguente enumerazione espone i tipo di proiettile gestiti da questo generatore di proiettili
      */
     enum class BulletType{
-        CLASSIC, LASER
+        CLASSIC, LASER, MULTIPLE, GUST
     }
 
     companion object{
         val UPDATES_BETWEEN_SHOTS= mapOf<BulletType, Int>(
-            BulletType.CLASSIC to 60,
-            BulletType.LASER to 100
+            BulletType.CLASSIC to 50,
+            BulletType.LASER to 100,
+            BulletType.MULTIPLE to 60,
+            BulletType.GUST to 10
         )
     }
 
@@ -33,7 +33,6 @@ class Weapon( val owner: CanShoot, var bulletType: BulletType, var collisionStra
 
     fun generateBullet():Bullet{
         var startPointOfShoot = owner.startPointOfShoot()
-
         when(bulletType){
             BulletType.CLASSIC -> return ClassicBullet(
                 startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
@@ -42,7 +41,17 @@ class Weapon( val owner: CanShoot, var bulletType: BulletType, var collisionStra
                 startPointOfShoot.x,
                 startPointOfShoot.y
                     + if(collisionStrategy.getTargetCollidable()==CollisionStrategy.Target.ENEMY)
-                    - LaserBullet.HEIGHT  else 0F,
+                    - LaserBullet.HEIGHT/2F  else 0F,
+                collisionStrategy
+            )
+            BulletType.GUST -> return GustBullet(
+                startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
+            )
+            BulletType.MULTIPLE -> return MultipleBullet(
+                startPointOfShoot.x - MultipleBullet.WIDTH/2F,
+                startPointOfShoot.y
+                        + if(collisionStrategy.getTargetCollidable()==CollisionStrategy.Target.ENEMY)
+                    - MultipleBullet.HEIGHT/2F  else 0F,
                 collisionStrategy
             )
         }
