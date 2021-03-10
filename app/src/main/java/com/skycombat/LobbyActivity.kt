@@ -11,6 +11,7 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.R
 import com.skycombat.game.GameSession
+import okhttp3.internal.wait
 
 class LobbyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +39,11 @@ class LobbyActivity : AppCompatActivity() {
                             GameSession.GameRoom = onCreated.data.gameroom // SAMU ADD
                             GameSession.otherPlayers = ArrayList() // SAMU ADD
 
+                            runOnUiThread{
+                                Thread.sleep(100)
+                                sub?.cancel()
+                            }
+
                             val intent = Intent(this, GameActivity::class.java)
                             intent.putExtra("gameType",GameActivity.GameType.MULTIPLAYER )   // SAMU ADD
                             startActivity(intent)
@@ -48,7 +54,6 @@ class LobbyActivity : AppCompatActivity() {
                     { Log.i("ApiQuickStart", "Subscription completed") }
             )
 
-            sub?.cancel()           // SAMU ADD
         }
     }
 }

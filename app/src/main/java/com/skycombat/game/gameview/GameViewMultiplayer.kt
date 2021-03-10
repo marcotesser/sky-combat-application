@@ -81,7 +81,7 @@ class GameViewMultiplayer(context: Context, MAX_WIDTH : Float, MAX_HEIGHT : Floa
                     },
                     { error -> Log.e("MyAmplifyApp", "Query failure", error) }
                 )
-                amp?.cancel()
+//                amp?.cancel()
             }
         }, 5000, 5000)
     }

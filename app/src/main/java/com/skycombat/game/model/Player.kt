@@ -128,7 +128,7 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
                 },
                 { error -> Log.e("MyAmplifyApp", "update position failed", error) }
             )
-            amp?.cancel()
+
             contMutate=0
         }
         else
