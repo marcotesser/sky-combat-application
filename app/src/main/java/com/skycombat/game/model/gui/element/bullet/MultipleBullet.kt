@@ -1,12 +1,15 @@
 package com.skycombat.game.model.gui.element.bullet
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.RectF
 import com.skycombat.R
-import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.geometry.Rectangle
+import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 
-class MultipleBullet (left : Float,top : Float, collisionStrategy: CollisionStrategy)
-    : Bullet(left+ WIDTH /2F,top+ HEIGHT /2F, collisionStrategy), Rectangle{
+class MultipleBullet (left : Float,top : Float, collisionStrategy: CollisionStrategy, direction: Direction)
+    : Bullet(left+ WIDTH /2F,top+ HEIGHT /2F, collisionStrategy, direction), Rectangle{
 
     companion object {
         const val DAMAGE: Float = 50.0F

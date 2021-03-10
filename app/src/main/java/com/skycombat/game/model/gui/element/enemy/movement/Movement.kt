@@ -2,9 +2,8 @@ package com.skycombat.game.model.gui.element.enemy.movement
 
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.gui.element.enemy.Enemy
-import com.skycombat.game.model.factory.PowerUpFactory
 
-class Movement (code : Int) {
+class Movement (private val deltaX: Int, private val deltaY: Int, private var updateFor: Int) {
 
     val context: ViewContext = ViewContext.getInstance()
     var left: Float = -100f
@@ -12,37 +11,10 @@ class Movement (code : Int) {
     var horizontalAttitude : Int =1
     var verticalAttitude : Int= 1
 
-    var deltaX: Int=0
-    var deltaY: Int=0
-    var updatesLimit: Int=0
-    init{
-        when(code) {
-            1-> {
-                deltaX=4
-                deltaY=3
-                updatesLimit=600
-            }
-            2-> {
-                deltaX=3
-                deltaY=4
-                updatesLimit=500
-            }
-            3-> {
-                deltaX=6
-                deltaY=2
-                updatesLimit=700
-            }
-            4->{
-                deltaX=2
-                deltaY=5
-                updatesLimit=400
-            }
-        }
-    }
 
-    open fun move(enemy: Enemy){
+    fun move(enemy: Enemy){
 
-        if(updatesLimit>0) {
+        if(updateFor > 0) {
 
             val randleft = (deltaX * (horizontalAttitude))
             val randtop = (deltaY * (verticalAttitude))
@@ -63,6 +35,6 @@ class Movement (code : Int) {
             left+= 5
             top += 3
         }
-        updatesLimit--
+        updateFor--
     }
 }

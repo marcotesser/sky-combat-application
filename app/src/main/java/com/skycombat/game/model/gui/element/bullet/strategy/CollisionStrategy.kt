@@ -8,5 +8,5 @@ interface CollisionStrategy {
         PLAYER, ENEMY
     }
     fun shouldCollide(livingEntity: HasHealth):Boolean
-    fun getTargetCollidable(): Target
+    fun canCollideTo(target: Target) : Boolean
 }

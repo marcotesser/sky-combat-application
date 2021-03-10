@@ -1,6 +1,6 @@
 /**
  * Project:  EverBuilds
- * File:  GameOverListener.kt
+ * File:  GameOverObserver.kt
  * Author:  Samuele Sartor
  * Created:  2021-02-15
  * Version:  1.0.0
@@ -16,11 +16,10 @@ package com.skycombat.game.scene
 /**
  * Represents the Game Over Listener
  */
-abstract class GameOverListener {
+fun interface GameOverObserver {
 
      /**
-      * Abstract function
       * @param score : the player's final score
       */
-     abstract fun gameOver( score: Long);
+     fun gameOver( score: Long);
 }

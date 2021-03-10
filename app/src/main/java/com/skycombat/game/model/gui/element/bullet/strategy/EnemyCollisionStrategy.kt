@@ -8,7 +8,7 @@ class EnemyCollisionStrategy : CollisionStrategy {
         return livingEntity !is Enemy
     }
 
-    override fun getTargetCollidable(): CollisionStrategy.Target {
-        return CollisionStrategy.Target.PLAYER
+    override fun canCollideTo(target: CollisionStrategy.Target): Boolean {
+        return CollisionStrategy.Target.PLAYER == target
     }
 }

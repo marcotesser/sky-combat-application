@@ -2,55 +2,49 @@ package com.skycombat.game.model.gui.element
 
 import android.graphics.*
 import com.skycombat.R
-import com.skycombat.game.model.gui.properties.HasHealth
 import com.skycombat.game.model.ViewContext
+import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.Weapon
-import com.skycombat.game.model.gui.element.bullet.Bullet
-import com.skycombat.game.model.gui.element.bullet.strategy.PlayerCollisionStrategy
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.component.PlayerHealthBar
-import com.skycombat.game.model.gui.event.ShootObserver
+import com.skycombat.game.model.gui.element.bullet.Bullet
+import com.skycombat.game.model.gui.element.bullet.strategy.PlayerCollisionStrategy
+import com.skycombat.game.model.gui.event.ShootObservable
 import com.skycombat.game.model.gui.properties.CanShoot
-import com.skycombat.game.model.geometry.Circle
-import java.util.*
+import com.skycombat.game.model.gui.properties.HasHealth
 
 /**
  * Represents an Player
- * @param positionX : position on the x axis
- * @param positionY : position on the y axis
- * @param radius : player's radius
- * @param scene : the gameview onto which the player will be drawn
  */
-class Player() : HasHealth, Circle, GUIElement, CanShoot {
+class Player : HasHealth, Circle, GUIElement, CanShoot {
 
-    //val paint : Paint = Paint();
     companion object{
-        val MAX_HEALTH : Float = 500f
-        val RADIUS: Float = 70F;
+        const val MAX_HEALTH : Float = 500f
+        const val RADIUS: Float = 70F
     }
-    var updatesFromEndShield: Long= 0
+    private var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH
-    var positionX:Float
-    var positionY:Float
-    var playerImg : Bitmap
-    var playerShieldImg : Bitmap
+    private var positionX:Float
+    private var playerImg : Bitmap
+    private var playerShieldImg : Bitmap
 
-    var healthBar : HealthBar;
+    private var healthBar : HealthBar
+    var positionY:Float
     var context: ViewContext = ViewContext.getInstance()
 
-    override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy())
-    override var shootObserver = ShootObserver()
+    override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP)
+    override var shootObservable = ShootObservable()
 
     init {
         positionX=context.getWidthScreen()/2F
         positionY= context.getHeightScreen()/ 5 * 4
-        healthBar = PlayerHealthBar(this);
+        healthBar = PlayerHealthBar(this)
         playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
         playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
 
     }
     /**
-     * Draws the player and player's healthbar
+     * Draws the player and player's health-bar
      * @param canvas : the canvas onto which the player will be drawn
      * @see HealthBar
      */
@@ -70,12 +64,12 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
     fun applyShield(duration: Long){
         updatesFromEndShield = duration
     }
-    fun hasShield():Boolean{
+    private fun hasShield():Boolean{
         return updatesFromEndShield >0
     }
 
     override fun isDamageable():Boolean{
-        return !hasShield();
+        return !hasShield()
     }
 
     override fun update() {
@@ -93,14 +87,14 @@ class Player() : HasHealth, Circle, GUIElement, CanShoot {
      * @param y : player's Y position
      */
     fun setPosition(x: Float, y: Float) {
-        if(x > RADIUS && x < context.getWidthScreen() - RADIUS){
-            positionX = x
+        positionX = if(x > RADIUS && x < context.getWidthScreen() - RADIUS){
+            x
         } else if (x < RADIUS) {
-            positionX = RADIUS;
+            RADIUS
         } else {
-            positionX = context.getWidthScreen() - RADIUS
+            context.getWidthScreen() - RADIUS
         }
-        positionY = y;
+        positionY = y
     }
     /**
      * Shoots the bullet in the right direction

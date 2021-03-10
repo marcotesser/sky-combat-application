@@ -1,12 +1,15 @@
 package com.skycombat.game.model.gui.element.bullet
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.PointF
 import com.skycombat.R
-import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.geometry.Circle
+import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 
-class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy)
-    : Bullet(x,y, collisionStrategy), Circle{
+class ClassicBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy, direction: Direction)
+    : Bullet(x,y, collisionStrategy, direction), Circle{
 
     companion object {
         const val RADIUS: Float = 20.0F

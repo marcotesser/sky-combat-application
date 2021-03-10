@@ -4,25 +4,50 @@ import com.skycombat.game.model.gui.element.bullet.*
 import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.gui.properties.CanShoot
 
-class Weapon(val owner: CanShoot, var bulletType: BulletType, var collisionStrategy: CollisionStrategy): Updatable {
+class Weapon(private val owner: CanShoot, var bulletType: BulletType, private var collisionStrategy: CollisionStrategy, private var direction: Bullet.Direction): Updatable {
 
-    /*
-    La seguente enumerazione espone i tipo di proiettile gestiti da questo generatore di proiettili
-     */
-    enum class BulletType{
-        CLASSIC, LASER, MULTIPLE, GUST
+    enum class BulletType(private val delayTime: Int){
+        CLASSIC(50) {
+            override fun generate(x: Float, y: Float, collisionStrategy: CollisionStrategy, direction: Bullet.Direction): Bullet {
+                return ClassicBullet(x, y, collisionStrategy, direction)
+            }
+        },
+        LASER(100) {
+            override fun generate(x: Float, y: Float, collisionStrategy: CollisionStrategy, direction: Bullet.Direction): Bullet {
+                val nextY = y + if(collisionStrategy.canCollideTo(CollisionStrategy.Target.ENEMY))
+                    - LaserBullet.HEIGHT/2F  else 0F
+                return LaserBullet(
+                    x,
+                    nextY,
+                    collisionStrategy,
+                    direction
+                )
+            }
+        },
+        MULTIPLE(60) {
+            override fun generate(x: Float, y: Float, collisionStrategy: CollisionStrategy, direction: Bullet.Direction): Bullet {
+                val nextX = x - MultipleBullet.WIDTH/2F
+                val nextY = y + if(collisionStrategy.canCollideTo(CollisionStrategy.Target.ENEMY))
+                    - MultipleBullet.HEIGHT/2F  else 0F
+                return MultipleBullet(
+                    nextX,
+                    nextY,
+                    collisionStrategy,
+                    direction
+                )
+            }
+        },
+        GUST(10) {
+            override fun generate(x: Float, y: Float, collisionStrategy: CollisionStrategy, direction: Bullet.Direction): Bullet {
+                return GustBullet(x, y,collisionStrategy, direction)
+            }
+        };
+        fun delay(): Int{
+            return delayTime
+        }
+        abstract fun generate(x: Float, y : Float, collisionStrategy: CollisionStrategy, direction: Bullet.Direction) : Bullet
     }
-
-    companion object{
-        val UPDATES_BETWEEN_SHOTS= mapOf<BulletType, Int>(
-            BulletType.CLASSIC to 50,
-            BulletType.LASER to 100,
-            BulletType.MULTIPLE to 60,
-            BulletType.GUST to 10
-        )
-    }
-
-    var curUpdatesFromShot = 0;
+    private var curUpdatesFromShot = 0
 
     @JvmName("setBullet1")
     fun setBulletType( bulletType: BulletType){
@@ -30,36 +55,15 @@ class Weapon(val owner: CanShoot, var bulletType: BulletType, var collisionStrat
     }
 
     fun generateBullet(): Bullet {
-        var startPointOfShoot = owner.startPointOfShoot()
-        when(bulletType){
-            BulletType.CLASSIC -> return ClassicBullet(
-                startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
-            )
-            BulletType.LASER -> return LaserBullet(
-                startPointOfShoot.x,
-                startPointOfShoot.y
-                    + if(collisionStrategy.getTargetCollidable()== CollisionStrategy.Target.ENEMY)
-                    - LaserBullet.HEIGHT/2F  else 0F,
-                collisionStrategy
-            )
-            BulletType.GUST -> return GustBullet(
-                startPointOfShoot.x, startPointOfShoot.y,collisionStrategy
-            )
-            BulletType.MULTIPLE -> return MultipleBullet(
-                startPointOfShoot.x - MultipleBullet.WIDTH/2F,
-                startPointOfShoot.y
-                        + if(collisionStrategy.getTargetCollidable()== CollisionStrategy.Target.ENEMY)
-                    - MultipleBullet.HEIGHT/2F  else 0F,
-                collisionStrategy
-            )
-        }
+        val startPointOfShoot = owner.startPointOfShoot()
+        return bulletType.generate(startPointOfShoot.x, startPointOfShoot.y, collisionStrategy, direction)
     }
 
     override fun update() {
         curUpdatesFromShot++
-        if(curUpdatesFromShot >= UPDATES_BETWEEN_SHOTS[bulletType]!!){
-            curUpdatesFromShot = 0;
-            owner.shoot();
+        if(curUpdatesFromShot >= bulletType.delay()){
+            curUpdatesFromShot = 0
+            owner.shoot()
         }
     }
 }

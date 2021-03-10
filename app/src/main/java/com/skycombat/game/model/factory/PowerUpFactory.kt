@@ -10,15 +10,46 @@ import kotlin.random.Random
 
 /**
  * Represents a Life PowerUp Factory
- * @param scene : the gameview onto which the life powerups will be spawned
  */
-class PowerUpFactory(var seed:Long) {
-
+class PowerUpFactory(var seed : Long) {
     enum class PowerUpType {
-        LIFE, SHIELD, GUNS
+        LIFE {
+            override fun generate(x: Float, iteration: Int, random: Random) : PowerUp {
+                return LifePowerUp(
+                    x,
+                    0F,
+                    500F + iteration * 10F
+                )
+            }
+        }, SHIELD {
+            override fun generate(x: Float, iteration: Int, random: Random) : PowerUp {
+                return ShieldPowerUp(
+                    x,
+                    0F,
+                    500 + iteration.toLong()*10
+                )
+            }
+        }, GUNS {
+            override fun generate(x: Float, iteration: Int, random: Random) : PowerUp {
+                val improvement = if(iteration < 20) 6 * iteration / 20 else 6
+                 val bulletType =  when(random.nextInt(1, 4 + improvement)){
+                    1 -> Weapon.BulletType.CLASSIC
+                    2,5 -> Weapon.BulletType.GUST
+                    3,6,8 -> Weapon.BulletType.MULTIPLE
+                    4,7,9 -> Weapon.BulletType.LASER
+                    else -> Weapon.BulletType.CLASSIC
+                }
+                return GunsPowerUp(
+                    x,
+                    0F,
+                    bulletType
+                )
+            }
+        };
+        abstract fun generate(x: Float, iteration: Int, random: Random) : PowerUp
     }
 
-    val random = Random(seed);
+    private val random = Random(seed)
     var numPowerUpGenerated: Int = 0
     var context: ViewContext = ViewContext.getInstance()
 
@@ -27,50 +58,17 @@ class PowerUpFactory(var seed:Long) {
      * @return LifePowerUp with an health increase
      */
     fun generate(): PowerUp {
-
         numPowerUpGenerated++
-        val positionX :Float= Math.random().toFloat() * context.getWidthScreen()
-
-        when(nextPowerUpType()) {
-            PowerUpType.LIFE -> return LifePowerUp(
-                positionX,
-                0F,
-                nextLifePowerUpIncreaseHelth() )
-            PowerUpType.SHIELD -> return ShieldPowerUp(
-                positionX,
-                0F,
-                nextShieldPowerUpDuration() )
-            PowerUpType.GUNS -> return GunsPowerUp(
-                positionX,
-                0F,
-                nextGunsPowerUpBulletType()
-                )
-        }
+        return (when(random.nextInt(0,3)) {
+            0 -> PowerUpType.LIFE
+            1 -> PowerUpType.GUNS
+            2 -> PowerUpType.SHIELD
+            else -> PowerUpType.LIFE
+        }).generate(
+            Math.random().toFloat() * context.getWidthScreen(),
+            numPowerUpGenerated,
+            random
+        )
     }
 
-    fun nextLifePowerUpIncreaseHelth():Float{
-        return 500F + numPowerUpGenerated*10F
-    }
-    private fun nextShieldPowerUpDuration():Long{
-        return 500 + numPowerUpGenerated.toLong()*10
-    }
-    private fun nextGunsPowerUpBulletType(): Weapon.BulletType{
-        var improvment = if(numPowerUpGenerated < 20) 6*numPowerUpGenerated/20 else 6
-        when(random.nextInt(1, 4+improvment)){
-            1 -> return Weapon.BulletType.CLASSIC
-            2,5 -> return Weapon.BulletType.GUST
-            3,6,8 -> return Weapon.BulletType.MULTIPLE
-            4,7,9 -> return Weapon.BulletType.LASER
-            else -> return Weapon.BulletType.CLASSIC
-        }
-    }
-    private fun nextPowerUpType(): PowerUpType{
-
-        when(random.nextInt(0,3)) {
-                0 -> return PowerUpType.LIFE
-                1 -> return PowerUpType.GUNS
-                2 -> return PowerUpType.SHIELD
-                else -> return PowerUpType.LIFE
-            }
-        }
-    }
+}

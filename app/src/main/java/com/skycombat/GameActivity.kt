@@ -9,7 +9,6 @@ import android.view.Window
 import android.view.WindowManager
 import com.skycombat.game.model.ViewContext
 import com.skycombat.game.scene.GameView
-import com.skycombat.game.scene.GameOverListener
 
 class GameActivity : Activity() {
 
@@ -24,17 +23,13 @@ class GameActivity : Activity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        val METRICS = DisplayMetrics()
-        val WINDOW_MANAGER = getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        WINDOW_MANAGER.defaultDisplay.getMetrics(METRICS)
-        ViewContext.setContext(METRICS.widthPixels.toFloat(), METRICS.heightPixels.toFloat(), resources)
+        val metrics = DisplayMetrics()
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(metrics)
+        ViewContext.setContext(metrics.widthPixels.toFloat(), metrics.heightPixels.toFloat(), resources)
 
         gameView = GameView(this)
-        gameView!!.setGameOverListener (object: GameOverListener() {
-            override fun gameOver(score : Long) {
-                callGameOverActivity(score )
-            }
-        })
+        gameView!!.setGameOverListener { score -> callGameOverActivity(score) }
 
         setContentView(gameView)
 
@@ -45,9 +40,9 @@ class GameActivity : Activity() {
      * @see GameOverActivity
      */
     private fun callGameOverActivity(score : Long) {
-        val INTENT : Intent = Intent(this, GameOverActivity::class.java)
-        INTENT.putExtra("score", score)
-        startActivity(INTENT)
+        val intent = Intent(this, GameOverActivity::class.java)
+        intent.putExtra("score", score)
+        startActivity(intent)
     }
 
     override fun onPause() {
@@ -59,5 +54,4 @@ class GameActivity : Activity() {
         this.finish()
         super.onBackPressed()
     }
-
 }

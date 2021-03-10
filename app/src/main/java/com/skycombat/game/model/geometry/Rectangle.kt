@@ -11,12 +11,12 @@ interface Rectangle : Entity{
         }
     }
 
-    fun getPosition() : RectF;
+    fun getPosition() : RectF
     override fun collide(el : Rectangle) : Boolean{
         return collidePartial(this.getPosition(),el.getPosition())||collidePartial(el.getPosition(),this.getPosition())
     }
     override fun collide(el : Circle) : Boolean{
-        var rect = RectF(el.getCenter().x-el.getRadius(), el.getCenter().y-el.getRadius(),
+        val rect = RectF(el.getCenter().x-el.getRadius(), el.getCenter().y-el.getRadius(),
             el.getCenter().x+el.getRadius(), el.getCenter().y+el.getRadius())
         return collidePartial(this.getPosition(),rect)||collidePartial(rect,this.getPosition())
     }

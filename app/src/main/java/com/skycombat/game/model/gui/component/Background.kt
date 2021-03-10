@@ -3,9 +3,8 @@ package com.skycombat.game.model.gui.component
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.skycombat.game.model.ViewContext
-import com.skycombat.game.model.gui.element.GUIElement
 
-class Background(val backgroundImage: Bitmap, val overlayImage: Bitmap) : GUIComponent{
+class Background(private val backgroundImage: Bitmap, private val overlayImage: Bitmap) : GUIComponent{
     val viewContext = ViewContext.getInstance()
 
     var backY : Float= 0f

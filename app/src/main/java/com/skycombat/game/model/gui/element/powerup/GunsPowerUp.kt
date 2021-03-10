@@ -1,9 +1,10 @@
 package com.skycombat.game.model.gui.element.powerup
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import com.skycombat.R
-import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.Weapon
+import com.skycombat.game.model.gui.element.Player
 
 class GunsPowerUp(x: Float, y: Float, var bulletType: Weapon.BulletType)
     : PowerUp(x,y) {
@@ -12,7 +13,7 @@ class GunsPowerUp(x: Float, y: Float, var bulletType: Weapon.BulletType)
 
     override fun applyPowerUPEffects(player: Player){
         player.setBulletType(bulletType)
-        this.used = true;
+        this.used = true
     }
 
 }

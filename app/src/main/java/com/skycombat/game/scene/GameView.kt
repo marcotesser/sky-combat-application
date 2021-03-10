@@ -19,17 +19,17 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
 import com.skycombat.R
-import com.skycombat.game.model.gui.element.bullet.Bullet
-import com.skycombat.game.model.gui.element.enemy.Enemy
-import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.ViewContext
-import com.skycombat.game.model.gui.event.ShootListener
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.PowerUpFactory
-import com.skycombat.game.model.gui.element.powerup.PowerUp
 import com.skycombat.game.model.gui.Drawable
 import com.skycombat.game.model.gui.component.Background
 import com.skycombat.game.model.gui.element.GUIElement
+import com.skycombat.game.model.gui.element.Player
+import com.skycombat.game.model.gui.element.bullet.Bullet
+import com.skycombat.game.model.gui.element.enemy.Enemy
+import com.skycombat.game.model.gui.element.powerup.PowerUp
+import com.skycombat.game.model.gui.event.ShootObserver
 import com.skycombat.game.model.gui.panel.FPSPanel
 import com.skycombat.game.model.gui.panel.GamePanel
 import com.skycombat.game.model.gui.panel.UPSPanel
@@ -41,9 +41,10 @@ import java.util.stream.Stream
  * @param context : the context onto which the game will be drawn
  */
 class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
+    private val gameOverObservable : GameOverObservable = GameOverObservable()
 
-    private val GAME_OVER_LISTENERS : ArrayList<GameOverListener> = ArrayList()
-
+    private val enemyFactory: EnemyFactory = EnemyFactory(100000) // TODO SEED
+    private val powerUpFactory: PowerUpFactory = PowerUpFactory(100000) // TODO SEED
 
     private val startTime = System.currentTimeMillis()
     private var gameLoop: GameLoop = GameLoop(this, holder)
@@ -53,23 +54,17 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     private val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList()
     private var player : Player = Player()
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(listOf(
-            FPSPanel(20F, viewContext.height/2, gameLoop, this ),
-            UPSPanel(20F, viewContext.height/2 + 100, gameLoop, this )
+        FPSPanel(20F, viewContext.height/2, gameLoop, this ),
+        UPSPanel(20F, viewContext.height/2 + 100, gameLoop, this )
     ))
     private val background : Background = Background(
-            Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.islands)),viewContext.width.toInt(),viewContext.width.toInt()*3,false),
-            Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.clouds)),viewContext.width.toInt(),viewContext.width.toInt()*3,false)
+        Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.islands)),viewContext.width.toInt(),viewContext.width.toInt()*3,false),
+        Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.clouds)),viewContext.width.toInt(),viewContext.width.toInt()*3,false)
     )
-
-    private val ENEMY_FACTORY: EnemyFactory = EnemyFactory(100000) // TODO SEED
-    private val POWERUP_FACTORY: PowerUpFactory = PowerUpFactory(100000) // TODO SEED
-
 
 
     init {
-
-
-        player.addOnShootListener(object :ShootListener{
+        player.addOnShootListener(object :ShootObserver{
             override fun onShoot(bullet: Bullet) {
                 bullets.add(bullet)
             }
@@ -100,7 +95,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
      * Updates the view of the whole game
      * @see EnemyFactory
      * @see PowerUpFactory
-     * @see GameOverListener
+     * @see GameOverObserver
      * @see Bullet
      * @see Enemy
      * @see Player
@@ -108,9 +103,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     fun update() {
         if (player.isDead()) {
             stop()
-            GAME_OVER_LISTENERS.forEach { el ->
-                el.gameOver(getCurrentTimeFromStart())
-            }
+            gameOverObservable.notify(getCurrentTimeFromStart())
             return
         }
         listOf(enemies, powerUps, bullets).forEach{
@@ -118,14 +111,10 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         }
 
         if(enemies.size == 0){
-            val enemy = ENEMY_FACTORY.generate()
+            val enemy = enemyFactory.generate()
             enemies.add(enemy)
-            enemy.addOnShootListener(object : ShootListener{
-                override fun onShoot(bullet: Bullet) {
-                    bullets.add(bullet)
-                }
-            })
-            powerUps.add(POWERUP_FACTORY.generate())
+            enemy.addOnShootListener { bullet -> bullets.add(bullet) }
+            powerUps.add(powerUpFactory.generate())
         }
 
         this.handleCollisions()
@@ -196,11 +185,12 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
             else -> true
         }
     }
+
     /**
      * Sets the gameoverlistener
-     * @see GameOverListener
+     * @see GameOverObserver
      */
-    fun setGameOverListener(listener : GameOverListener) {
-        GAME_OVER_LISTENERS.add(listener)
+    fun setGameOverListener(observer : GameOverObserver) {
+        gameOverObservable.attach(observer)
     }
 }

@@ -6,12 +6,12 @@ import com.skycombat.R
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 
-class EnemyThree(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletType, mov) {
+class SpaceShipEnemy(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletType, mov) {
 
     companion object{
-        val MAX_HEALTH : Float = 400f
-        val WIDTH : Float = 300F
-        val HEIGHT : Float = 270F
+        const val MAX_HEALTH : Float = 400f
+        const val WIDTH : Float = 300F
+        const val HEIGHT : Float = 270F
     }
 
     override fun getMaxHealth(): Float {

@@ -6,19 +6,19 @@ import com.skycombat.R
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 
-class EnemyTwo(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletType, mov) {
+class PlaneEnemy(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletType,mov) {
 
     companion object{
-        val MAX_HEALTH : Float = 300f
-        val WIDTH : Float = 250F
-        val HEIGHT : Float = 220F
+        const val MAX_HEALTH : Float = 200f
+        const val WIDTH : Float = 200F
+        const val HEIGHT : Float = 180F
     }
 
     override fun getMaxHealth(): Float {
         return MAX_HEALTH
     }
 
-    override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemytwo)), WIDTH.toInt(), HEIGHT.toInt(),false)
+    override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemyone)), WIDTH.toInt(), HEIGHT.toInt(),false)
 
     override fun getWidth(): Float {
         return WIDTH

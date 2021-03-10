@@ -1,44 +1,34 @@
 package com.skycombat.game.model.gui.element.enemy
 
 import android.graphics.*
-import com.skycombat.game.model.gui.properties.HasHealth
 import com.skycombat.game.model.ViewContext
+import com.skycombat.game.model.geometry.Rectangle
 import com.skycombat.game.model.gui.Weapon
-import com.skycombat.game.model.gui.element.bullet.Bullet
-import com.skycombat.game.model.gui.element.bullet.strategy.EnemyCollisionStrategy
 import com.skycombat.game.model.gui.component.EnemyHealthBar
 import com.skycombat.game.model.gui.component.HealthBar
-import com.skycombat.game.model.gui.element.enemy.movement.Movement
-import com.skycombat.game.model.gui.event.ShootObserver
-import com.skycombat.game.model.gui.properties.CanShoot
 import com.skycombat.game.model.gui.element.GUIElement
-import com.skycombat.game.model.geometry.Rectangle
-import java.util.*
+import com.skycombat.game.model.gui.element.bullet.Bullet
+import com.skycombat.game.model.gui.element.bullet.strategy.EnemyCollisionStrategy
+import com.skycombat.game.model.gui.element.enemy.movement.Movement
+import com.skycombat.game.model.gui.event.ShootObservable
+import com.skycombat.game.model.gui.properties.CanShoot
+import com.skycombat.game.model.gui.properties.HasHealth
 
 /**
  * Represents an Enemy
- * @param player : used as a base to draw the enemy
- * @param left : movement towards left
- * @param top : movement towards the top
- * @param width : enemy's width
- * @param height : enemy's height
- * @param scene : the gameview onto which the enemy will be drawn
  */
 abstract class Enemy(bulletType: Weapon.BulletType, movement: Movement)
     : HasHealth, Rectangle, GUIElement, CanShoot {
     abstract var enemyImg : Bitmap
-    var healthBar : HealthBar;
+    var healthBar : HealthBar = EnemyHealthBar(this)
     var context: ViewContext = ViewContext.getInstance()
-    override var shootObserver = ShootObserver()
-    override var weapon: Weapon = Weapon(this, bulletType, EnemyCollisionStrategy())
+    override var shootObservable = ShootObservable()
+    override var weapon: Weapon = Weapon(this, bulletType, EnemyCollisionStrategy(), Bullet.Direction.DOWN)
     var mov=movement
 
-    override var health : Float = getMaxHealth()
+    override var health : Float = this.getMaxHealth()
 
 
-    init {
-        healthBar = EnemyHealthBar(this);
-    }
     /**
      * Draws the player and enemy's healthbar
      * @param canvas : the canvas onto which the enemy will be drawn
@@ -51,13 +41,8 @@ abstract class Enemy(bulletType: Weapon.BulletType, movement: Movement)
 
     /**
      * Update bullets to the enemy
-     * @param bullets : the bullets the enemy has shot
-     * @see Bullet
-     * @see HealthBar
      */
     override fun update() {
-
-        //MovHandle()
 
         mov.move(this)
 
