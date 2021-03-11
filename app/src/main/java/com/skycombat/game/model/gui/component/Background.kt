@@ -2,7 +2,7 @@ package com.skycombat.game.model.gui.component
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.scene.ViewContext
 
 class Background(private val backgroundImage: Bitmap, private val overlayImage: Bitmap) : GUIComponent{
     val viewContext = ViewContext.getInstance()

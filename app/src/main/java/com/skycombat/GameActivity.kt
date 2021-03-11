@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Window
 import android.view.WindowManager
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.scene.GameView
 
 class GameActivity : Activity() {

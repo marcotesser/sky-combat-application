@@ -3,7 +3,7 @@ package com.skycombat.game.model.gui.panel
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.scene.GameLoop
 import com.skycombat.game.scene.GameView
 

@@ -1,7 +1,7 @@
 package com.skycombat.game.model.gui.component
 
 import android.graphics.RectF
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.gui.element.Player
 
 class PlayerHealthBar(var element : Player): HealthBar() {

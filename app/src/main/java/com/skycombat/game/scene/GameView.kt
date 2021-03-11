@@ -19,7 +19,6 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
 import com.skycombat.R
-import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.PowerUpFactory
 import com.skycombat.game.model.gui.Drawable
@@ -29,7 +28,6 @@ import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
 import com.skycombat.game.model.gui.element.powerup.PowerUp
-import com.skycombat.game.model.gui.event.ShootObserver
 import com.skycombat.game.model.gui.panel.FPSPanel
 import com.skycombat.game.model.gui.panel.GamePanel
 import com.skycombat.game.model.gui.panel.UPSPanel
@@ -64,17 +62,13 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
 
 
     init {
-        player.addOnShootListener(object :ShootObserver{
-            override fun onShoot(bullet: Bullet) {
-                bullets.add(bullet)
-            }
-        })
+        player.addOnShootListener { bullet -> bullets.add(bullet) }
         holder.addCallback(this)
         focusable = View.FOCUSABLE
     }
 
     override fun draw(canvas: Canvas?) {
-        if (player.getCurrentHealth() <= 0) {
+        if (player.isDead()) {
             return
         }
         super.draw(canvas)
@@ -91,6 +85,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     }
 
 
+
     /**
      * Updates the view of the whole game
      * @see EnemyFactory
@@ -104,27 +99,25 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
         if (player.isDead()) {
             stop()
             gameOverObservable.notify(getCurrentTimeFromStart())
-            return
+        } else {
+            listOf(enemies, powerUps, bullets).forEach { ar ->
+                ar.removeIf(GUIElement::shouldRemove)
+            }
+
+            if (enemies.isEmpty()) {
+                val enemy = enemyFactory.generate()
+                enemies.add(enemy)
+                enemy.addOnShootListener { bullet -> bullets.add(bullet) }
+                powerUps.add(powerUpFactory.generate())
+            }
+
+            this.handleCollisions()
+
+            player.update()
+            enemies.forEach(Enemy::update)
+            bullets.forEach(Bullet::update)
+            powerUps.forEach(PowerUp::update)
         }
-        listOf(enemies, powerUps, bullets).forEach{
-            ar -> ar.removeIf(GUIElement::shouldRemove)
-        }
-
-        if(enemies.size == 0){
-            val enemy = enemyFactory.generate()
-            enemies.add(enemy)
-            enemy.addOnShootListener { bullet -> bullets.add(bullet) }
-            powerUps.add(powerUpFactory.generate())
-        }
-
-        this.handleCollisions()
-
-        player.update()
-        enemies.forEach(Enemy::update)
-        bullets.forEach(Bullet::update)
-        powerUps.forEach(PowerUp::update)
-
-
     }
 
     private fun getCurrentTimeFromStart(): Long{

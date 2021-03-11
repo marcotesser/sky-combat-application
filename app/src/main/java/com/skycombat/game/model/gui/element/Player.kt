@@ -2,7 +2,7 @@ package com.skycombat.game.model.gui.element
 
 import android.graphics.*
 import com.skycombat.R
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.component.HealthBar
