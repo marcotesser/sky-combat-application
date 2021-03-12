@@ -21,10 +21,7 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
                     .positionX(player.getX().toDouble() / player.context.width.toDouble())
                     //.positionY(player.positionY.toDouble() / player.context.height.toDouble())
                     .score((Math.random() * 10000).toInt())
-                    .lastinteraction(Temporal.Timestamp(
-                        System.currentTimeMillis() - 10000L,
-                        TimeUnit.MILLISECONDS)
-                    )
+                    .lastinteraction(Temporal.Timestamp.now())
                     .build()
             // Log.e("POSIZIONE GIOCATORE", (player.positionX.toDouble() / player.context.width.toDouble()).toString())
             // Log.e("POSIZIONE GIOCATORE", (player.positionY.toDouble() / player.context.height.toDouble()).toString())

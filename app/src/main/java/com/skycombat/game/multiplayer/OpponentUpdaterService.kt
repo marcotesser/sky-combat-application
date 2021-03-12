@@ -6,6 +6,7 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
+import java.util.concurrent.TimeUnit
 
 class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pair<Player, Ghost>>) : Thread(){
     private var elapsedTime : Long = 0
@@ -20,7 +21,10 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                 ModelQuery.list(
                     Player::class.java,
                         Player.GAMEROOM.eq(currentPlayer.gameroom.id)
-                                .and(Player.LASTINTERACTION.gt(Temporal.Timestamp.now()))
+                                .and(Player.LASTINTERACTION.gt(Temporal.Timestamp(
+                                    System.currentTimeMillis() - 10000L,
+                                    TimeUnit.MILLISECONDS
+                                )))
                                 .and(Player.DEAD.eq(false))
                                 .and(Player.ID.ne(currentPlayer.id))
                 ),
