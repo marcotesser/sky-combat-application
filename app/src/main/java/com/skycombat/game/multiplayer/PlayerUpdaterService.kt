@@ -46,4 +46,26 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
             sleep(1000L/MultiplayerSession.UPS)
         }
     }
+    fun setAsDead(score: Int = 0){
+        val playerOnline = remote.copyOfBuilder()
+            .name(remote.name)
+            .id(remote.id)
+            .gameroom(remote.gameroom)
+            .positionX(player.getX().toDouble() / player.context.width.toDouble())
+            //.positionY(player.positionY.toDouble() / player.context.height.toDouble())
+            .score(score)
+            .lastinteraction(Temporal.Timestamp.now())
+            .dead(true)
+            .build()
+        Amplify.API.mutate(
+            ModelMutation.update(
+                playerOnline,
+                RemotePlayer.ID.eq(remote.id)
+            ), {
+                player.kill()
+                this.join()
+            },
+            { error -> Log.e("MyAmplifyApp", "update position failed", error) }
+        )
+    }
 }

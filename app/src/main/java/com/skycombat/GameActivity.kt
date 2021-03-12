@@ -22,7 +22,9 @@ class GameActivity : Activity() {
 
     //gameView will be the mainview and it will manage the game's logic
     private var gameView: GameView? = null
-
+    private var opponents : OpponentUpdaterService? = null
+    private var remotePlayer: PlayerUpdaterService? = null
+    private var ghosts = listOf<Ghost>();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -36,24 +38,25 @@ class GameActivity : Activity() {
         windowManager.defaultDisplay.getMetrics(metrics)
         ViewContext.setContext(metrics.widthPixels.toFloat(), metrics.heightPixels.toFloat(), resources)
 
-        var ghosts = listOf<Ghost>();
         val velocity = 4f;
         if(MultiplayerSession.player!= null) {
             ghosts = IntStream
                     .range(0, MultiplayerSession.opponents.size)
                     .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
                     .collect(Collectors.toList())
-            val thread = OpponentUpdaterService(MultiplayerSession.player!!, MultiplayerSession.opponents.zip(ghosts))
-            thread.start()
+            opponents = OpponentUpdaterService(MultiplayerSession.player!!, MultiplayerSession.opponents.zip(ghosts))
+            opponents?.start()
             Log.e("debug", "PARTITO THREAD OPPONENTS")
         }
 
 
         gameView = GameView(this, velocity, ghosts)
-        gameView!!.setGameOverListener { score -> callGameOverActivity(score) }
+        gameView!!.addGameOverListener { score ->
+            callGameOverActivity(score)
+        }
         if(MultiplayerSession.player != null) {
-            val playerUpdater = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!);
-            playerUpdater.start()
+            remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!);
+            remotePlayer?.start()
             Log.e("debug", "PARTITO THREAD PLAYER")
         }
 
@@ -66,6 +69,8 @@ class GameActivity : Activity() {
      * @see GameOverActivity
      */
     private fun callGameOverActivity(score : Long) {
+        remotePlayer?.setAsDead(ghosts.count { el -> el.dead })
+        opponents?.stopUpdates()
         val intent = Intent(this, GameOverActivity::class.java)
         intent.putExtra("score", score)
         startActivity(intent)
@@ -74,6 +79,12 @@ class GameActivity : Activity() {
     override fun onPause() {
         super.onPause()
         gameView?.pause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        remotePlayer?.setAsDead(ghosts.count { el -> el.dead })
+        opponents?.stopUpdates()
     }
 
     override fun onBackPressed() {

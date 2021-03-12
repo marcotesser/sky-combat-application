@@ -7,6 +7,7 @@ import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import java.util.concurrent.TimeUnit
+import java.util.function.Predicate
 
 class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pair<Player, Ghost>>) : Thread(){
     private var elapsedTime : Long = 0
@@ -20,30 +21,45 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
             Amplify.API.query(
                 ModelQuery.list(
                     Player::class.java,
-                        Player.GAMEROOM.eq(currentPlayer.gameroom.id)
-                                .and(Player.LASTINTERACTION.gt(Temporal.Timestamp(
-                                    System.currentTimeMillis() - 10000L,
-                                    TimeUnit.MILLISECONDS
-                                )))
-                                .and(Player.DEAD.eq(false))
-                                .and(Player.ID.ne(currentPlayer.id))
+                    Player.GAMEROOM.eq(currentPlayer.gameroom.id)
+                        .and(Player.LASTINTERACTION.gt(
+                            Temporal.Timestamp(
+                                System.currentTimeMillis() - 10000L,
+                                TimeUnit.MILLISECONDS
+                            ))
+                        )
+                        .and(Player.DEAD.eq(false))
+                        .and(Player.ID.ne(currentPlayer.id))
                 ),
                 { result ->
-                    if(result.data.items.count() <= 0){
+                    if (result.data.items.count() <= 0) {
                         Log.e("FINE", "TUTTI MORTI, SPENGO THREAD OPPONENTI")
                         alive = false
                     }
-                    result.data.items
-                        .forEach{
-                            p ->
-                                Log.i("thread-multiplayer","Player ${p.name} è in pos ${p.positionX}")
-                                val op = opponents.first{ pair -> pair.first.id == p.id }
-                                op.second.aimedPositionX = p.positionX.toFloat() * op.second.context.width
-                        }
+                    val present :  (Pair<Player, Ghost>) -> Boolean  = { el ->
+                        result.data.items.any { res -> res.id == el.first.id }
+                    }
+                    val partitions = opponents
+                        .partition{el -> present(el) && !el.second.dead}
+
+                    // quelli presenti nella risposta dell'API
+                    partitions.first.forEach{ p ->
+                        val op = result.data.items.first { req -> req.id == p.first.id }
+                        p.second.aimedPositionX =
+                            op.positionX.toFloat() * p.second.context.width
+                    }
+
+                    // quelli non presenti nella risposta dell'API
+                    partitions.second.map{el -> el.second}
+                        .forEach{el -> el.dead = true}
+
                 },
                 { Log.e("MyAmplifyApp", "Query failed") }
             )
             sleep(1000L/MultiplayerSession.UPS)
         }
+    }
+    fun stopUpdates(){
+        this.alive = false;
     }
 }

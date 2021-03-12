@@ -187,7 +187,7 @@ class GameView(context: Context, private val velocity : Float, private var ghost
      * Sets the gameoverlistener
      * @see GameOverObserver
      */
-    fun setGameOverListener(observer : GameOverObserver) {
+    fun addGameOverListener(observer : GameOverObserver) {
         gameOverObservable.attach(observer)
     }
 
