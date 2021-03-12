@@ -27,6 +27,8 @@ import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
+import com.skycombat.game.model.gui.element.ghost.Ghost
+import com.skycombat.game.model.gui.element.ghost.strategy.LinearPositionStrategy
 import com.skycombat.game.model.gui.element.powerup.PowerUp
 import com.skycombat.game.model.gui.panel.FPSPanel
 import com.skycombat.game.model.gui.panel.GamePanel
@@ -38,7 +40,7 @@ import java.util.stream.Stream
  * Represents the Game View
  * @param context : the context onto which the game will be drawn
  */
-class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback {
+class GameView(context: Context, private var ghosts : List<Ghost> = CopyOnWriteArrayList()) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
     private val enemyFactory: EnemyFactory = EnemyFactory(100000) // TODO SEED
@@ -48,6 +50,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
     private var gameLoop: GameLoop = GameLoop(this, holder)
     private val viewContext = ViewContext.getInstance()
     private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList()
+
     private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList()
     private val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList()
     private var player : Player = Player()
@@ -77,7 +80,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
             background.draw(canvas)
             Stream.concat(
                 Stream.of(player),
-                Stream.of(panels, enemies, bullets, powerUps).flatMap(
+                Stream.of(panels, enemies, bullets, powerUps, ghosts).flatMap(
                     List<Drawable>::stream
                 )
             ).forEach{el -> el.draw(canvas)}
@@ -117,6 +120,7 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
             enemies.forEach(Enemy::update)
             bullets.forEach(Bullet::update)
             powerUps.forEach(PowerUp::update)
+            ghosts.forEach(Ghost::update)
         }
     }
 
@@ -185,5 +189,9 @@ class GameView(context: Context) : SurfaceView(context), SurfaceHolder.Callback 
      */
     fun setGameOverListener(observer : GameOverObserver) {
         gameOverObservable.attach(observer)
+    }
+
+    fun getPlayer() : Player{
+        return player;
     }
 }

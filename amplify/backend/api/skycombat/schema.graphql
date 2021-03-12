@@ -1,6 +1,7 @@
 type GameRoom @model{
   id: ID!
   seed: String
+  gamers: Int
   players: [Player] @connection(keyName: "byGameRoom", fields: ["id"])
 }
 

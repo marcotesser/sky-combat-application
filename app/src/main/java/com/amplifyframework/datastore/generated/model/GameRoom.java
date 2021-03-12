@@ -22,8 +22,10 @@ import static com.amplifyframework.core.model.query.predicate.QueryField.field;
 public final class GameRoom implements Model {
   public static final QueryField ID = field("id");
   public static final QueryField SEED = field("seed");
+  public static final QueryField GAMERS = field("gamers");
   private final @ModelField(targetType="ID", isRequired = true) String id;
   private final @ModelField(targetType="String") String seed;
+  private final @ModelField(targetType="Int") Integer gamers;
   private final @ModelField(targetType="Player") @HasMany(associatedWith = "gameroom", type = Player.class) List<Player> players = null;
   public String getId() {
       return id;
@@ -33,13 +35,18 @@ public final class GameRoom implements Model {
       return seed;
   }
   
+  public Integer getGamers() {
+      return gamers;
+  }
+  
   public List<Player> getPlayers() {
       return players;
   }
   
-  private GameRoom(String id, String seed) {
+  private GameRoom(String id, String seed, Integer gamers) {
     this.id = id;
     this.seed = seed;
+    this.gamers = gamers;
   }
   
   @Override
@@ -51,7 +58,8 @@ public final class GameRoom implements Model {
       } else {
       GameRoom gameRoom = (GameRoom) obj;
       return ObjectsCompat.equals(getId(), gameRoom.getId()) &&
-              ObjectsCompat.equals(getSeed(), gameRoom.getSeed());
+              ObjectsCompat.equals(getSeed(), gameRoom.getSeed()) &&
+              ObjectsCompat.equals(getGamers(), gameRoom.getGamers());
       }
   }
   
@@ -60,6 +68,7 @@ public final class GameRoom implements Model {
     return new StringBuilder()
       .append(getId())
       .append(getSeed())
+      .append(getGamers())
       .toString()
       .hashCode();
   }
@@ -69,7 +78,8 @@ public final class GameRoom implements Model {
     return new StringBuilder()
       .append("GameRoom {")
       .append("id=" + String.valueOf(getId()) + ", ")
-      .append("seed=" + String.valueOf(getSeed()))
+      .append("seed=" + String.valueOf(getSeed()) + ", ")
+      .append("gamers=" + String.valueOf(getGamers()))
       .append("}")
       .toString();
   }
@@ -99,36 +109,47 @@ public final class GameRoom implements Model {
     }
     return new GameRoom(
       id,
+      null,
       null
     );
   }
   
   public CopyOfBuilder copyOfBuilder() {
     return new CopyOfBuilder(id,
-      seed);
+      seed,
+      gamers);
   }
   public interface BuildStep {
     GameRoom build();
     BuildStep id(String id) throws IllegalArgumentException;
     BuildStep seed(String seed);
+    BuildStep gamers(Integer gamers);
   }
   
 
   public static class Builder implements BuildStep {
     private String id;
     private String seed;
+    private Integer gamers;
     @Override
      public GameRoom build() {
         String id = this.id != null ? this.id : UUID.randomUUID().toString();
         
         return new GameRoom(
           id,
-          seed);
+          seed,
+          gamers);
     }
     
     @Override
      public BuildStep seed(String seed) {
         this.seed = seed;
+        return this;
+    }
+    
+    @Override
+     public BuildStep gamers(Integer gamers) {
+        this.gamers = gamers;
         return this;
     }
     
@@ -155,14 +176,20 @@ public final class GameRoom implements Model {
   
 
   public final class CopyOfBuilder extends Builder {
-    private CopyOfBuilder(String id, String seed) {
+    private CopyOfBuilder(String id, String seed, Integer gamers) {
       super.id(id);
-      super.seed(seed);
+      super.seed(seed)
+        .gamers(gamers);
     }
     
     @Override
      public CopyOfBuilder seed(String seed) {
       return (CopyOfBuilder) super.seed(seed);
+    }
+    
+    @Override
+     public CopyOfBuilder gamers(Integer gamers) {
+      return (CopyOfBuilder) super.gamers(gamers);
     }
   }
   

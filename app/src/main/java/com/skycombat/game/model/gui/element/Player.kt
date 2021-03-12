@@ -24,12 +24,12 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
     }
     private var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH
-    private var positionX:Float
     private var playerImg : Bitmap
     private var playerShieldImg : Bitmap
 
     private var healthBar : HealthBar
     var positionY:Float
+    var positionX:Float
     var context: ViewContext = ViewContext.getInstance()
 
     override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP)

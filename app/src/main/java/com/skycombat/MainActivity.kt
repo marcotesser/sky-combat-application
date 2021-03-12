@@ -56,7 +56,8 @@ class MainActivity : AppCompatActivity() {
 
         // crea stanza e ci associa un giocatore
         findViewById<ImageButton>(R.id.multiplayer).setOnClickListener {
-            Log.i("idk", AWSMobileClient.getInstance().tokens.idToken.tokenString)
+            findViewById<ImageButton>(R.id.multiplayer).isClickable = false;
+            findViewById<ImageButton>(R.id.multiplayer).isEnabled = false;
 
             val url = "https://kqkytn0s9f.execute-api.eu-central-1.amazonaws.com/V1/add-to-pendency"
             val queue  = Volley.newRequestQueue(this)
@@ -66,9 +67,13 @@ class MainActivity : AppCompatActivity() {
                             var intent = Intent(this, LobbyActivity::class.java)
                             intent.putExtra("id-player", response.getString("id"))
                             startActivity(intent)
+                            findViewById<ImageButton>(R.id.multiplayer).isClickable = true;
+                            findViewById<ImageButton>(R.id.multiplayer).isEnabled = true;
                         }
                     },
                     { error ->
+                        findViewById<ImageButton>(R.id.multiplayer).isClickable = true;
+                        findViewById<ImageButton>(R.id.multiplayer).isEnabled = true;
                         Log.e("errore", error.toString())
                         toast("Errore richiesta partita")
                     }
@@ -87,73 +92,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, LeaderboardsActivity::class.java))
         }
 
-
-        // aggiorna il proprio punteggio
-        /*findViewById<Button>(R.id.changescore).setOnClickListener {
-            var old = players.stream().filter{ p-> p.name.toLowerCase(Locale.ROOT).indexOf(Amplify.Auth.currentUser.username.toLowerCase()) != -1}.findFirst().get()
-            Log.i("ID","${old.name},${old.id}")
-            var player = Player.builder()
-                    .name(old.name)
-                    .id(old.id)
-                    .gameroom(old.gameroom)
-                    .score((Math.random() * 10000).toInt())
-                    .lastinteraction(Temporal.Timestamp.now())
-                    .build()
-            Amplify.API.mutate(
-                    ModelMutation.update(player),
-                    { response -> Log.i("MyAmplifyApp", "Todo with id: " + response.data.id) },
-                    { error -> Log.e("MyAmplifyApp", "Create failed", error) }
-            )
-        }*/
-
-
-        // ottieni i giocatori e una volta ottenuti, ascoltare le loro modifiche
-        runOnUiThread{
-            Amplify.API.query(
-                    ModelQuery.list(Player::class.java),
-                    { response ->
-                        players = ArrayList(response.data.items.toList())
-                        val subscription: ApiOperation<*>? = Amplify.API.subscribe(
-                                ModelSubscription.onUpdate(Player::class.java),                         //_______________________
-                                { Log.i("ApiQuickStart", "Subscription established") },
-                                { onUpdate ->
-                                    Log.i("test", onUpdate.toString())//----update.data() getPlayers()
-                                    players.removeIf { p -> p.id == onUpdate.data.id }
-                                    players.add(onUpdate.data)
-                                    updateOutput()
-                                },
-                                { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
-                                { Log.i("ApiQuickStart", "Subscription completed") }
-                        )
-                    },
-                    { error -> Log.e("MyAmplifyApp", "Query failure", error) }
-            )
-
-        }
-
-
-
-
-
-
-
-
-        // ottieni i giocatori
-        /*
-        findViewById<Button>(R.id.showplayers).setOnClickListener{
-            Amplify.API.query(
-                    ModelQuery.list(Player::class.java),
-                    { response ->
-                        val output =
-                                response.data.items.sortedBy { p -> p.name.toLowerCase() }.joinToString { p -> "\n\n ${p.name},  score :${p.score},  ultima interazione: ${p.lastinteraction}" }
-                        runOnUiThread{
-                            findViewById<TextView>(R.id.output).text = output
-                        }
-                    },
-                    { error -> Log.e("MyAmplifyApp", "Query failure", error) }
-            )
-        }
-         */
 
         findViewById<Button>(R.id.play).setOnClickListener {
             Amplify.Auth.fetchAuthSession({ el ->
