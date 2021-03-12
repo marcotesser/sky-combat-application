@@ -22,7 +22,7 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                 ModelQuery.list(
                     Player::class.java,
                         Player.GAMEROOM.eq(currentPlayer.gameroom.id)
-                                .and(Player.LASTINTERACTION.gt(System.currentTimeMillis() - 10000L))
+                                .and(Player.LASTINTERACTION.gt((System.currentTimeMillis() - 10000L).toInt()))
                                 .and(Player.DEAD.eq(false))
                                 .and(Player.ID.ne(currentPlayer.id))
                 ),
