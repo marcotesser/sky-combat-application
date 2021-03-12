@@ -40,7 +40,7 @@ import java.util.stream.Stream
  * Represents the Game View
  * @param context : the context onto which the game will be drawn
  */
-class GameView(context: Context, private val velocity : Float, private var ghosts : List<Ghost> = CopyOnWriteArrayList()) : SurfaceView(context), SurfaceHolder.Callback {
+class GameView(context: Context, private val velocity : Float, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList()) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
     private val enemyFactory: EnemyFactory = EnemyFactory(100000) // TODO SEED
@@ -103,7 +103,7 @@ class GameView(context: Context, private val velocity : Float, private var ghost
             stop()
             gameOverObservable.notify(getCurrentTimeFromStart())
         } else {
-            listOf(enemies, powerUps, bullets).forEach { ar ->
+            listOf(enemies, powerUps, bullets, ghosts).forEach { ar ->
                 ar.removeIf(GUIElement::shouldRemove)
             }
 

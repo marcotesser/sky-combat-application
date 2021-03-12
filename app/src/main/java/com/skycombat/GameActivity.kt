@@ -15,6 +15,7 @@ import com.skycombat.game.multiplayer.MultiplayerSession
 import com.skycombat.game.multiplayer.PlayerUpdaterService
 import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.scene.GameView
+import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 
@@ -22,9 +23,9 @@ class GameActivity : Activity() {
 
     //gameView will be the mainview and it will manage the game's logic
     private var gameView: GameView? = null
-    private var opponents : OpponentUpdaterService? = null
+    private var remoteOpponents : OpponentUpdaterService? = null
     private var remotePlayer: PlayerUpdaterService? = null
-    private var ghosts = listOf<Ghost>();
+    private var ghosts = CopyOnWriteArrayList<Ghost>();
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -40,12 +41,12 @@ class GameActivity : Activity() {
 
         val velocity = 4f;
         if(MultiplayerSession.player!= null) {
-            ghosts = IntStream
+            ghosts = CopyOnWriteArrayList(IntStream
                     .range(0, MultiplayerSession.opponents.size)
                     .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
-                    .collect(Collectors.toList())
-            opponents = OpponentUpdaterService(MultiplayerSession.player!!, MultiplayerSession.opponents.zip(ghosts))
-            opponents?.start()
+                    .collect(Collectors.toList()))
+            remoteOpponents = OpponentUpdaterService(MultiplayerSession.player!!, MultiplayerSession.opponents.zip(ghosts))
+            remoteOpponents?.start()
             Log.e("debug", "PARTITO THREAD OPPONENTS")
         }
 
@@ -63,6 +64,12 @@ class GameActivity : Activity() {
         setContentView(gameView)
 
     }
+
+    private fun getDeadOpponents() : Int {
+        Log.e("RISULTATI", remoteOpponents?.opponents.toString())
+        return remoteOpponents?.opponents?.count { el -> el.second.isDead() } ?: 9999;
+    }
+
     /**
      * Calls the GameOverActivity to finish the game and report the score
      * @param score : the player's score at the end of the game.
@@ -70,11 +77,11 @@ class GameActivity : Activity() {
      */
     private fun callGameOverActivity(score : Long) {
         val intent = Intent(this, GameOverActivity::class.java)
-        if(remotePlayer != null && opponents != null) {
-            remotePlayer?.setAsDead(ghosts.count { el -> el.dead })
-            opponents?.stopUpdates()
+        if(remotePlayer != null && remoteOpponents != null) {
+            remotePlayer?.setAsDead(getDeadOpponents())
+            remoteOpponents?.stopUpdates()
             intent.putExtra("game-type", "multiplayer")
-            intent.putExtra("game-score", ghosts.count { el -> el.dead })
+            intent.putExtra("game-score", getDeadOpponents())
         } else {
             intent.putExtra("game-type", "single-player")
             intent.putExtra("score", score)
@@ -89,8 +96,8 @@ class GameActivity : Activity() {
 
     override fun onStop() {
         super.onStop()
-        remotePlayer?.setAsDead(ghosts.count { el -> el.dead })
-        opponents?.stopUpdates()
+        remotePlayer?.setAsDead(getDeadOpponents())
+        remoteOpponents?.stopUpdates()
     }
 
     override fun onBackPressed() {

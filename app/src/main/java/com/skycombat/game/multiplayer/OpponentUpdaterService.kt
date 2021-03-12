@@ -40,7 +40,7 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                         result.data.items.any { res -> res.id == el.first.id }
                     }
                     val partitions = opponents
-                        .partition{el -> present(el) && !el.second.dead}
+                        .partition{el -> present(el) && !el.second.isDead()}
 
                     // quelli presenti nella risposta dell'API
                     partitions.first.forEach{ p ->
@@ -50,8 +50,11 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                     }
 
                     // quelli non presenti nella risposta dell'API
-                    partitions.second.map{el -> el.second}
-                        .forEach{el -> el.dead = true}
+                    partitions.second.forEach{ p ->
+                            Log.e("idk","È MORTO ${p.first.name}")
+                            p.second.kill()
+                            p.second.isDead()
+                        }
 
                 },
                 { Log.e("MyAmplifyApp", "Query failed") }

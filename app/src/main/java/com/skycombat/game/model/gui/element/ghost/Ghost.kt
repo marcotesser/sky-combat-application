@@ -1,6 +1,7 @@
 package com.skycombat.game.model.gui.element.ghost
 
 import android.graphics.*
+import android.util.Log
 import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.element.GUIElement
@@ -17,7 +18,7 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
     private var x = context.getWidthScreen() / 2F
     var aimedPositionX: Float = x
     var y = context.getHeightScreen() / 5 * 4
-    var dead: Boolean = false;
+    private var dead: Boolean = false;
     var paint = Paint()
     var ghostImg : Bitmap
     init {
@@ -41,7 +42,11 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
         return this.isDead()
     }
 
-    private fun isDead(): Boolean {
+    fun kill() {
+        this.dead = true
+    }
+
+    fun isDead(): Boolean {
         return dead
     }
 
