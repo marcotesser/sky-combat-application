@@ -9,14 +9,16 @@ import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.component.PlayerHealthBar
 import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.bullet.strategy.PlayerCollisionStrategy
+import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
 import com.skycombat.game.model.gui.event.ShootObservable
+import com.skycombat.game.model.gui.properties.AimToPositionX
 import com.skycombat.game.model.gui.properties.CanShoot
 import com.skycombat.game.model.gui.properties.HasHealth
 
 /**
  * Represents an Player
  */
-class Player : HasHealth, Circle, GUIElement, CanShoot {
+class Player(private val velocity : Float, val aimedPositionStrategy: AimedPositionStrategy) : HasHealth, Circle, GUIElement, CanShoot, AimToPositionX {
 
     companion object{
         const val MAX_HEALTH : Float = 500f
@@ -27,18 +29,20 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
     private var playerImg : Bitmap
     private var playerShieldImg : Bitmap
 
-    private var healthBar : HealthBar
-    var positionY:Float
-    var positionX:Float
+
     var context: ViewContext = ViewContext.getInstance()
+
+
+    private var positionY:Float = context.getHeightScreen()/ 5 * 4
+    private var positionX:Float = context.getWidthScreen()/2F
+    var aimedPositionX:Float = this.positionX;
 
     override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP)
     override var shootObservable = ShootObservable()
 
+    private var healthBar : HealthBar = PlayerHealthBar(this)
+
     init {
-        positionX=context.getWidthScreen()/2F
-        positionY= context.getHeightScreen()/ 5 * 4
-        healthBar = PlayerHealthBar(this)
         playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
         playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
 
@@ -73,6 +77,7 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
     }
 
     override fun update() {
+        aimedPositionStrategy.move(this)
 
         weapon.update()
 
@@ -119,6 +124,22 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
 
     override fun startPointOfShoot(): PointF {
         return PointF(positionX, positionY - RADIUS - 2F)
+    }
+
+    override fun setX(pos: Float) {
+        this.positionX = pos
+    }
+
+    override fun getX(): Float {
+        return this.positionX
+    }
+
+    override fun aimToPos(): Float {
+        return this.aimedPositionX
+    }
+
+    override fun velocity(): Float {
+        return this.velocity
     }
 
 }

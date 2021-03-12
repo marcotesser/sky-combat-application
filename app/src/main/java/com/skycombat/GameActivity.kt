@@ -37,11 +37,11 @@ class GameActivity : Activity() {
         ViewContext.setContext(metrics.widthPixels.toFloat(), metrics.heightPixels.toFloat(), resources)
 
         var ghosts = listOf<Ghost>();
-
+        val velocity = 4f;
         if(MultiplayerSession.player!= null) {
             ghosts = IntStream
                     .range(0, MultiplayerSession.opponents.size)
-                    .mapToObj{ Ghost(LinearPositionStrategy()) }
+                    .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
                     .collect(Collectors.toList())
             val thread = OpponentUpdaterService(MultiplayerSession.player!!, MultiplayerSession.opponents.zip(ghosts))
             thread.start()
@@ -49,7 +49,7 @@ class GameActivity : Activity() {
         }
 
 
-        gameView = GameView(this, ghosts)
+        gameView = GameView(this, velocity, ghosts)
         gameView!!.setGameOverListener { score -> callGameOverActivity(score) }
         if(MultiplayerSession.player != null) {
             val playerUpdater = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!);

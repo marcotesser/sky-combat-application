@@ -5,6 +5,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class MultiplayerSession {
     companion object {
+        var UPS = 5;
         var player: Player? = null;
         var opponents: CopyOnWriteArrayList<Player> = CopyOnWriteArrayList();
     }

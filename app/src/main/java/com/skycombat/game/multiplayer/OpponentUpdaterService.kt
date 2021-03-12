@@ -3,13 +3,11 @@ package com.skycombat.game.multiplayer
 import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelQuery
 import com.amplifyframework.core.Amplify
+import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 
 class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pair<Player, Ghost>>) : Thread(){
-    companion object{
-        const val UPS = 1
-    }
     private var elapsedTime : Long = 0
     private var alive = true
     override fun run() {
@@ -22,13 +20,12 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                 ModelQuery.list(
                     Player::class.java,
                         Player.GAMEROOM.eq(currentPlayer.gameroom.id)
-                                .and(Player.LASTINTERACTION.gt((System.currentTimeMillis() - 10000L).toInt()))
+                                .and(Player.LASTINTERACTION.gt(Temporal.Timestamp.now()))
                                 .and(Player.DEAD.eq(false))
                                 .and(Player.ID.ne(currentPlayer.id))
                 ),
                 { result ->
-                    Log.e("AAAA", result.toString())
-                    if(result.data.items.count() > 0){
+                    if(result.data.items.count() <= 0){
                         Log.e("FINE", "TUTTI MORTI, SPENGO THREAD OPPONENTI")
                         alive = false
                     }
@@ -42,7 +39,7 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                 },
                 { Log.e("MyAmplifyApp", "Query failed") }
             )
-            sleep(1000L/UPS)
+            sleep(1000L/MultiplayerSession.UPS)
         }
     }
 }

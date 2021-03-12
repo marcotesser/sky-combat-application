@@ -6,14 +6,15 @@ import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
+import com.skycombat.game.model.gui.properties.AimToPositionX
 import com.skycombat.game.scene.ViewContext
 
-class Ghost(val aimedPos : AimedPositionStrategy) : GUIElement,  Circle {
+class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElement,  Circle, AimToPositionX {
     companion object{
         var RADIUS: Float = Player.RADIUS
     }
     var context: ViewContext = ViewContext.getInstance()
-    var x = context.getWidthScreen() / 2F
+    private var x = context.getWidthScreen() / 2F
     var aimedPositionX: Float = x
     var y = context.getHeightScreen() / 5 * 4
     var dead: Boolean = false;
@@ -51,5 +52,21 @@ class Ghost(val aimedPos : AimedPositionStrategy) : GUIElement,  Circle {
 
     override fun update() {
         aimedPos.move(this)
+    }
+
+    override fun setX(pos: Float) {
+        this.x = pos
+    }
+
+    override fun getX(): Float {
+        return this.x;
+    }
+
+    override fun aimToPos(): Float {
+        return this.aimedPositionX
+    }
+
+    override fun velocity(): Float {
+        return velocity
     }
 }

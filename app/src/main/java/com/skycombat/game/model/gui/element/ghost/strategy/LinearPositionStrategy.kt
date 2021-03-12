@@ -2,19 +2,17 @@ package com.skycombat.game.model.gui.element.ghost.strategy
 
 import android.util.Log
 import com.skycombat.game.model.gui.element.ghost.Ghost
+import com.skycombat.game.model.gui.properties.AimToPositionX
 import kotlin.math.abs
 
 class LinearPositionStrategy() : AimedPositionStrategy {
-    companion object{
-        const val MAX_DELTA = 3f;
-    }
-    override fun move(ghost: Ghost) {
-        if(abs(ghost.x - ghost.aimedPositionX ) < MAX_DELTA){
-            ghost.x = ghost.aimedPositionX
-        } else if(ghost.x > ghost.aimedPositionX ) {
-            ghost.x -= MAX_DELTA
+    override fun move(entity: AimToPositionX) {
+        if(abs(entity.getX() - entity.aimToPos() ) < entity.velocity()){
+            entity.setX( entity.aimToPos() )
+        } else if(entity.getX() > entity.aimToPos() ) {
+            entity.setX( entity.getX() - entity.velocity() )
         } else {
-            ghost.x += MAX_DELTA
+            entity.setX( entity.getX() + entity.velocity() )
         }
     }
 }
