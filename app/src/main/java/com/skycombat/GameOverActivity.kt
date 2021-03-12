@@ -2,7 +2,6 @@ package com.skycombat
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.TextView
@@ -17,8 +16,8 @@ class GameOverActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_game_over)
-        val SCORE = intent.getLongExtra("game-score", 0)
-        findViewById<TextView>(R.id.score).text = SCORE.toString()
+        val score = intent.getLongExtra(GameActivity.SIGLA_SCORE, 0)
+        findViewById<TextView>(R.id.score).text = score.toString()
     }
 
     override fun onBackPressed() {

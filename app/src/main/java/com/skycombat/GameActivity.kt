@@ -20,6 +20,22 @@ import java.util.stream.Collectors
 import java.util.stream.IntStream
 
 class GameActivity : Activity() {
+    companion object{
+        enum class GAME_TYPE{
+            SINGLE_PLAYER {
+                override fun sigla(): String {
+                    return "single-player"
+                }
+            }, MULTI_PLAYER {
+                override fun sigla(): String {
+                    return "multi-player"
+                }
+            };
+            abstract fun sigla(): String;
+        }
+        const val SIGLA_SCORE = "game-score"
+        const val SIGLA_TYPE = "game-type"
+    }
 
     //gameView will be the mainview and it will manage the game's logic
     private var gameView: GameView? = null
@@ -65,9 +81,9 @@ class GameActivity : Activity() {
 
     }
 
-    private fun getDeadOpponents() : Int {
+    private fun getCountDeadOpponents() : Long {
         Log.e("RISULTATI", remoteOpponents?.opponents.toString())
-        return remoteOpponents?.opponents?.count { el -> el.second.isDead() } ?: 0;
+        return remoteOpponents?.opponents?.count { el -> el.second.isDead() }?.toLong() ?: 0L;
     }
 
     /**
@@ -78,13 +94,13 @@ class GameActivity : Activity() {
     private fun callGameOverActivity(score : Long) {
         val intent = Intent(this, GameOverActivity::class.java)
         if(remotePlayer != null && remoteOpponents != null) {
-            remotePlayer?.setAsDead(getDeadOpponents())
+            remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
             remoteOpponents?.stopUpdates()
-            intent.putExtra("game-type", "multiplayer")
-            intent.putExtra("game-score", getDeadOpponents())
+            intent.putExtra(SIGLA_TYPE, GAME_TYPE.MULTI_PLAYER.sigla())
+            intent.putExtra(SIGLA_SCORE, getCountDeadOpponents())
         } else {
-            intent.putExtra("game-type", "single-player")
-            intent.putExtra("score", score)
+            intent.putExtra(SIGLA_TYPE, GAME_TYPE.SINGLE_PLAYER.sigla())
+            intent.putExtra(SIGLA_SCORE, score)
         }
         startActivity(intent)
     }
@@ -96,7 +112,7 @@ class GameActivity : Activity() {
 
     override fun onStop() {
         super.onStop()
-        remotePlayer?.setAsDead(getDeadOpponents())
+        remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         remoteOpponents?.stopUpdates()
     }
 
