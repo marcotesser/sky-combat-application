@@ -17,7 +17,7 @@ class GameOverActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_game_over)
-        val SCORE = intent.getLongExtra("score", 0)
+        val SCORE = intent.getLongExtra("game-score", 0)
         findViewById<TextView>(R.id.score).text = SCORE.toString()
     }
 

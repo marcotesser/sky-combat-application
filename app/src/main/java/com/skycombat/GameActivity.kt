@@ -67,7 +67,7 @@ class GameActivity : Activity() {
 
     private fun getDeadOpponents() : Int {
         Log.e("RISULTATI", remoteOpponents?.opponents.toString())
-        return remoteOpponents?.opponents?.count { el -> el.second.isDead() } ?: 9999;
+        return remoteOpponents?.opponents?.count { el -> el.second.isDead() } ?: 0;
     }
 
     /**
