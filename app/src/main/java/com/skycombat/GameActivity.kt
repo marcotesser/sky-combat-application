@@ -69,10 +69,16 @@ class GameActivity : Activity() {
      * @see GameOverActivity
      */
     private fun callGameOverActivity(score : Long) {
-        remotePlayer?.setAsDead(ghosts.count { el -> el.dead })
-        opponents?.stopUpdates()
         val intent = Intent(this, GameOverActivity::class.java)
-        intent.putExtra("score", score)
+        if(remotePlayer != null && opponents != null) {
+            remotePlayer?.setAsDead(ghosts.count { el -> el.dead })
+            opponents?.stopUpdates()
+            intent.putExtra("game-type", "multiplayer")
+            intent.putExtra("game-score", ghosts.count { el -> el.dead })
+        } else {
+            intent.putExtra("game-type", "single-player")
+            intent.putExtra("score", score)
+        }
         startActivity(intent)
     }
 
