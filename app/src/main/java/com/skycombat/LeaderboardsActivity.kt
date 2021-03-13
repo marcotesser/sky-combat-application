@@ -1,11 +1,24 @@
 package com.skycombat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import android.widget.Toast
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amplifyframework.core.Amplify
+import com.android.volley.toolbox.JsonArrayRequest
+import com.google.gson.JsonArray
+import java.util.HashMap
+
+import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 
 class LeaderboardsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,18 +33,20 @@ class LeaderboardsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_leaderboards)
 
-        findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(1)
+        //findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(1)
         findViewById<Button>(R.id.playersconfitti).isEnabled=false
+        getLeaderboard ("defeated")
 
         findViewById<Button>(R.id.playersconfitti).setOnClickListener{
-            findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(1)
             findViewById<Button>(R.id.playersconfitti).isEnabled=false
             findViewById<Button>(R.id.punteggiomaggiore).isEnabled=true
+            getLeaderboard ("defeated")
         }
+
         findViewById<Button>(R.id.punteggiomaggiore).setOnClickListener{
-            findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(2)
             findViewById<Button>(R.id.playersconfitti).isEnabled=true
             findViewById<Button>(R.id.punteggiomaggiore).isEnabled=false
+            getLeaderboard ("score")
         }
     }
 
@@ -40,77 +55,47 @@ class LeaderboardsActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun setLeaderboardText(code: Int) : String{
-        //fare le query qua e creare una stringa contenente la posizione del player, il nome e lo score
-        var leaderboardText: String
-        if(code==1){
-            leaderboardText="1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n" +
-                    " 1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n"+
-                    " 1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n"+
-                    " 1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n"
-        }else{
-            leaderboardText="1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n"
+    private fun getLeaderboard (scope: String) {
+        val url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope"
+        val queue  = Volley.newRequestQueue(this)
+        val jsonArrayRequest = object: JsonArrayRequest(Request.Method.GET, url, null,
+            { response ->
 
-        }
-        return leaderboardText
+                var row : String = ""
+                //non esiste inline???
+                //var myProfile : Boolean = (Amplify.Auth.currentUser == null) ? true : false
+                var myProfile : Boolean = true
+                if(Amplify.Auth.currentUser != null) {
+                    myProfile = false
+                }
 
+                for (index in 0..(response.length()-1)) {
+                    if (index < 10) {
+                        if(myProfile==false && response.getJSONObject(index).getString("username")==Amplify.Auth.currentUser.username) {
+                            myProfile = true
+                        }
+                        row += "${index+1} ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
+
+                    }
+                    else if(myProfile==true) {
+                        break
+                    }
+                    else if (response.getJSONObject(index).getString("username") == Amplify.Auth.currentUser.username) {
+                        myProfile = true
+                        row += "$index ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
+                    }
+                }
+                Log.e("row", row)
+                runOnUiThread {
+                    findViewById<TextView>(R.id.playerleaderboard).text = row
+                }
+            },
+            { error ->
+                Log.e("errore", error.toString())
+                findViewById<TextView>(R.id.playerleaderboard).text = "Errore richiesta classifica"
+            }
+        ) {}
+        queue.add(jsonArrayRequest)
     }
+
 }
