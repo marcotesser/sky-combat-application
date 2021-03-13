@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Window
 import android.view.WindowManager
-import android.widget.ImageButton
+import android.widget.Button
 import android.widget.TextView
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.core.Amplify
@@ -25,10 +25,23 @@ class GameOverActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_game_over)
-        val gameType = intent.getStringExtra(GameActivity.SIGLA_TYPE)
+
+        findViewById<Button>(R.id.backToHome).setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
+        val gameType = intent.getStringExtra(GameActivity.SIGLA_TYPE)!!
         val score = intent.getIntExtra(GameActivity.SIGLA_SCORE, 0)
-        Log.e("score",score.toString())
-        Log.e("gameType",gameType!!)
+
+        findViewById<Button>(R.id.playAgain).setOnClickListener {
+            if(gameType=="single-player") {
+                startActivity(Intent(this, GameActivity::class.java))
+            }
+            else {
+                startActivity(Intent(this, LobbyActivity::class.java))
+            }
+        }
+
         findViewById<TextView>(R.id.score).text = score.toString()
         if(Amplify.Auth.currentUser != null) {
             upLoad(gameType, score.toInt())
