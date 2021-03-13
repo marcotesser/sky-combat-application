@@ -11,8 +11,12 @@ import android.widget.TextView
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.core.Amplify
 import com.android.volley.Request
+import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import org.json.JSONObject
+import java.nio.charset.Charset
 import java.util.HashMap
 
 class GameOverActivity : AppCompatActivity() {
@@ -31,7 +35,7 @@ class GameOverActivity : AppCompatActivity() {
         }
 
         val gameType = intent.getStringExtra(GameActivity.SIGLA_TYPE)!!
-        val score = intent.getIntExtra(GameActivity.SIGLA_SCORE, 0)
+        val score = intent.getLongExtra(GameActivity.SIGLA_SCORE, 0)
 
         findViewById<Button>(R.id.playAgain).setOnClickListener {
             if(gameType=="single-player") {
@@ -44,7 +48,7 @@ class GameOverActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.score).text = score.toString()
         if(Amplify.Auth.currentUser != null) {
-            upLoad(gameType, score.toInt())
+            upLoad(gameType, score)
         }
     }
 
@@ -53,29 +57,37 @@ class GameOverActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    private fun upLoad(gameType : String, score : Int) {
-        var url : String = ""
-        if(gameType=="single-player") {
-            url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-singleplayer-score?score=$score"
+    private fun upLoad(gameType : String, score : Long) {
+        Log.e("cosa invia?",gameType+score.toString())
+        val requestQueue: RequestQueue = Volley.newRequestQueue(this);
+        val jsonBody = JSONObject();
+        val url : String
+        if(gameType==GameActivity.GAMETYPE.SINGLE_PLAYER.sigla()) {
+            url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-singleplayer-score"
+            jsonBody.put("score", score);
         }
-        else if(gameType=="multi-player") {
-            url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-multiplayer-score?score=$score"
+        else {
+            url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-multiplayer-score"
+            jsonBody.put("defeated", score);
         }
-        Log.e("url",url)
-        val queue  = Volley.newRequestQueue(this)
-        val jsonObjectRequest = object: JsonObjectRequest(
-            Request.Method.GET, url, null,
-            { },
-            { error ->
-                Log.e("errore", error.toString())
-            }
+
+        val requestBody: String = jsonBody.toString();
+
+        val stringRequest: StringRequest = object : StringRequest(
+            Method.POST,
+            url,
+            { resp -> Log.i("RESP", "Inviato il risultato: $resp") },
+            { resp -> Log.wtf("RESP ERRORE", "Errore invio: $resp") }
         ) {
-            override fun getHeaders(): Map<String, String> {
+            override fun getBody(): ByteArray {
+                return requestBody.toByteArray(Charset.defaultCharset())
+            }
+            override fun getHeaders():Map<String, String> {
                 val params = HashMap<String, String>()
                 params["Authorization"] = AWSMobileClient.getInstance().tokens.idToken.tokenString
                 return params
             }
         }
-        queue.add(jsonObjectRequest)
+        requestQueue.add(stringRequest)
     }
 }
