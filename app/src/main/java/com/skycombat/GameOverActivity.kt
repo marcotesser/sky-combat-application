@@ -1,10 +1,19 @@
 package com.skycombat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.TextView
+import com.amazonaws.mobile.client.AWSMobileClient
+import com.amplifyframework.core.Amplify
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import java.util.HashMap
 
 class GameOverActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,12 +25,44 @@ class GameOverActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
         setContentView(R.layout.activity_game_over)
-        val score = intent.getLongExtra(GameActivity.SIGLA_SCORE, 0)
+        val gameType = intent.getStringExtra(GameActivity.SIGLA_TYPE)
+        val score = intent.getIntExtra(GameActivity.SIGLA_SCORE, 0)
+        Log.e("score",score.toString())
+        Log.e("gameType",gameType!!)
         findViewById<TextView>(R.id.score).text = score.toString()
+        if(Amplify.Auth.currentUser != null) {
+            upLoad(gameType, score.toInt())
+        }
     }
 
     override fun onBackPressed() {
         this.finish()
         super.onBackPressed()
+    }
+
+    private fun upLoad(gameType : String, score : Int) {
+        var url : String = ""
+        if(gameType=="single-player") {
+            url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-singleplayer-score?score=$score"
+        }
+        else if(gameType=="multi-player") {
+            url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-multiplayer-score?score=$score"
+        }
+        Log.e("url",url)
+        val queue  = Volley.newRequestQueue(this)
+        val jsonObjectRequest = object: JsonObjectRequest(
+            Request.Method.GET, url, null,
+            { },
+            { error ->
+                Log.e("errore", error.toString())
+            }
+        ) {
+            override fun getHeaders(): Map<String, String> {
+                val params = HashMap<String, String>()
+                params["Authorization"] = AWSMobileClient.getInstance().tokens.idToken.tokenString
+                return params
+            }
+        }
+        queue.add(jsonObjectRequest)
     }
 }
