@@ -59,15 +59,16 @@ class LeaderboardsActivity : AppCompatActivity() {
             { response ->
 
                 var row : String = ""
+                var myScore : String = ""
                 //non esiste inline???
                 //var myProfile : Boolean = (Amplify.Auth.currentUser == null) ? true : false
-                var myProfile : Boolean = true
+                /*var myProfile : Boolean = true
                 if(Amplify.Auth.currentUser != null) {
                     myProfile = false
-                }
+                }*/
 
                 for (index in 0..(response.length()-1)) {
-                    if (index < 10) {
+                    /*if (index < 10) {
                         if(myProfile==false && response.getJSONObject(index).getString("username")==Amplify.Auth.currentUser.username) {
                             myProfile = true
                         }
@@ -80,11 +81,25 @@ class LeaderboardsActivity : AppCompatActivity() {
                     else if (response.getJSONObject(index).getString("username") == Amplify.Auth.currentUser.username) {
                         myProfile = true
                         row += "$index ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
+                    }*/
+                    if(Amplify.Auth.currentUser != null) {
+                        Log.e("profile", Amplify.Auth.currentUser.username+" "+response.getJSONObject(index).getString("username"))
+                        if(response.getJSONObject(index).getString("username")==Amplify.Auth.currentUser.username) {
+                            myScore = "${index+1} ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
+                            Log.e("myScore", myScore)
+                        }
                     }
+                    else {
+                        Log.e("profile", "Incognito")
+                    }
+                    row += "${index+1} ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
+
                 }
-                Log.e("row", row)
+                //Log.e("row", row)
+                Log.e("myScore", myScore)
                 runOnUiThread {
                     findViewById<TextView>(R.id.playerleaderboard).text = row
+                    findViewById<TextView>(R.id.playerScore).text = myScore
                 }
             },
             { error ->
