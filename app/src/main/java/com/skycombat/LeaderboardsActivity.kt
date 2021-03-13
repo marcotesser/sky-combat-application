@@ -1,24 +1,19 @@
 package com.skycombat
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import android.widget.Toast
-import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.core.Amplify
 import com.android.volley.toolbox.JsonArrayRequest
-import com.google.gson.JsonArray
-import java.util.HashMap
-
-import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 
 class LeaderboardsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,19 +28,21 @@ class LeaderboardsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_leaderboards)
 
-        //findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(1)
         findViewById<Button>(R.id.playersconfitti).isEnabled=false
+        findViewById<TextView>(R.id.playerleaderboard).text = "Loading ..."
         getLeaderboard ("defeated")
 
         findViewById<Button>(R.id.playersconfitti).setOnClickListener{
             findViewById<Button>(R.id.playersconfitti).isEnabled=false
             findViewById<Button>(R.id.punteggiomaggiore).isEnabled=true
+            findViewById<TextView>(R.id.playerleaderboard).text = "Loading ..."
             getLeaderboard ("defeated")
         }
 
         findViewById<Button>(R.id.punteggiomaggiore).setOnClickListener{
             findViewById<Button>(R.id.playersconfitti).isEnabled=true
             findViewById<Button>(R.id.punteggiomaggiore).isEnabled=false
+            findViewById<TextView>(R.id.playerleaderboard).text = "Loading ..."
             getLeaderboard ("score")
         }
     }
