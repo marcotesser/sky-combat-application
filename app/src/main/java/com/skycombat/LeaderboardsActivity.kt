@@ -14,6 +14,10 @@ import com.android.volley.Request
 import com.android.volley.toolbox.Volley
 import com.amplifyframework.core.Amplify
 import com.android.volley.toolbox.JsonArrayRequest
+import com.android.volley.toolbox.JsonObjectRequest
+import com.google.gson.JsonObject
+import org.json.JSONArray
+import org.json.JSONObject
 
 class LeaderboardsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,40 +57,41 @@ class LeaderboardsActivity : AppCompatActivity() {
     }
 
     private fun getLeaderboard (scope: String) {
-        val url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope"
+        val url : String = if(Amplify.Auth.currentUser != null) {
+           "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope&username=${Amplify.Auth.currentUser.username}"
+        }
+        else {
+            "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope"
+        }
         val queue  = Volley.newRequestQueue(this)
-        val jsonArrayRequest = object: JsonArrayRequest(Request.Method.GET, url, null,
+        val jsonObjectRequest = object: JsonObjectRequest(Request.Method.GET, url, null,
             { response ->
-
-                var row : String = ""
-                var myScore : String = ""
-
-                for (index in 0..(response.length()-1)) {
-                    if(Amplify.Auth.currentUser != null) {
-                        Log.e("profile", Amplify.Auth.currentUser.username+" "+response.getJSONObject(index).getString("username"))
-                        if(response.getJSONObject(index).getString("username")==Amplify.Auth.currentUser.username) {
-                            myScore = "${index+1} ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
-                            Log.e("myScore", myScore)
-                        }
+                if(response.has("me")) {
+                    val me: JSONObject = response.getJSONObject("me")
+                    val myScore : String = "Sei in posizione: ${me.getString("pos")} \nIl tuo punteggio è: ${me.getString(scope)}"
+                    runOnUiThread {
+                        findViewById<TextView>(R.id.playerScore).text = myScore
                     }
-                    else {
-                        Log.e("profile", "Incognito")
-                    }
-                    row += "${index+1} ${response.getJSONObject(index).getString("username")} ${response.getJSONObject(index).getString(scope)} \n"
-
                 }
-                Log.e("myScore", myScore)
+
+                val leaderboard: JSONArray = response.getJSONArray("leaderboard")
+                var row : String = ""
+                for (index in 0 until leaderboard.length()) {
+                    row += "${index+1} ${leaderboard.getJSONObject(index).getString("username")} ${leaderboard.getJSONObject(index).getString(scope)} \n"
+                }
+
                 runOnUiThread {
                     findViewById<TextView>(R.id.playerleaderboard).text = row
-                    findViewById<TextView>(R.id.playerScore).text = myScore
                 }
             },
             { error ->
                 Log.e("errore", error.toString())
-                findViewById<TextView>(R.id.playerleaderboard).text = "Errore richiesta classifica"
+                runOnUiThread {
+                    findViewById<TextView>(R.id.playerleaderboard).text = "Errore richiesta classifica"
+                }
             }
         ) {}
-        queue.add(jsonArrayRequest)
+        queue.add(jsonObjectRequest)
     }
 
 }

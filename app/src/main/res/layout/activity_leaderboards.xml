@@ -94,14 +94,14 @@
     <TextView
         android:id="@+id/playerScore"
         android:layout_width="321dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="48dp"
+        android:layout_height="70dp"
+        android:layout_marginTop="28dp"
         android:fontFamily="@font/old_school_united_stencil"
         android:gravity="left"
         android:text=""
         android:textColor="#354815"
-        android:textSize="40sp"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/scrollView2" />
 
