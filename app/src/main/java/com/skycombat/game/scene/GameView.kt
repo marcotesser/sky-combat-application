@@ -35,16 +35,17 @@ import com.skycombat.game.model.gui.panel.GamePanel
 import com.skycombat.game.model.gui.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
+import kotlin.random.Random
 
 /**
  * Represents the Game View
  * @param context : the context onto which the game will be drawn
  */
-class GameView(context: Context, private val velocity : Float, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList()) : SurfaceView(context), SurfaceHolder.Callback {
+class GameView(context: Context, private var player : Player, private val velocity : Float, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(), private val seed : Long = Random.nextLong()) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
-    private val enemyFactory: EnemyFactory = EnemyFactory(100000) // TODO SEED
-    private val powerUpFactory: PowerUpFactory = PowerUpFactory(100000) // TODO SEED
+    private val enemyFactory: EnemyFactory = EnemyFactory(seed)
+    private val powerUpFactory: PowerUpFactory = PowerUpFactory(seed)
 
     private val startTime = System.currentTimeMillis()
     private var gameLoop: GameLoop = GameLoop(this, holder)
@@ -53,7 +54,6 @@ class GameView(context: Context, private val velocity : Float, private var ghost
 
     private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList()
     private val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList()
-    private var player : Player = Player(velocity, LinearPositionStrategy())
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(listOf(
         FPSPanel(20F, viewContext.height/2, gameLoop, this ),
         UPSPanel(20F, viewContext.height/2 + 100, gameLoop, this )
@@ -69,9 +69,11 @@ class GameView(context: Context, private val velocity : Float, private var ghost
         holder.addCallback(this)
         focusable = View.FOCUSABLE
     }
-
+    private fun isGameOver() : Boolean{
+        return this.player.isDead() && ghosts.isEmpty()
+    }
     override fun draw(canvas: Canvas?) {
-        if (player.isDead()) {
+        if (isGameOver()) {
             return
         }
         super.draw(canvas)
@@ -99,7 +101,7 @@ class GameView(context: Context, private val velocity : Float, private var ghost
      * @see Player
      */
     fun update() {
-        if (player.isDead()) {
+        if (isGameOver()) {
             stop()
             gameOverObservable.notify(getCurrentTimeFromStart())
         } else {
@@ -193,5 +195,9 @@ class GameView(context: Context, private val velocity : Float, private var ghost
 
     fun getPlayer() : Player{
         return player;
+    }
+
+    fun setGhosts(opponents : List<Ghost>){
+        this.ghosts = CopyOnWriteArrayList(opponents)
     }
 }

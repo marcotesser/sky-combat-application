@@ -4,6 +4,8 @@ import android.graphics.*
 import com.skycombat.R
 import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.geometry.Circle
+import com.skycombat.game.model.geometry.Entity
+import com.skycombat.game.model.geometry.Rectangle
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.component.PlayerHealthBar
@@ -28,6 +30,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     override var health : Float = MAX_HEALTH
     private var playerImg : Bitmap
     private var playerShieldImg : Bitmap
+    var deadAt : Long? = null
 
 
     var context: ViewContext = ViewContext.getInstance()
@@ -45,7 +48,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     init {
         playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
         playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
-
+        deadAt = null;
     }
     /**
      * Draws the player and player's health-bar
@@ -53,12 +56,14 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
      * @see HealthBar
      */
     override fun draw(canvas: Canvas?) {
-        if(hasShield()){
-            canvas?.drawBitmap(playerShieldImg,positionX- RADIUS /2,positionY- RADIUS /2,null)
-        }else{
-            canvas?.drawBitmap(playerImg,positionX- RADIUS /2,positionY- RADIUS /2,null)
+        if(isAlive()) {
+            if (hasShield()) {
+                canvas?.drawBitmap(playerShieldImg, positionX - RADIUS / 2, positionY - RADIUS / 2, null)
+            } else {
+                canvas?.drawBitmap(playerImg, positionX - RADIUS / 2, positionY - RADIUS / 2, null)
+            }
+            healthBar.draw(canvas)
         }
-        healthBar.draw(canvas)
     }
 
     override fun shouldRemove(): Boolean {
@@ -75,16 +80,14 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     override fun isDamageable():Boolean{
         return !hasShield()
     }
-
     override fun update() {
-        aimedPositionStrategy.move(this)
-
-        weapon.update()
-
-        if(updatesFromEndShield >0) updatesFromEndShield --
-
+        setDeadAtIfDead(System.currentTimeMillis())
+        if(isAlive()) {
+            aimedPositionStrategy.move(this)
+            weapon.update()
+            if (updatesFromEndShield > 0) updatesFromEndShield--
+        }
     }
-
 
     /**
      * Sets the player position
@@ -142,4 +145,34 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
         return this.velocity
     }
 
+    override fun collide(el: Rectangle): Boolean {
+        if(isDead()) return false;
+        return super.collide(el)
+    }
+
+    override fun collide(el: Circle): Boolean {
+        if(isDead()) return false;
+        return super.collide(el)
+    }
+
+    override fun collide(el: Entity): Boolean {
+        if(isDead()) return false;
+        return super.collide(el)
+    }
+
+    override fun isDead(): Boolean {
+        setDeadAtIfDead(System.currentTimeMillis())
+        return super.isDead()
+    }
+
+    override fun isAlive(): Boolean {
+        setDeadAtIfDead(System.currentTimeMillis())
+        return super.isAlive()
+    }
+
+    fun setDeadAtIfDead(time : Long){
+        if(this.health <= 0 && this.deadAt == null){
+            this.deadAt = time
+        }
+    }
 }

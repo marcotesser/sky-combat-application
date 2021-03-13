@@ -9,9 +9,13 @@ import com.skycombat.game.model.gui.element.ghost.Ghost
 import java.util.concurrent.TimeUnit
 import java.util.function.Predicate
 
-class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pair<Player, Ghost>>) : Thread(){
+class RemoteOpponentUpdaterService(var currentPlayer: Player, private var opponents : List<Pair<Player, Ghost>>) : OpponentsUpdater(){
     private var elapsedTime : Long = 0
     private var alive = true
+    override fun getOpponents(): List<Ghost> {
+        return opponents.map { el -> el.second }
+    }
+
     override fun run() {
         super.run()
         Log.e("debug", "PARTITO THREAD OPPONENTS")
@@ -53,7 +57,6 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
                     partitions.second.forEach{ p ->
                             Log.e("idk","È MORTO ${p.first.name}")
                             p.second.kill()
-                            p.second.isDead()
                         }
 
                 },
@@ -62,7 +65,7 @@ class OpponentUpdaterService(var currentPlayer: Player, var opponents : List<Pai
             sleep(1000L/MultiplayerSession.UPS)
         }
     }
-    fun stopUpdates(){
+    override fun stopUpdates(){
         this.alive = false;
     }
 }

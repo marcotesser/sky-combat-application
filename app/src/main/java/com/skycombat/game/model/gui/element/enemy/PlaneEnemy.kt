@@ -6,7 +6,13 @@ import com.skycombat.R
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 
-class PlaneEnemy(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletType,mov) {
+/**
+ * @param healthCoefficient : coefficiente di aumento della vita ->
+ *      > 1 -> aumenta la vita
+ *      < 1 -> diminuisce la vita
+ *      = 1 -> la vita non cambia
+ */
+class PlaneEnemy(bulletType: Weapon.BulletType, mov : Movement, var healthCoefficient : Float = 1F) : Enemy(bulletType,mov) {
 
     companion object{
         const val MAX_HEALTH : Float = 200f
@@ -15,7 +21,7 @@ class PlaneEnemy(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletTy
     }
 
     override fun getMaxHealth(): Float {
-        return MAX_HEALTH
+        return MAX_HEALTH * healthCoefficient
     }
 
     override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemyone)), WIDTH.toInt(), HEIGHT.toInt(),false)

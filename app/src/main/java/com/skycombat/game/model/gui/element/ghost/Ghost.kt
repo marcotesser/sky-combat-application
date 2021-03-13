@@ -4,6 +4,8 @@ import android.graphics.*
 import android.util.Log
 import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
+import com.skycombat.game.model.geometry.Entity
+import com.skycombat.game.model.geometry.Rectangle
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
@@ -19,6 +21,7 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
     var aimedPositionX: Float = x
     var y = context.getHeightScreen() / 5 * 4
     private var dead: Boolean = false;
+    var deadAt : Long? = null;
     var paint = Paint()
     var ghostImg : Bitmap
     init {
@@ -47,16 +50,26 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
     }
 
     fun isDead(): Boolean {
+        if(dead && deadAt == null){
+            deadAt = System.currentTimeMillis()
+        }
         return dead
     }
 
-    override fun draw(canvas: Canvas?) {
+    fun isAlive(): Boolean {
+        return !isDead()
+    }
 
-        canvas?.drawBitmap(ghostImg, x - RADIUS /2,y - RADIUS /2, paint)
+    override fun draw(canvas: Canvas?) {
+        if(isAlive()) {
+            canvas?.drawBitmap(ghostImg, x - RADIUS / 2, y - RADIUS / 2, paint)
+        }
     }
 
     override fun update() {
-        aimedPos.move(this)
+        if(isAlive()){
+            aimedPos.move(this)
+        }
     }
 
     override fun setX(pos: Float) {
@@ -73,5 +86,17 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
 
     override fun velocity(): Float {
         return velocity
+    }
+
+    override fun collide(el: Rectangle): Boolean {
+        return false
+    }
+
+    override fun collide(el: Circle): Boolean {
+        return false
+    }
+
+    override fun collide(el: Entity): Boolean {
+        return false
     }
 }
