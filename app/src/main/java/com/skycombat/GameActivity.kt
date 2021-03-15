@@ -68,6 +68,7 @@ class GameActivity : Activity() {
             metrics.heightPixels.toFloat(),
             resources
         )
+        Log.e("giocatori", MultiplayerSession.opponents.toString())
 
 
         // creazione GameView
