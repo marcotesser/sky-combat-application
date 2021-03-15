@@ -68,17 +68,25 @@ class GameActivity : Activity() {
             metrics.heightPixels.toFloat(),
             resources
         )
+
         Log.e("giocatori", MultiplayerSession.opponents.toString())
 
 
         // creazione GameView
         player = Player(velocity, LinearPositionStrategy())
         player.addOnDeathOccurListener{
-            score = when(currentGametype){
-                GAMETYPE.MULTI_PLAYER -> getCountDeadOpponents()
-                GAMETYPE.SINGLE_PLAYER -> gameView?.deadEnemies?.map { enemy ->
-                    enemy.points
-                }?.reduceOrNull(Long::plus) ?: 0L
+            when(currentGametype){
+                GAMETYPE.MULTI_PLAYER -> {
+                    score = getCountDeadOpponents()
+                    Log.e("testmorte", opponentsUpdater?.getOpponents().toString())
+                }
+                GAMETYPE.SINGLE_PLAYER -> {
+                    score = gameView?.deadEnemies?.map { enemy ->
+                        enemy.points
+                    }?.reduceOrNull(Long::plus) ?: 0L
+
+                    Log.e("testmorte", gameView?.deadEnemies.toString())
+                }
             }
             Log.e("MORTO PLAYER PRINCIPALE, LO SCORE è", score.toString())
             remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
