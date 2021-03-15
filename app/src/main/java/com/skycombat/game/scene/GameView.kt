@@ -91,7 +91,7 @@ class GameView(context: Context, private var player : Player, private var ghosts
      */
     fun update() {
         if (isGameOver()) {
-            this.pause()
+            gameLoop.killLoop()
             gameOverObservable.notify(getMillisFromStart())
         } else {
             listOf(enemies, powerUps, bullets, ghosts).forEach { ar ->
