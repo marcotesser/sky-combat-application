@@ -55,8 +55,8 @@ class GameView(context: Context, private var player : Player, private val veloci
     private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList()
     private val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList()
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(listOf(
-        FPSPanel(20F, viewContext.height/2, gameLoop, this ),
-        UPSPanel(20F, viewContext.height/2 + 100, gameLoop, this )
+        /*FPSPanel(20F, viewContext.height/2, gameLoop, this ),
+        UPSPanel(20F, viewContext.height/2 + 100, gameLoop, this )*/
     ))
     private val background : Background = Background(
         Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.islands)),viewContext.width.toInt(),viewContext.width.toInt()*3,false),

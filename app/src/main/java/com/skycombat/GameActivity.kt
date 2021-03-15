@@ -95,14 +95,17 @@ class GameActivity : Activity() {
             remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!);
             remotePlayer?.start()
         } else {
-            currentGAMETYPE = GAMETYPE.MULTI_PLAYER
+            currentGAMETYPE = GAMETYPE.SINGLE_PLAYER
+            ghosts = CopyOnWriteArrayList()
 
+            /*
+            currentGAMETYPE = GAMETYPE.MULTI_PLAYER
             ghosts = CopyOnWriteArrayList(IntStream
-                    .range(0, 2)
+                    .range(0, 4)
                     .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
                     .collect(Collectors.toList()))
             opponentsUpdater = MockOpponentsUpdaterService(ghosts)
-            opponentsUpdater?.start()
+            opponentsUpdater?.start()*/
         }
         gameView?.setGhosts(ghosts)
         setContentView(gameView)
