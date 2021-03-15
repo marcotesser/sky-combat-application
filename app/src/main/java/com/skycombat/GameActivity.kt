@@ -69,7 +69,7 @@ class GameActivity : Activity() {
             resources
         )
 
-        Log.e("giocatori", MultiplayerSession.opponents.toString())
+        Log.e("giocatori della partita corrente", MultiplayerSession.opponents.toString())
 
 
         // creazione GameView
@@ -78,17 +78,17 @@ class GameActivity : Activity() {
             when(currentGametype){
                 GAMETYPE.MULTI_PLAYER -> {
                     score = getCountDeadOpponents()
-                    Log.e("testmorte", opponentsUpdater?.getOpponents().toString())
+                    Log.e("opponenti presi in considerazione", opponentsUpdater?.getOpponents().toString())
                 }
                 GAMETYPE.SINGLE_PLAYER -> {
                     score = gameView?.deadEnemies?.map { enemy ->
                         enemy.points
                     }?.reduceOrNull(Long::plus) ?: 0L
 
-                    Log.e("testmorte", gameView?.deadEnemies.toString())
+                    Log.e("opponenti presi in considerazione", gameView?.deadEnemies.toString())
                 }
             }
-            Log.e("MORTO PLAYER PRINCIPALE, LO SCORE è", score.toString())
+            Log.e("morto player principale, lo score è", score.toString())
             remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         }
         gameView = GameView(
@@ -161,7 +161,6 @@ class GameActivity : Activity() {
      * @see GameOverActivity
      */
     private fun callGameOverActivity() {
-        Log.e("test", "chiamo game over activity")
         val intent = Intent(this, GameOverActivity::class.java)
 
         // in caso ci fossero servizi di aggiornamento remoti, li fermo

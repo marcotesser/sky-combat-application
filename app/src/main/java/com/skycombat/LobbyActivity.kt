@@ -7,6 +7,7 @@ import android.view.WindowManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.AWSMobileClient
+import com.amplifyframework.api.graphql.GraphQLOperation
 import com.amplifyframework.api.graphql.model.ModelSubscription
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.datastore.generated.model.Player
@@ -41,12 +42,11 @@ class LobbyActivity : AppCompatActivity() {
             this.removeFromQueue()
             this.finish()
         }
-
-        Amplify.API.subscribe(
+        var sub : GraphQLOperation<Player>? = null
+        sub = Amplify.API.subscribe(
                 ModelSubscription.onCreate(Player::class.java),
                 { Log.i("ApiQuickStart", "Subscription established") },
                 { onCreated ->
-                    Log.e("giocatore arrivato", onCreated.toString())
                     if (onCreated.data.id == id && MultiplayerSession.player == null) {
                         MultiplayerSession.player = onCreated.data
                         MultiplayerSession.opponents = CopyOnWriteArrayList(
@@ -54,23 +54,22 @@ class LobbyActivity : AppCompatActivity() {
                                 op.id != onCreated.data.id
                             }
                         )
-                        Log.e("gameroom id", MultiplayerSession.player!!.gameroom.id)
-                        startGameIfReady()
+                        startGameIfReady(sub)
                     } else if (
                         MultiplayerSession.player != null &&
                         onCreated.data.gameroom.id == MultiplayerSession.player!!.gameroom.id) {
-                        Log.e("gameroom id giocatore aggiunto dopo", onCreated.data.gameroom.id)
                             MultiplayerSession.opponents.add(onCreated.data)
-                            startGameIfReady()
+                            startGameIfReady(sub)
                     }
                 },
                 { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
                 { Log.i("ApiQuickStart", "Subscription completed") }
         )
     }
-     private fun startGameIfReady(){
+     private fun startGameIfReady(subscription : GraphQLOperation<Player>?){
         if(MultiplayerSession.player != null &&
             MultiplayerSession.opponents.size == MultiplayerSession.player!!.gameroom.gamers - 1){
+                subscription?.cancel()
                 val intent = Intent(this, GameActivity::class.java)
                 startActivity(intent)
         }
@@ -100,9 +99,9 @@ class LobbyActivity : AppCompatActivity() {
         requestQueue.add(stringRequest)
     }
 
-    override fun onPause() {
-        super.onPause()
-        this.removeFromQueue()
+    override fun onStop() {
+        super.onStop()
+        //this.removeFromQueue()
         super.finish()
     }
     override fun onBackPressed() {
