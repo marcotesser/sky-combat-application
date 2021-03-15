@@ -20,20 +20,20 @@ import kotlin.random.Random
 
 class GameActivity : Activity() {
     companion object{
-        enum class GAMETYPE{
-            SINGLE_PLAYER {
-                override fun sigla(): String {
-                    return "single-player"
-                }
-            }, MULTI_PLAYER {
-                override fun sigla(): String {
-                    return "multi-player"
-                }
-            };
-            abstract fun sigla(): String;
-        }
         const val SIGLA_SCORE = "game-score"
         const val SIGLA_TYPE = "game-type"
+    }
+    enum class GAMETYPE{
+        SINGLE_PLAYER {
+            override fun sigla(): String {
+                return "single-player"
+            }
+        }, MULTI_PLAYER {
+            override fun sigla(): String {
+                return "multi-player"
+            }
+        };
+        abstract fun sigla(): String;
     }
 
     //gameView will be the mainview and it will manage the game's logic

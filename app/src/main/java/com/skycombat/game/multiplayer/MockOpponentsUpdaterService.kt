@@ -24,7 +24,7 @@ class MockOpponentsUpdaterService (private var opponents : List<Ghost>) : Oppone
             opponents.forEach{ op ->
                 if(!op.isDead()) {
                     op.aimedPositionX = Math.random().toFloat() * op.context.width
-                    if(Math.random() < 0.1){
+                    if(Math.random() < 0.8){
                         op.kill()
                     }
                 }
