@@ -79,6 +79,7 @@ class GameActivity : Activity() {
                     enemy.points
                 }?.reduceOrNull(Long::plus) ?: 0L
             }
+            Log.e("MORTO PLAYER PRINCIPALE, LO SCORE è", score.toString())
             remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         }
         gameView = GameView(

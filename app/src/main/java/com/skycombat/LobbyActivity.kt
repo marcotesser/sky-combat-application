@@ -51,6 +51,7 @@ class LobbyActivity : AppCompatActivity() {
                                 op.id != onCreated.data.id
                             }
                         )
+                        Log.e("cosa sono gli opponenti: ",MultiplayerSession.opponents.toString())
                         startGameIfReady()
                     } else if (
                         MultiplayerSession.player != null &&
