@@ -14,6 +14,8 @@ import com.skycombat.game.model.gui.component.PlayerHealthBar
 import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.bullet.strategy.PlayerCollisionStrategy
 import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
+import com.skycombat.game.model.gui.event.PlayerDeathObservable
+import com.skycombat.game.model.gui.event.PlayerDeathObserver
 import com.skycombat.game.model.gui.event.ShootObservable
 import com.skycombat.game.model.gui.properties.AimToPositionX
 import com.skycombat.game.model.gui.properties.CanShoot
@@ -33,6 +35,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     override var health : Float = MAX_HEALTH
     private var playerImg : Bitmap
     private var playerShieldImg : Bitmap
+    private var deathObservable : PlayerDeathObservable = PlayerDeathObservable()
     var deadAt : Long? = null
 
 
@@ -176,6 +179,10 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     fun setDeadAtIfDead(time : Long){
         if(this.health <= 0 && this.deadAt == null){
             this.deadAt = time
+            deathObservable.notify(time)
         }
+    }
+    fun addOnDeathOccurListener(listener: PlayerDeathObserver){
+        deathObservable.attach(listener)
     }
 }

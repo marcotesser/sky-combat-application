@@ -71,6 +71,9 @@ class GameActivity : Activity() {
 
         // creazione GameView
         player = Player(velocity, LinearPositionStrategy())
+        player.addOnDeathOccurListener{
+            remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
+        }
         gameView = GameView(
             this,
             player,
