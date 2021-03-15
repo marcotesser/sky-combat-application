@@ -35,27 +35,31 @@ class LobbyActivity : AppCompatActivity() {
 
         MultiplayerSession.player = null
         MultiplayerSession.opponents.clear()
+        MultiplayerSession.opponents = CopyOnWriteArrayList()
 
         findViewById<Button>(R.id.remove_from_queue).setOnClickListener{
             this.removeFromQueue()
             this.finish()
         }
+
         Amplify.API.subscribe(
                 ModelSubscription.onCreate(Player::class.java),
                 { Log.i("ApiQuickStart", "Subscription established") },
                 { onCreated ->
-                    if (onCreated.data.id == id) {
+                    Log.e("giocatore arrivato", onCreated.toString())
+                    if (onCreated.data.id == id && MultiplayerSession.player == null) {
                         MultiplayerSession.player = onCreated.data
                         MultiplayerSession.opponents = CopyOnWriteArrayList(
                             onCreated.data.gameroom.players.filter { op ->
                                 op.id != onCreated.data.id
                             }
                         )
-                        Log.e("cosa sono gli opponenti: ",MultiplayerSession.opponents.toString())
+                        Log.e("gameroom id", MultiplayerSession.player!!.gameroom.id)
                         startGameIfReady()
                     } else if (
                         MultiplayerSession.player != null &&
                         onCreated.data.gameroom.id == MultiplayerSession.player!!.gameroom.id) {
+                        Log.e("gameroom id giocatore aggiunto dopo", onCreated.data.gameroom.id)
                             MultiplayerSession.opponents.add(onCreated.data)
                             startGameIfReady()
                     }

@@ -14,6 +14,8 @@ import com.amplifyframework.auth.cognito.AWSCognitoAuthPlugin
 import com.amplifyframework.core.Amplify
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.skycombat.game.multiplayer.MultiplayerSession
+import java.util.concurrent.CopyOnWriteArrayList
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,6 +76,9 @@ class MainActivity : AppCompatActivity() {
         singleplayer.setOnClickListener {
             startActivity(Intent(this, GameActivity::class.java))
         }
+
+        MultiplayerSession.player = null;
+        MultiplayerSession.opponents = CopyOnWriteArrayList()
 
         updateUI()
     }
