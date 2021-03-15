@@ -36,6 +36,9 @@ class RemoteOpponentUpdaterService(var currentPlayer: Player, private var oppone
                 ),
                 { result ->
                     if (result.data.items.count() <= 0) {
+                        opponents.forEach{el ->
+                            el.second.kill()
+                        }
                         Log.e("FINE", "TUTTI MORTI, SPENGO THREAD OPPONENTI")
                         alive = false
                     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import com.skycombat.game.model.gui.element.Player
@@ -141,6 +142,7 @@ class GameActivity : Activity() {
      * @see GameOverActivity
      */
     private fun callGameOverActivity(score : Long) {
+        Log.e("test", "chiamo game over activity")
         val intent = Intent(this, GameOverActivity::class.java)
 
         // in caso ci fossero servizi di aggiornamento remoti, li fermo
