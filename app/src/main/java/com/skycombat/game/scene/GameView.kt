@@ -93,6 +93,10 @@ class GameView(context: Context, private var player : Player, private var ghosts
      */
     fun update() {
         if (isGameOver()) {
+            try {
+                this.draw(holder.lockCanvas())
+            } catch (ex: IllegalArgumentException){}
+
             gameLoop.killLoop()
             gameOverObservable.notify(getMillisFromStart())
         } else {

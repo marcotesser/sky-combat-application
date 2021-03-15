@@ -48,6 +48,7 @@ class GameActivity : Activity() {
     private var remotePlayer: PlayerUpdaterService? = null
     private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
     private lateinit var player : Player
+    private var score = 0L;
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // impostare l'activity
@@ -72,6 +73,12 @@ class GameActivity : Activity() {
         // creazione GameView
         player = Player(velocity, LinearPositionStrategy())
         player.addOnDeathOccurListener{
+            score = when(currentGametype){
+                GAMETYPE.MULTI_PLAYER -> getCountDeadOpponents()
+                GAMETYPE.SINGLE_PLAYER -> gameView?.deadEnemies?.map { enemy ->
+                    enemy.points
+                }?.reduceOrNull(Long::plus) ?: 0L
+            }
             remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         }
         gameView = GameView(
@@ -151,16 +158,9 @@ class GameActivity : Activity() {
         remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
 
-        if(currentGametype == GAMETYPE.MULTI_PLAYER) {
-            intent.putExtra(SIGLA_TYPE, GAMETYPE.MULTI_PLAYER)
-            intent.putExtra(SIGLA_SCORE, getCountDeadOpponents())
-        } else {
-            intent.putExtra(SIGLA_TYPE, GAMETYPE.SINGLE_PLAYER)
-            Log.e("test punettgio", player.aliveFor().toString())
-            intent.putExtra(SIGLA_SCORE, gameView?.deadEnemies?.map { enemy ->
-                enemy.points
-            }?.reduceOrNull(Long::plus) ?: 0L)
-        }
+        intent.putExtra(SIGLA_TYPE, currentGametype)
+        intent.putExtra(SIGLA_SCORE, score)
+
         startActivity(intent)
     }
 
