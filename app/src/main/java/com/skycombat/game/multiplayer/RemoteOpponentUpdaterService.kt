@@ -70,7 +70,9 @@ class RemoteOpponentUpdaterService(var currentPlayer: Player, private var oppone
 
             // quelli non presenti nella risposta dell'API
             partitions.second.forEach { p ->
-                Log.e("idk", "È MORTO ${p.first.name}")
+                if(p.second.isAlive()) {
+                    Log.e("idk", "È MORTO ${p.first.name}")
+                }
                 p.second.kill()
             }
         }
