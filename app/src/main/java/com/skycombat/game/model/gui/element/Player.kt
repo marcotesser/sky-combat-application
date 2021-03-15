@@ -34,6 +34,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     private var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH
     private var playerImg : Bitmap
+    private var startTime : Long = System.currentTimeMillis()
     private var playerShieldImg : Bitmap
     private var deathObservable : PlayerDeathObservable = PlayerDeathObservable()
     var deadAt : Long? = null
@@ -87,7 +88,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
         return !hasShield()
     }
     override fun update() {
-        setDeadAtIfDead(System.currentTimeMillis())
+        setDeadAtIfDead(startTime)
         if(isAlive()) {
             aimedPositionStrategy.move(this)
             weapon.update()
@@ -167,16 +168,16 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     }
 
     override fun isDead(): Boolean {
-        setDeadAtIfDead(System.currentTimeMillis())
+        setDeadAtIfDead(startTime)
         return super.isDead()
     }
 
     override fun isAlive(): Boolean {
-        setDeadAtIfDead(System.currentTimeMillis())
+        setDeadAtIfDead(startTime)
         return super.isAlive()
     }
 
-    fun setDeadAtIfDead(time : Long){
+    private fun setDeadAtIfDead(time : Long){
         if(this.health <= 0 && this.deadAt == null){
             this.deadAt = time
             deathObservable.notify(time)
@@ -184,5 +185,9 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     }
     fun addOnDeathOccurListener(listener: PlayerDeathObserver){
         deathObservable.attach(listener)
+    }
+    fun aliveFor() : Long?{
+        return if(deadAt != null) deadAt?.minus(startTime)
+        else null
     }
 }

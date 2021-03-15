@@ -25,6 +25,7 @@ abstract class Enemy(bulletType: Weapon.BulletType, val movement: Movement)
     abstract var enemyImg : Bitmap
     var left: Float = -100f
     var top: Float = -100f
+    var points : Long = 100;
     var context: ViewContext = ViewContext.getInstance()
     override var shootObservable = ShootObservable()
     override var weapon: Weapon = Weapon(this, bulletType, EnemyCollisionStrategy(), Bullet.Direction.DOWN)

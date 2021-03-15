@@ -46,7 +46,7 @@ class GameActivity : Activity() {
     private var gameView: GameView? = null
     private var opponentsUpdater : OpponentsUpdater? = null
     private var remotePlayer: PlayerUpdaterService? = null
-    private var currentGAMETYPE : GAMETYPE = GAMETYPE.SINGLE_PLAYER
+    private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
     private lateinit var player : Player
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -79,8 +79,8 @@ class GameActivity : Activity() {
             player,
             seed = MultiplayerSession.player?.gameroom?.seed?.toLong() ?: Random.nextLong()
         )
-        gameView!!.addGameOverListener { score ->
-            callGameOverActivity(score)
+        gameView!!.addGameOverListener {
+            callGameOverActivity()
         }
 
 
@@ -89,7 +89,7 @@ class GameActivity : Activity() {
         val ghosts: CopyOnWriteArrayList<Ghost>
 
         if(MultiplayerSession.player != null) {
-            currentGAMETYPE = GAMETYPE.MULTI_PLAYER
+            currentGametype = GAMETYPE.MULTI_PLAYER
 
             // opponenti
             ghosts = CopyOnWriteArrayList(IntStream
@@ -107,7 +107,7 @@ class GameActivity : Activity() {
             remotePlayer?.start()
 
         } else {
-            currentGAMETYPE = GAMETYPE.SINGLE_PLAYER
+            currentGametype = GAMETYPE.SINGLE_PLAYER
             ghosts = CopyOnWriteArrayList()
 
             /*
@@ -141,10 +141,9 @@ class GameActivity : Activity() {
 
     /**
      * Calls the GameOverActivity to finish the game and report the score
-     * @param score : the player's score at the end of the game.
      * @see GameOverActivity
      */
-    private fun callGameOverActivity(score : Long) {
+    private fun callGameOverActivity() {
         Log.e("test", "chiamo game over activity")
         val intent = Intent(this, GameOverActivity::class.java)
 
@@ -152,12 +151,15 @@ class GameActivity : Activity() {
         remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
 
-        if(currentGAMETYPE == GAMETYPE.MULTI_PLAYER) {
+        if(currentGametype == GAMETYPE.MULTI_PLAYER) {
             intent.putExtra(SIGLA_TYPE, GAMETYPE.MULTI_PLAYER)
             intent.putExtra(SIGLA_SCORE, getCountDeadOpponents())
         } else {
             intent.putExtra(SIGLA_TYPE, GAMETYPE.SINGLE_PLAYER)
-            intent.putExtra(SIGLA_SCORE, score)
+            Log.e("test punettgio", player.aliveFor().toString())
+            intent.putExtra(SIGLA_SCORE, gameView?.deadEnemies?.map{
+                enemy -> enemy.points
+            }?.reduce(Long::plus) ?: 0)
         }
         startActivity(intent)
     }

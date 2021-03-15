@@ -47,27 +47,30 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
         }
     }
     fun setAsDead(score: Int = 0){
-        Log.e("idk", "set as dead called")
-        val playerOnline = remote.copyOfBuilder()
-            .name(remote.name)
-            .id(remote.id)
-            .gameroom(remote.gameroom)
-            .positionX(player.getX().toDouble() / player.context.width.toDouble())
-            //.positionY(player.positionY.toDouble() / player.context.height.toDouble())
-            .score(score)
-            .lastinteraction(Temporal.Timestamp.now())
-            .dead(true)
-            .build()
-        Amplify.API.mutate(
-            ModelMutation.update(
-                playerOnline,
-                RemotePlayer.ID.eq(remote.id)
-            ), {
-                Log.e("idk", "segno player come morto")
-                player.kill()
-                alive = false
-            },
-            { error -> Log.e("MyAmplifyApp", "update position failed", error) }
-        )
+        if(alive) {
+            alive = false
+            val playerOnline = remote.copyOfBuilder()
+                    .name(remote.name)
+                    .id(remote.id)
+                    .gameroom(remote.gameroom)
+                    .positionX(player.getX().toDouble() / player.context.width.toDouble())
+                    //.positionY(player.positionY.toDouble() / player.context.height.toDouble())
+                    .score(score)
+                    .lastinteraction(Temporal.Timestamp.now())
+                    .dead(true)
+                    .build()
+            Amplify.API.mutate(
+                    ModelMutation.update(
+                            playerOnline,
+                            RemotePlayer.ID.eq(remote.id)
+                    ), {
+                        Log.e("idk", "segno player come morto")
+                        player.kill()
+                    },
+                    { error ->
+                        Log.e("MyAmplifyApp", "update position failed", error)
+                    }
+            )
+        }
     }
 }

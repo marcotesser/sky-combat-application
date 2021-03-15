@@ -59,6 +59,8 @@ class GameView(context: Context, private var player : Player, private var ghosts
         Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.clouds)),viewContext.width.toInt(),viewContext.width.toInt()*3,false)
     )
 
+    val deadEnemies: ArrayList<Enemy> = ArrayList()
+
     init {
         player.addOnShootListener { bullet -> bullets.add(bullet) }
         holder.addCallback(this)
@@ -94,6 +96,8 @@ class GameView(context: Context, private var player : Player, private var ghosts
             gameLoop.killLoop()
             gameOverObservable.notify(getMillisFromStart())
         } else {
+            deadEnemies.addAll(enemies.filter(Enemy::isDead))
+
             listOf(enemies, powerUps, bullets, ghosts).forEach { ar ->
                 ar.removeIf(GUIElement::shouldRemove)
             }

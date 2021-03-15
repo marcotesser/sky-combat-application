@@ -11,6 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SkyCombat">
         <activity android:name=".GameOverActivity"
+            android:noHistory="true"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -20,7 +21,8 @@
             android:noHistory="true"/>
         <activity android:name=".LobbyActivity"
             android:noHistory="true"/>
-        <activity android:name=".LeaderboardsActivity" />
+        <activity android:name=".LeaderboardsActivity"
+            android:noHistory="true"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
