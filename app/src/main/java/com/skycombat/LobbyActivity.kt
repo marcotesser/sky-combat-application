@@ -35,7 +35,6 @@ class LobbyActivity : AppCompatActivity() {
         )
 
         MultiplayerSession.player = null
-        MultiplayerSession.opponents.clear()
         MultiplayerSession.opponents = CopyOnWriteArrayList()
 
         findViewById<Button>(R.id.remove_from_queue).setOnClickListener{
@@ -69,12 +68,15 @@ class LobbyActivity : AppCompatActivity() {
      private fun startGameIfReady(subscription : GraphQLOperation<Player>?){
         if(MultiplayerSession.player != null &&
             MultiplayerSession.opponents.size == MultiplayerSession.player!!.gameroom.gamers - 1){
-                try {
-                    subscription?.cancel()
-                } catch(ex: Exception){}
 
                 val intent = Intent(this, GameActivity::class.java)
                 startActivity(intent)
+                Thread {
+                    try {
+                        subscription?.cancel()
+                    } catch (ex: Exception) { }
+                }.start()
+
         }
     }
 

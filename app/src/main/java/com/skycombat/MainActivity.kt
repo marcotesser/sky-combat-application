@@ -91,7 +91,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        MultiplayerSession.player = null;
+        MultiplayerSession.player = null
         MultiplayerSession.opponents = CopyOnWriteArrayList()
     }
 

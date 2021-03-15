@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import com.skycombat.game.model.gui.element.Player
@@ -48,7 +47,8 @@ class GameActivity : Activity() {
     private var remotePlayer: PlayerUpdaterService? = null
     private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
     private lateinit var player : Player
-    private var score = 0L;
+    private var score = 0L
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         // impostare l'activity
@@ -69,26 +69,18 @@ class GameActivity : Activity() {
             resources
         )
 
-        Log.e("giocatori della partita corrente", MultiplayerSession.opponents.toString())
 
 
         // creazione GameView
         player = Player(velocity, LinearPositionStrategy())
         player.addOnDeathOccurListener{
-            when(currentGametype){
-                GAMETYPE.MULTI_PLAYER -> {
-                    score = getCountDeadOpponents()
-                    Log.e("opponenti presi in considerazione", opponentsUpdater?.getOpponents().toString())
-                }
-                GAMETYPE.SINGLE_PLAYER -> {
-                    score = gameView?.deadEnemies?.map { enemy ->
-                        enemy.points
-                    }?.reduceOrNull(Long::plus) ?: 0L
+            score = when(currentGametype){
+                GAMETYPE.MULTI_PLAYER -> getCountDeadOpponents()
+                GAMETYPE.SINGLE_PLAYER -> gameView?.deadEnemies?.map { enemy ->
+                    enemy.points
+                }?.reduceOrNull(Long::plus) ?: 0L
 
-                    Log.e("opponenti presi in considerazione", gameView?.deadEnemies.toString())
-                }
             }
-            Log.e("morto player principale, lo score è", score.toString())
             remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         }
         gameView = GameView(

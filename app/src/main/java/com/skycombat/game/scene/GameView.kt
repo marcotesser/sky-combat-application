@@ -181,7 +181,7 @@ class GameView(context: Context, private var player : Player, private var ghosts
      * @return il player corrente
      */
     fun getPlayer() : Player{
-        return player;
+        return player
     }
 
     /**
