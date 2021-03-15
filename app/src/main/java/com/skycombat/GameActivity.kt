@@ -157,9 +157,9 @@ class GameActivity : Activity() {
         } else {
             intent.putExtra(SIGLA_TYPE, GAMETYPE.SINGLE_PLAYER)
             Log.e("test punettgio", player.aliveFor().toString())
-            intent.putExtra(SIGLA_SCORE, gameView?.deadEnemies?.map{
-                enemy -> enemy.points
-            }?.reduce(Long::plus) ?: 0)
+            intent.putExtra(SIGLA_SCORE, gameView?.deadEnemies?.map { enemy ->
+                enemy.points
+            }?.reduceOrNull(Long::plus) ?: 0L)
         }
         startActivity(intent)
     }
