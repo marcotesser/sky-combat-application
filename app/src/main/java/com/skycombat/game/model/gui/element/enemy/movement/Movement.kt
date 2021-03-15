@@ -1,7 +1,7 @@
 package com.skycombat.game.model.gui.element.enemy.movement
 
-import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.gui.element.enemy.Enemy
+import com.skycombat.game.scene.ViewContext
 
 class Movement (private val deltaX: Int, private val deltaY: Int, private var updateFor: Int) {
 

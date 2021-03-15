@@ -1,25 +1,32 @@
 package com.skycombat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import android.widget.ImageButton
-import android.widget.ProgressBar
 import android.widget.TextView
-import com.android.volley.Request
-import com.android.volley.toolbox.Volley
+import androidx.appcompat.app.AppCompatActivity
 import com.amplifyframework.core.Amplify
-import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.JsonObjectRequest
-import com.google.gson.JsonObject
-import org.json.JSONArray
-import org.json.JSONObject
+import com.android.volley.toolbox.Volley
+import com.skycombat.api.leaderboard.Leaderboard
+import com.skycombat.api.leaderboard.Me
 
 class LeaderboardsActivity : AppCompatActivity() {
+    companion object{
+        enum class SCOPE{
+            SCORE {
+                override fun toString(): String {
+                    return "score"
+                }
+            }, DEFEATED{
+                override fun toString(): String {
+                    return "defeated"
+                }
+            };
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -32,31 +39,30 @@ class LeaderboardsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_leaderboards)
 
-        findViewById<Button>(R.id.playersconfitti).isEnabled=false
-        findViewById<TextView>(R.id.playerleaderboard).text = "Loading ..."
-        getLeaderboard ("defeated")
+        val playerSconfitti = findViewById<Button>(R.id.playersconfitti)
+        val punteggioMaggiore = findViewById<Button>(R.id.punteggiomaggiore)
+        val playerLeaderboard = findViewById<TextView>(R.id.playerleaderboard)
+        val whileLoading = "Loading ..."
+        playerSconfitti.isEnabled=false
+        playerLeaderboard.text = whileLoading
+        getLeaderboard (SCOPE.DEFEATED)
 
         findViewById<Button>(R.id.playersconfitti).setOnClickListener{
-            findViewById<Button>(R.id.playersconfitti).isEnabled=false
-            findViewById<Button>(R.id.punteggiomaggiore).isEnabled=true
-            findViewById<TextView>(R.id.playerleaderboard).text = "Loading ..."
-            getLeaderboard ("defeated")
+            playerSconfitti.isEnabled=false
+            punteggioMaggiore.isEnabled=true
+            playerLeaderboard.text = whileLoading
+            getLeaderboard(SCOPE.DEFEATED)
         }
 
         findViewById<Button>(R.id.punteggiomaggiore).setOnClickListener{
-            findViewById<Button>(R.id.playersconfitti).isEnabled=true
-            findViewById<Button>(R.id.punteggiomaggiore).isEnabled=false
-            findViewById<TextView>(R.id.playerleaderboard).text = "Loading ..."
-            getLeaderboard ("score")
+            playerSconfitti.isEnabled=true
+            punteggioMaggiore.isEnabled=false
+            playerLeaderboard.text = whileLoading
+            getLeaderboard(SCOPE.SCORE)
         }
     }
 
-    override fun onBackPressed() {
-        this.finish()
-        super.onBackPressed()
-    }
-
-    private fun getLeaderboard (scope: String) {
+    private fun getLeaderboard (scope: SCOPE) {
         val url : String = if(Amplify.Auth.currentUser != null) {
            "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope&username=${Amplify.Auth.currentUser.username}"
         }
@@ -64,34 +70,46 @@ class LeaderboardsActivity : AppCompatActivity() {
             "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope"
         }
         val queue  = Volley.newRequestQueue(this)
-        val jsonObjectRequest = object: JsonObjectRequest(Request.Method.GET, url, null,
+        val jsonObjectRequest = object: JsonObjectRequest(Method.GET, url, null,
             { response ->
-                if(response.has("me")) {
-                    val me: JSONObject = response.getJSONObject("me")
-                    val myScore : String = "Sei in posizione: ${me.getString("pos")} \nIl tuo punteggio è: ${me.getString(scope)}"
-                    runOnUiThread {
-                        findViewById<TextView>(R.id.playerScore).text = myScore
-                    }
+                val leaderboard = Leaderboard(response)
+                val me = leaderboard.me
+                if(me != null) {
+                    setPlayerPositionGUI(scope, me)
                 }
-
-                val leaderboard: JSONArray = response.getJSONArray("leaderboard")
-                var row : String = ""
-                for (index in 0 until leaderboard.length()) {
-                    row += "${index+1} ${leaderboard.getJSONObject(index).getString("username")} ${leaderboard.getJSONObject(index).getString(scope)} \n"
-                }
-
-                runOnUiThread {
-                    findViewById<TextView>(R.id.playerleaderboard).text = row
-                }
+                setLeaderboardGUI(leaderboard, scope)
             },
-            { error ->
-                Log.e("errore", error.toString())
-                runOnUiThread {
-                    findViewById<TextView>(R.id.playerleaderboard).text = "Errore richiesta classifica"
-                }
-            }
+            { error -> Log.e("ERRORE LEADERBOARD", error.toString())}
         ) {}
         queue.add(jsonObjectRequest)
+    }
+
+    private fun setPlayerPositionGUI(scope: SCOPE, me: Me) {
+        runOnUiThread {
+            findViewById<TextView>(R.id.playerScore).text = when (scope) {
+                SCOPE.DEFEATED -> "Sei in posizione: ${me.pos.defeated} \nIl tuo punteggio è: ${me.defeated}"
+                SCOPE.SCORE -> "Sei in posizione: ${me.pos.score} \nIl tuo punteggio è: ${me.score}"
+            }
+        }
+    }
+
+    private fun setLeaderboardGUI(leaderboard: Leaderboard, scope: SCOPE) {
+        runOnUiThread {
+            findViewById<TextView>(R.id.playerleaderboard).text = leaderboard.results
+                .map { result ->
+                    result.username + " " + when (scope) {
+                        SCOPE.DEFEATED -> result.defeated.toString()
+                        SCOPE.SCORE -> result.score.toString()
+                    } + "\n"
+                }.mapIndexed{ index, el ->
+                    " ${index+1} $el"
+                }.joinToString(separator = "")
+        }
+    }
+
+    override fun onBackPressed() {
+        this.finish()
+        super.onBackPressed()
     }
 
 }

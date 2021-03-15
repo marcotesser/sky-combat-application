@@ -1,12 +1,7 @@
 package com.skycombat.game.multiplayer
 
 import android.util.Log
-import com.amplifyframework.api.graphql.model.ModelQuery
-import com.amplifyframework.core.Amplify
-import com.amplifyframework.core.model.temporal.Temporal
-import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
-import java.util.concurrent.TimeUnit
 
 class MockOpponentsUpdaterService (private var opponents : List<Ghost>) : OpponentsUpdater(){
     private var elapsedTime : Long = 0

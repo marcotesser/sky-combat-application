@@ -3,9 +3,9 @@ package com.skycombat.game.model.gui.panel
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.scene.GameLoop
 import com.skycombat.game.scene.GameView
+import com.skycombat.game.scene.ViewContext
 
 class FPSPanel(var x: Float, var y: Float, var gameLoop : GameLoop, var scene : GameView) : GamePanel {
     var context: ViewContext = ViewContext.getInstance()

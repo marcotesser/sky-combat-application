@@ -7,7 +7,6 @@ import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import java.util.concurrent.TimeUnit
-import java.util.function.Predicate
 
 class RemoteOpponentUpdaterService(var currentPlayer: Player, private var opponents : List<Pair<Player, Ghost>>) : OpponentsUpdater(){
     private var elapsedTime : Long = 0

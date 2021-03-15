@@ -10,9 +10,12 @@ import android.view.WindowManager
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.element.ghost.strategy.LinearPositionStrategy
-import com.skycombat.game.multiplayer.*
-import com.skycombat.game.scene.ViewContext
+import com.skycombat.game.multiplayer.MultiplayerSession
+import com.skycombat.game.multiplayer.OpponentsUpdater
+import com.skycombat.game.multiplayer.PlayerUpdaterService
+import com.skycombat.game.multiplayer.RemoteOpponentUpdaterService
 import com.skycombat.game.scene.GameView
+import com.skycombat.game.scene.ViewContext
 import java.io.Serializable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Collectors
@@ -34,11 +37,11 @@ class GameActivity : Activity() {
                 return "multi-player"
             }
         };
-        abstract fun sigla(): String;
+        abstract fun sigla(): String
     }
 
     //gameView will be the mainview and it will manage the game's logic
-    private val velocity = 4f;
+    private val velocity = 4f
     private var gameView: GameView? = null
     private var opponentsUpdater : OpponentsUpdater? = null
     private var remotePlayer: PlayerUpdaterService? = null
@@ -58,16 +61,19 @@ class GameActivity : Activity() {
         val metrics = DisplayMetrics()
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getMetrics(metrics)
-        ViewContext.setContext(metrics.widthPixels.toFloat(), metrics.heightPixels.toFloat(), resources)
+        ViewContext.setContext(
+            metrics.widthPixels.toFloat(),
+            metrics.heightPixels.toFloat(),
+            resources
+        )
 
 
         // creazione GameView
-        player = Player(velocity, LinearPositionStrategy());
+        player = Player(velocity, LinearPositionStrategy())
         gameView = GameView(
-                this,
-                player,
-                velocity,
-                seed = MultiplayerSession.player?.gameroom?.seed?.toLong() ?: Random.nextLong()
+            this,
+            player,
+            seed = MultiplayerSession.player?.gameroom?.seed?.toLong() ?: Random.nextLong()
         )
         gameView!!.addGameOverListener { score ->
             callGameOverActivity(score)
@@ -83,30 +89,33 @@ class GameActivity : Activity() {
 
             // opponenti
             ghosts = CopyOnWriteArrayList(IntStream
-                    .range(0, MultiplayerSession.opponents.size)
-                    .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
-                    .collect(Collectors.toList()))
+                .range(0, MultiplayerSession.opponents.size)
+                .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
+                .collect(Collectors.toList()))
             opponentsUpdater = RemoteOpponentUpdaterService(
-                    MultiplayerSession.player!!,
-                    MultiplayerSession.opponents.zip(ghosts)
+                MultiplayerSession.player!!,
+                MultiplayerSession.opponents.zip(ghosts)
             )
             opponentsUpdater?.start()
 
             // gestiamo il player corrente
-            remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!);
+            remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!)
             remotePlayer?.start()
+
         } else {
             currentGAMETYPE = GAMETYPE.SINGLE_PLAYER
             ghosts = CopyOnWriteArrayList()
 
             /*
+            // serve solo per simulare il multiplayer in locale utilizzato la modalità "singleplayer" del gioco
             currentGAMETYPE = GAMETYPE.MULTI_PLAYER
             ghosts = CopyOnWriteArrayList(IntStream
                     .range(0, 4)
                     .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
                     .collect(Collectors.toList()))
             opponentsUpdater = MockOpponentsUpdaterService(ghosts)
-            opponentsUpdater?.start()*/
+            opponentsUpdater?.start()
+            */
         }
         gameView?.setGhosts(ghosts)
         setContentView(gameView)
@@ -123,7 +132,7 @@ class GameActivity : Activity() {
             el.isDead() &&
                     el.deadAt!! <
                     player.deadAt!!
-        }?.toLong() ?: 0L;
+        }?.toLong() ?: 0L
     }
 
     /**

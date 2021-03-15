@@ -1,11 +1,11 @@
 package com.skycombat.game.model.factory
 
-import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.powerup.GunsPowerUp
 import com.skycombat.game.model.gui.element.powerup.LifePowerUp
 import com.skycombat.game.model.gui.element.powerup.PowerUp
 import com.skycombat.game.model.gui.element.powerup.ShieldPowerUp
+import com.skycombat.game.scene.ViewContext
 import kotlin.random.Random
 
 /**

@@ -1,7 +1,6 @@
 /**
  * Project:  EverBuilds
  * File:  GameView.kt
- * Author:  Samuele Sartor
  * Created:  2021-02-03
  * Version:  1.0.0
  * ––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––
@@ -28,11 +27,8 @@ import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
 import com.skycombat.game.model.gui.element.ghost.Ghost
-import com.skycombat.game.model.gui.element.ghost.strategy.LinearPositionStrategy
 import com.skycombat.game.model.gui.element.powerup.PowerUp
-import com.skycombat.game.model.gui.panel.FPSPanel
 import com.skycombat.game.model.gui.panel.GamePanel
-import com.skycombat.game.model.gui.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
 import kotlin.random.Random
@@ -41,7 +37,7 @@ import kotlin.random.Random
  * Represents the Game View
  * @param context : the context onto which the game will be drawn
  */
-class GameView(context: Context, private var player : Player, private val velocity : Float, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(), private val seed : Long = Random.nextLong()) : SurfaceView(context), SurfaceHolder.Callback {
+class GameView(context: Context, private var player : Player, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(), private val seed : Long = Random.nextLong()) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
     private val enemyFactory: EnemyFactory = EnemyFactory(seed)
@@ -63,15 +59,16 @@ class GameView(context: Context, private var player : Player, private val veloci
         Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.clouds)),viewContext.width.toInt(),viewContext.width.toInt()*3,false)
     )
 
-
     init {
         player.addOnShootListener { bullet -> bullets.add(bullet) }
         holder.addCallback(this)
         focusable = View.FOCUSABLE
     }
-    private fun isGameOver() : Boolean{
-        return this.player.isDead() && ghosts.isEmpty()
-    }
+
+    /**
+     * override di super.draw, disegna nel canvas i vari componenti
+     * @param canvas : canvas su cui disegnare
+     */
     override fun draw(canvas: Canvas?) {
         if (isGameOver()) {
             return
@@ -89,21 +86,13 @@ class GameView(context: Context, private var player : Player, private val veloci
         }
     }
 
-
-
     /**
-     * Updates the view of the whole game
-     * @see EnemyFactory
-     * @see PowerUpFactory
-     * @see GameOverObserver
-     * @see Bullet
-     * @see Enemy
-     * @see Player
+     * Aggiorna i vari componenti e verifica se è gameover
      */
     fun update() {
         if (isGameOver()) {
-            stop()
-            gameOverObservable.notify(getCurrentTimeFromStart())
+            this.pause()
+            gameOverObservable.notify(getMillisFromStart())
         } else {
             listOf(enemies, powerUps, bullets, ghosts).forEach { ar ->
                 ar.removeIf(GUIElement::shouldRemove)
@@ -116,20 +105,19 @@ class GameView(context: Context, private var player : Player, private val veloci
                 powerUps.add(powerUpFactory.generate())
             }
 
-            this.handleCollisions()
-
             player.update()
             enemies.forEach(Enemy::update)
             bullets.forEach(Bullet::update)
             powerUps.forEach(PowerUp::update)
             ghosts.forEach(Ghost::update)
+
+            this.handleCollisions()
         }
     }
 
-    private fun getCurrentTimeFromStart(): Long{
-        return System.currentTimeMillis() - startTime
-    }
-
+    /**
+     * gestisce la collisione tra i vari componenti
+     */
     private fun handleCollisions(){
         powerUps.filter {
             el -> el.collide(player)
@@ -147,22 +135,8 @@ class GameView(context: Context, private var player : Player, private val veloci
         }
     }
 
-
-    /**
-     * Updates the view of the whole game
-     * @see GameLoop
-     */
-    fun pause() {
-        gameLoop.stopLoop()
-    }
-    /**
-     * Updates the view of the whole game
-     * @see GameLoop
-     */
-    fun stop() {
-        gameLoop.killLoop()
-    }
-
+    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+    override fun surfaceDestroyed(holder: SurfaceHolder) {}
     override fun surfaceCreated(holder: SurfaceHolder) {
         if (gameLoop.state == Thread.State.TERMINATED) {
             val surfaceHolder = getHolder()
@@ -172,9 +146,6 @@ class GameView(context: Context, private var player : Player, private val veloci
 
         gameLoop.startLoop()
     }
-    override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
-    override fun surfaceDestroyed(holder: SurfaceHolder) {}
-
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         return when(event?.action) {
             MotionEvent.ACTION_DOWN, MotionEvent.ACTION_MOVE -> {
@@ -186,18 +157,53 @@ class GameView(context: Context, private var player : Player, private val veloci
     }
 
     /**
-     * Sets the gameoverlistener
+     * aggiunge un listener al gameover
      * @see GameOverObserver
      */
     fun addGameOverListener(observer : GameOverObserver) {
         gameOverObservable.attach(observer)
     }
 
+    /**
+     * ritorna i millisecondi passati dall'inizio
+     * @return millisecondi intercorsi dall'inizio
+     */
+    private fun getMillisFromStart(): Long{
+        return System.currentTimeMillis() - startTime
+    }
+
+    /**
+     * getter per il player corrente
+     * @return il player corrente
+     */
     fun getPlayer() : Player{
         return player;
     }
 
+    /**
+     * setter per gli opponenti
+     * @param opponents : opponenti da considerare
+     */
     fun setGhosts(opponents : List<Ghost>){
         this.ghosts = CopyOnWriteArrayList(opponents)
+    }
+
+    /**
+     * getter per capire se è gameover
+     * @return
+     *      true : è game over
+     *      false : non è game over
+     */
+    private fun isGameOver() : Boolean{
+        return this.player.isDead() && ghosts.isEmpty()
+    }
+
+
+    /**
+     * mette in pausa il gameloop
+     * @see GameLoop
+     */
+    fun pause() {
+        gameLoop.stopLoop()
     }
 }

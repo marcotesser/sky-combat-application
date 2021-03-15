@@ -1,7 +1,6 @@
 package com.skycombat.game.model.gui.element.ghost
 
 import android.graphics.*
-import android.util.Log
 import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.geometry.Entity

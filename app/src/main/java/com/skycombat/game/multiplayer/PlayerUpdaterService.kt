@@ -4,7 +4,6 @@ import android.util.Log
 import com.amplifyframework.api.graphql.model.ModelMutation
 import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.model.temporal.Temporal
-import java.util.concurrent.TimeUnit
 import com.amplifyframework.datastore.generated.model.Player as RemotePlayer
 import com.skycombat.game.model.gui.element.Player as GUIPlayer
 

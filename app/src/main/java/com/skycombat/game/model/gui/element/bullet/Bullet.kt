@@ -1,10 +1,10 @@
 package com.skycombat.game.model.gui.element.bullet
 
-import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.geometry.Entity
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.gui.properties.HasHealth
+import com.skycombat.game.scene.ViewContext
 
 /**
  * Represents a bullet

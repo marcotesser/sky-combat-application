@@ -1,7 +1,5 @@
 package com.skycombat.game.model.gui.element.ghost.strategy
 
-import android.util.Log
-import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.properties.AimToPositionX
 import kotlin.math.abs
 

@@ -3,10 +3,10 @@ package com.skycombat.game.model.gui.element.powerup
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
-import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
+import com.skycombat.game.scene.ViewContext
 
 abstract class PowerUp(var x : Float, var y : Float) : Circle, GUIElement {
 

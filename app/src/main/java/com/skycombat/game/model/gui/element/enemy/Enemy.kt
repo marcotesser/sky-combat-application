@@ -1,7 +1,9 @@
 package com.skycombat.game.model.gui.element.enemy
 
-import android.graphics.*
-import com.skycombat.game.scene.ViewContext
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.PointF
+import android.graphics.RectF
 import com.skycombat.game.model.geometry.Rectangle
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.component.EnemyHealthBar
@@ -13,6 +15,7 @@ import com.skycombat.game.model.gui.element.enemy.movement.Movement
 import com.skycombat.game.model.gui.event.ShootObservable
 import com.skycombat.game.model.gui.properties.CanShoot
 import com.skycombat.game.model.gui.properties.HasHealth
+import com.skycombat.game.scene.ViewContext
 
 /**
  * Represents an Enemy

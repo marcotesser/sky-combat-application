@@ -1,8 +1,10 @@
 package com.skycombat.game.model.gui.element
 
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
+import android.graphics.PointF
 import com.skycombat.R
-import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.geometry.Entity
 import com.skycombat.game.model.geometry.Rectangle
@@ -16,6 +18,7 @@ import com.skycombat.game.model.gui.event.ShootObservable
 import com.skycombat.game.model.gui.properties.AimToPositionX
 import com.skycombat.game.model.gui.properties.CanShoot
 import com.skycombat.game.model.gui.properties.HasHealth
+import com.skycombat.game.scene.ViewContext
 
 /**
  * Represents an Player
