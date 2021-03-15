@@ -15,6 +15,7 @@ import com.android.volley.RequestQueue
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.skycombat.game.scene.GameView
 import org.json.JSONObject
 import java.nio.charset.Charset
 import java.util.HashMap
@@ -34,11 +35,12 @@ class GameOverActivity : AppCompatActivity() {
             startActivity(Intent(this, MainActivity::class.java))
         }
 
-        val gameType = intent.getStringExtra(GameActivity.SIGLA_TYPE)!!
+        val gameType : GameActivity.GAMETYPE =
+                intent.getSerializableExtra(GameActivity.SIGLA_TYPE)!! as GameActivity.GAMETYPE
         val score = intent.getLongExtra(GameActivity.SIGLA_SCORE, 0)
 
         findViewById<Button>(R.id.playAgain).setOnClickListener {
-            if(gameType=="single-player") {
+            if(gameType==GameActivity.GAMETYPE.SINGLE_PLAYER) {
                 startActivity(Intent(this, GameActivity::class.java))
             }
             else {
@@ -57,12 +59,12 @@ class GameOverActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    private fun upLoad(gameType : String, score : Long) {
-        Log.e("cosa invia?",gameType+score.toString())
+    private fun upLoad(gameType : GameActivity.GAMETYPE, score : Long) {
+        Log.e("cosa invia?",gameType.sigla() + score.toString())
         val requestQueue: RequestQueue = Volley.newRequestQueue(this);
         val jsonBody = JSONObject();
         val url : String
-        if(gameType==GameActivity.GAMETYPE.SINGLE_PLAYER.sigla()) {
+        if(gameType==GameActivity.GAMETYPE.SINGLE_PLAYER) {
             url = "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/update-singleplayer-score"
             jsonBody.put("score", score);
         }

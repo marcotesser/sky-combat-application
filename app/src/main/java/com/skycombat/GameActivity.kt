@@ -13,6 +13,7 @@ import com.skycombat.game.model.gui.element.ghost.strategy.LinearPositionStrateg
 import com.skycombat.game.multiplayer.*
 import com.skycombat.game.scene.ViewContext
 import com.skycombat.game.scene.GameView
+import java.io.Serializable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Collectors
 import java.util.stream.IntStream
@@ -23,7 +24,7 @@ class GameActivity : Activity() {
         const val SIGLA_SCORE = "game-score"
         const val SIGLA_TYPE = "game-type"
     }
-    enum class GAMETYPE{
+    enum class GAMETYPE : Serializable{
         SINGLE_PLAYER {
             override fun sigla(): String {
                 return "single-player"
@@ -138,10 +139,10 @@ class GameActivity : Activity() {
         opponentsUpdater?.stopUpdates()
 
         if(currentGAMETYPE == GAMETYPE.MULTI_PLAYER) {
-            intent.putExtra(SIGLA_TYPE, GAMETYPE.MULTI_PLAYER.sigla())
+            intent.putExtra(SIGLA_TYPE, GAMETYPE.MULTI_PLAYER)
             intent.putExtra(SIGLA_SCORE, getCountDeadOpponents())
         } else {
-            intent.putExtra(SIGLA_TYPE, GAMETYPE.SINGLE_PLAYER.sigla())
+            intent.putExtra(SIGLA_TYPE, GAMETYPE.SINGLE_PLAYER)
             intent.putExtra(SIGLA_SCORE, score)
         }
         startActivity(intent)
