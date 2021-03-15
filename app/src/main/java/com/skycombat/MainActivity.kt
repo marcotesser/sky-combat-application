@@ -77,8 +77,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, GameActivity::class.java))
         }
 
-        MultiplayerSession.player = null;
-        MultiplayerSession.opponents = CopyOnWriteArrayList()
 
         updateUI()
     }
@@ -90,6 +88,13 @@ class MainActivity : AppCompatActivity() {
         }
         updateUI()
     }
+
+    override fun onResume() {
+        super.onResume()
+        MultiplayerSession.player = null;
+        MultiplayerSession.opponents = CopyOnWriteArrayList()
+    }
+
     private fun login(){
         Amplify.Auth.signInWithWebUI(
                 this,
