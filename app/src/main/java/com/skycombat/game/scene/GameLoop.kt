@@ -26,16 +26,16 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
         private const val MAX_UPS: Double = 60.0
         private const val UPS_PERIOD: Double = 1000 / MAX_UPS
     }
-    private var isRunning = false;
-    private var averageUPS : Double = 0.0;
-    private var averageFPS : Double = 0.0;
+    private var isRunning = false
+    private var averageUPS : Double = 0.0
+    private var averageFPS : Double = 0.0
     /**
      * Gets the averageUPS
      * @return averageUPS
      */
     @JvmName("getAverageUPS1")
     fun getAverageUPS(): Double {
-        return averageUPS;
+        return averageUPS
     }
     /**
      * Gets the averageFPS
@@ -44,14 +44,14 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
      */
     @JvmName("getAverageFPS1")
     fun getAverageFPS(): Double {
-        return averageFPS;
+        return averageFPS
     }
     /**
      * Starts the loop
      */
     fun startLoop() {
-        isRunning = true;
-        start();
+        isRunning = true
+        start()
     }
     /**
      * Stops the loop
@@ -68,17 +68,17 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
 
     override fun run() {
         super.run()
-        var canvas : Canvas? = null;
+        var canvas : Canvas? = null
         var frameCount = 0
         var updateCount = 0
         var startTime: Long = System.currentTimeMillis()
-        var elapsedTime: Long = 0
-        var sleepTime: Long = 0
+        var elapsedTime: Long
+        var sleepTime: Long
         while(isRunning) {
             try {
                 canvas = surfaceHolder.lockCanvas()
                 synchronized(surfaceHolder) {
-                    game.update();
+                    game.update()
                     updateCount++
                     game.draw(canvas)
                 }
@@ -98,7 +98,7 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
 
 
             // avoid to exceed max UPS
-            elapsedTime = System.currentTimeMillis() - startTime;
+            elapsedTime = System.currentTimeMillis() - startTime
             sleepTime = (updateCount * UPS_PERIOD).toLong() - elapsedTime
             if(sleepTime > 0) {
                 try{
@@ -111,8 +111,8 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
             //skip frames to mantain stable UPS
             while(sleepTime < 0 && updateCount < MAX_UPS-1 && isRunning) {
                 game.update()
-                updateCount++;
-                elapsedTime = System.currentTimeMillis() - startTime;
+                updateCount++
+                elapsedTime = System.currentTimeMillis() - startTime
                 sleepTime = (updateCount * UPS_PERIOD).toLong() - elapsedTime
             }
 
@@ -121,8 +121,8 @@ class GameLoop(var game: GameView, var surfaceHolder: SurfaceHolder) : Thread() 
             if(elapsedTime > 1000) {
                 averageUPS = updateCount.toDouble() / (1E-3 * elapsedTime)
                 averageFPS = frameCount.toDouble() / (1E-3 * elapsedTime)
-                frameCount = 0;
-                updateCount = 0;
+                frameCount = 0
+                updateCount = 0
                 startTime = System.currentTimeMillis()
             }
         }

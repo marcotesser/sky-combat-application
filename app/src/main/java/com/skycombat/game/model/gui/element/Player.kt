@@ -45,7 +45,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
 
     private var positionY:Float = context.getHeightScreen()/ 5 * 4
     private var positionX:Float = context.getWidthScreen()/2F
-    var aimedPositionX:Float = this.positionX;
+    var aimedPositionX:Float = this.positionX
 
     override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP)
     override var shootObservable = ShootObservable()
@@ -152,17 +152,17 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     }
 
     override fun collide(el: Rectangle): Boolean {
-        if(isDead()) return false;
+        if(isDead()) return false
         return super.collide(el)
     }
 
     override fun collide(el: Circle): Boolean {
-        if(isDead()) return false;
+        if(isDead()) return false
         return super.collide(el)
     }
 
     override fun collide(el: Entity): Boolean {
-        if(isDead()) return false;
+        if(isDead()) return false
         return super.collide(el)
     }
 

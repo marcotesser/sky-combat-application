@@ -50,40 +50,10 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
     abstract fun getDamage(): Float
     abstract fun getSpeed(): Float
 
-    fun applyCollisionEffects(entityHitted: HasHealth) {
-        if (collisionStrategy.shouldCollide(entityHitted)) {
+    fun applyCollisionEffects(entityHit: HasHealth) {
+        if (collisionStrategy.shouldCollide(entityHit)) {
             isHit = true
-            entityHitted.updateHealth(-getDamage())
+            entityHit.updateHealth(-getDamage())
         }
     }
-
 }
-
-
-/*
-    constructor(parcel: Parcel) : this(
-        parcel.readFloat(),
-        parcel.readFloat(),
-        TODO("target")
-    ){
-        isHit = parcel.readByte() != 0.toByte()
-    }
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeFloat(x)
-        parcel.writeFloat(y)
-        parcel.writeFloat(getSpeed())
-        parcel.writeFloat(getDamage())
-        parcel.writeByte(if (isHit) 1 else 0)
-    }
-    override fun describeContents(): Int {
-        return 0
-    }
-    companion object CREATOR : Parcelable.Creator<Bullet> {
-        override fun createFromParcel(parcel: Parcel): Bullet {
-            return Bullet(parcel)
-        }
-        override fun newArray(size: Int): Array<Bullet?> {
-            return arrayOfNulls(size)
-        }
-    }
- */

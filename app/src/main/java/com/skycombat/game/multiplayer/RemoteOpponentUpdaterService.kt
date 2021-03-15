@@ -8,7 +8,6 @@ import com.amplifyframework.core.Amplify
 import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
-import kotlinx.coroutines.internal.synchronized
 import java.util.concurrent.TimeUnit
 
 class RemoteOpponentUpdaterService(var currentPlayer: Player, private var opponents : List<Pair<Player, Ghost>>) : OpponentsUpdater(){
@@ -80,7 +79,7 @@ class RemoteOpponentUpdaterService(var currentPlayer: Player, private var oppone
     @Synchronized override fun stopUpdates(){
         if(alive) {
             Log.e("test", "INIZIO STOPPO CICLO")
-            this.alive = false;
+            this.alive = false
             this.join()
             Log.e("test", "FINE STOPPO CICLO")
         }

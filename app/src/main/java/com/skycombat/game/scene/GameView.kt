@@ -37,7 +37,7 @@ import kotlin.random.Random
  * Represents the Game View
  * @param context : the context onto which the game will be drawn
  */
-class GameView(context: Context, private var player : Player, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(), private val seed : Long = Random.nextLong()) : SurfaceView(context), SurfaceHolder.Callback {
+class GameView(context: Context, private var player : Player, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(), seed : Long = Random.nextLong()) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
     private val enemyFactory: EnemyFactory = EnemyFactory(seed)

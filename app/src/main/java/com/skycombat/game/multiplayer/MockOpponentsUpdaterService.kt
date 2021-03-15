@@ -24,10 +24,10 @@ class MockOpponentsUpdaterService (private var opponents : List<Ghost>) : Oppone
                     }
                 }
             }
-            Thread.sleep(10000L / MultiplayerSession.UPS)
+            sleep(10000L / MultiplayerSession.UPS)
         }
     }
     override fun stopUpdates(){
-        this.alive = false;
+        this.alive = false
     }
 }

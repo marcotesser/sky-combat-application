@@ -19,8 +19,8 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
     private var x = context.getWidthScreen() / 2F
     var aimedPositionX: Float = x
     var y = context.getHeightScreen() / 5 * 4
-    private var dead: Boolean = false;
-    var deadAt : Long? = null;
+    private var dead: Boolean = false
+    var deadAt : Long? = null
     var paint = Paint()
     var ghostImg : Bitmap
     init {
@@ -76,7 +76,7 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
     }
 
     override fun getX(): Float {
-        return this.x;
+        return this.x
     }
 
     override fun aimToPos(): Float {
