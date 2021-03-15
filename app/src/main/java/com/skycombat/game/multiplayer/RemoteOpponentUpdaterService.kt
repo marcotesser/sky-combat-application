@@ -69,5 +69,6 @@ class RemoteOpponentUpdaterService(var currentPlayer: Player, private var oppone
     }
     override fun stopUpdates(){
         this.alive = false;
+        this.join()
     }
 }

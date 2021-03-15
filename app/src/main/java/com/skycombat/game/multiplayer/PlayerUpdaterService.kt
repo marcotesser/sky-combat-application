@@ -8,10 +8,11 @@ import com.amplifyframework.datastore.generated.model.Player as RemotePlayer
 import com.skycombat.game.model.gui.element.Player as GUIPlayer
 
 class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : Thread() {
+    private var alive = true;
     override fun run() {
         super.run()
         Log.e("debug", "PARTITO THREAD PLAYER")
-        while(!player.isDead()){
+        while(!player.isDead() && alive){
             remote.copyOfBuilder()
             val playerOnline = remote.copyOfBuilder()
                     .name(remote.name)
@@ -46,6 +47,7 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
         }
     }
     fun setAsDead(score: Int = 0){
+        Log.e("idk", "set as dead called")
         val playerOnline = remote.copyOfBuilder()
             .name(remote.name)
             .id(remote.id)
@@ -61,8 +63,9 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
                 playerOnline,
                 RemotePlayer.ID.eq(remote.id)
             ), {
+                Log.e("idk", "segno player come morto")
                 player.kill()
-                this.join()
+                alive = false
             },
             { error -> Log.e("MyAmplifyApp", "update position failed", error) }
         )
