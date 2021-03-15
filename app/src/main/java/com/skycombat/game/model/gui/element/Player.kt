@@ -55,7 +55,6 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     init {
         playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
         playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
-        deadAt = null;
     }
     /**
      * Draws the player and player's health-bar
@@ -88,7 +87,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
         return !hasShield()
     }
     override fun update() {
-        setDeadAtIfDead(startTime)
+        setDeadAtIfDead(System.currentTimeMillis())
         if(isAlive()) {
             aimedPositionStrategy.move(this)
             weapon.update()
@@ -168,12 +167,12 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     }
 
     override fun isDead(): Boolean {
-        setDeadAtIfDead(startTime)
+        setDeadAtIfDead(System.currentTimeMillis())
         return super.isDead()
     }
 
     override fun isAlive(): Boolean {
-        setDeadAtIfDead(startTime)
+        setDeadAtIfDead(System.currentTimeMillis())
         return super.isAlive()
     }
 
