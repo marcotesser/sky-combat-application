@@ -5,32 +5,26 @@ import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.geometry.Entity
 import com.skycombat.game.model.geometry.Rectangle
+import com.skycombat.game.model.gui.DisplayDimension
+import com.skycombat.game.model.gui.DrawVisitor
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
 import com.skycombat.game.model.gui.properties.AimToPositionX
-import com.skycombat.game.scene.ViewContext
 
-class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElement,  Circle, AimToPositionX {
+class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float, val displayDimension : DisplayDimension) : GUIElement,  Circle, AimToPositionX {
     companion object{
         var RADIUS: Float = Player.RADIUS
     }
-    var context: ViewContext = ViewContext.getInstance()
-    private var x = context.getWidthScreen() / 2F
+    private var x = displayDimension.width / 2F
     var aimedPositionX: Float = x
-    var y = context.getHeightScreen() / 5 * 4
+    var y = displayDimension.height / 5 * 4
     private var dead: Boolean = false
     var deadAt : Long? = null
     var paint = Paint()
-    var ghostImg : Bitmap
+    var ghostImg : Int = R.drawable.opponent
     init {
         paint.alpha = 127
-        ghostImg = Bitmap.createScaledBitmap(
-            BitmapFactory.decodeResource(context.getResources(), R.drawable.opponent),
-            RADIUS.toInt()*2,
-            RADIUS.toInt()*2,
-            false
-        )
     }
     override fun getCenter(): PointF {
         return PointF(this.x, this.y)
@@ -59,9 +53,10 @@ class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float) : GUIElem
         return !isDead()
     }
 
-    override fun draw(canvas: Canvas?) {
-        if(isAlive()) {
-            canvas?.drawBitmap(ghostImg, x - RADIUS / 2, y - RADIUS / 2, paint)
+    override fun draw(canvas: Canvas?, visitor: DrawVisitor) {
+
+        if(this.isAlive()) {
+            visitor.draw(canvas, this)
         }
     }
 

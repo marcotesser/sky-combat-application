@@ -1,36 +1,38 @@
 package com.skycombat.game.model.factory
 
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.powerup.GunsPowerUp
 import com.skycombat.game.model.gui.element.powerup.LifePowerUp
 import com.skycombat.game.model.gui.element.powerup.PowerUp
 import com.skycombat.game.model.gui.element.powerup.ShieldPowerUp
-import com.skycombat.game.scene.ViewContext
 import kotlin.random.Random
 
 /**
  * Represents a Life PowerUp Factory
  */
-class PowerUpFactory(var seed : Long) {
+class PowerUpFactory(var seed : Long, val displayDimension: DisplayDimension) {
     enum class PowerUpType {
         LIFE {
-            override fun generate(x: Float, iteration: Int, random: Random) : PowerUp {
+            override fun generate(x: Float, iteration: Int, random: Random, displayDimension: DisplayDimension) : PowerUp {
                 return LifePowerUp(
                     x,
                     0F,
-                    500F + iteration * 10F
+                    500F + iteration * 10F,
+                    displayDimension
                 )
             }
         }, SHIELD {
-            override fun generate(x: Float, iteration: Int, random: Random) : PowerUp {
+            override fun generate(x: Float, iteration: Int, random: Random, displayDimension: DisplayDimension) : PowerUp {
                 return ShieldPowerUp(
                     x,
                     0F,
-                    500 + iteration.toLong()*10
+                    500 + iteration.toLong()*10,
+                    displayDimension
                 )
             }
         }, GUNS {
-            override fun generate(x: Float, iteration: Int, random: Random) : PowerUp {
+            override fun generate(x: Float, iteration: Int, random: Random, displayDimension: DisplayDimension) : PowerUp {
                 val improvement = if(iteration < 20) 6 * iteration / 20 else 6
                  val bulletType =  when(random.nextInt(1, 4 + improvement)){
                     1 -> Weapon.BulletType.CLASSIC
@@ -42,16 +44,16 @@ class PowerUpFactory(var seed : Long) {
                 return GunsPowerUp(
                     x,
                     0F,
-                    bulletType
+                    bulletType,
+                    displayDimension
                 )
             }
         };
-        abstract fun generate(x: Float, iteration: Int, random: Random) : PowerUp
+        abstract fun generate(x: Float, iteration: Int, random: Random, displayDimension: DisplayDimension) : PowerUp
     }
 
     private val random = Random(seed)
     var numPowerUpGenerated: Int = 0
-    var context: ViewContext = ViewContext.getInstance()
 
     /**
      * Generates the powerups
@@ -65,9 +67,10 @@ class PowerUpFactory(var seed : Long) {
             2 -> PowerUpType.SHIELD
             else -> PowerUpType.LIFE
         }).generate(
-            Math.random().toFloat() * context.getWidthScreen(),
+            Math.random().toFloat() * displayDimension.width,
             numPowerUpGenerated,
-            random
+            random,
+            displayDimension
         )
     }
 

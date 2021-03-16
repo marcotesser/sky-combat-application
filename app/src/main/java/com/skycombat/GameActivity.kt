@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.Window
 import android.view.WindowManager
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.element.ghost.strategy.LinearPositionStrategy
@@ -15,7 +16,6 @@ import com.skycombat.game.multiplayer.OpponentsUpdater
 import com.skycombat.game.multiplayer.PlayerUpdaterService
 import com.skycombat.game.multiplayer.RemoteOpponentUpdaterService
 import com.skycombat.game.scene.GameView
-import com.skycombat.game.scene.ViewContext
 import java.io.Serializable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Collectors
@@ -63,16 +63,15 @@ class GameActivity : Activity() {
         val metrics = DisplayMetrics()
         val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
         windowManager.defaultDisplay.getMetrics(metrics)
-        ViewContext.setContext(
-            metrics.widthPixels.toFloat(),
-            metrics.heightPixels.toFloat(),
-            resources
+        val displayDimension = DisplayDimension(
+                metrics.widthPixels.toFloat(),
+                metrics.heightPixels.toFloat()
         )
 
 
 
         // creazione GameView
-        player = Player(velocity, LinearPositionStrategy())
+        player = Player(velocity, LinearPositionStrategy(), displayDimension)
         player.addOnDeathOccurListener{
             score = when(currentGametype){
                 GAMETYPE.MULTI_PLAYER -> getCountDeadOpponents()
@@ -85,6 +84,7 @@ class GameActivity : Activity() {
         }
         gameView = GameView(
             this,
+            displayDimension,
             player,
             seed = MultiplayerSession.player?.gameroom?.seed?.toLong() ?: Random.nextLong()
         )
@@ -103,7 +103,7 @@ class GameActivity : Activity() {
             // opponenti
             ghosts = CopyOnWriteArrayList(IntStream
                 .range(0, MultiplayerSession.opponents.size)
-                .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
+                .mapToObj{ Ghost(LinearPositionStrategy(), velocity, displayDimension) }
                 .collect(Collectors.toList()))
             opponentsUpdater = RemoteOpponentUpdaterService(
                 MultiplayerSession.player!!,

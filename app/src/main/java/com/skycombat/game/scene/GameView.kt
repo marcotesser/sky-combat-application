@@ -20,6 +20,7 @@ import android.view.*
 import com.skycombat.R
 import com.skycombat.game.model.factory.EnemyFactory
 import com.skycombat.game.model.factory.PowerUpFactory
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.Drawable
 import com.skycombat.game.model.gui.component.Background
 import com.skycombat.game.model.gui.element.GUIElement
@@ -28,7 +29,9 @@ import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.element.powerup.PowerUp
+import com.skycombat.game.model.gui.panel.FPSPanel
 import com.skycombat.game.model.gui.panel.GamePanel
+import com.skycombat.game.model.gui.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
 import kotlin.random.Random
@@ -37,27 +40,30 @@ import kotlin.random.Random
  * Represents the Game View
  * @param context : the context onto which the game will be drawn
  */
-class GameView(context: Context, private var player : Player, private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(), seed : Long = Random.nextLong()) : SurfaceView(context), SurfaceHolder.Callback {
+class GameView(
+        context: Context,
+        private val displayDimension : DisplayDimension,
+        private var player : Player,
+        private var drawableVisitor: GameViewDrawableVisitor = GameViewDrawableVisitor(context),
+        private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(),
+        seed : Long = Random.nextLong()
+) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
-    private val enemyFactory: EnemyFactory = EnemyFactory(seed)
-    private val powerUpFactory: PowerUpFactory = PowerUpFactory(seed)
+    private val enemyFactory: EnemyFactory = EnemyFactory(seed, displayDimension)
+    private val powerUpFactory: PowerUpFactory = PowerUpFactory(seed, displayDimension)
 
     private val startTime = System.currentTimeMillis()
     private var gameLoop: GameLoop = GameLoop(this, holder)
-    private val viewContext = ViewContext.getInstance()
     private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList()
 
     private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList()
     private val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList()
     private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(listOf(
-        /*FPSPanel(20F, viewContext.height/2, gameLoop, this ),
-        UPSPanel(20F, viewContext.height/2 + 100, gameLoop, this )*/
+        FPSPanel(20F, displayDimension.height/2, gameLoop, this ),
+        UPSPanel(20F, displayDimension.height/2 + 100, gameLoop, this )
     ))
-    private val background : Background = Background(
-        Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.islands)),viewContext.width.toInt(),viewContext.width.toInt()*3,false),
-        Bitmap.createScaledBitmap((BitmapFactory.decodeResource(resources, R.drawable.clouds)),viewContext.width.toInt(),viewContext.width.toInt()*3,false)
-    )
+    private val background : Background = Background(displayDimension)
 
     val deadEnemies: ArrayList<Enemy> = ArrayList()
 
@@ -78,13 +84,13 @@ class GameView(context: Context, private var player : Player, private var ghosts
         super.draw(canvas)
 
         if(canvas != null){
-            background.draw(canvas)
+            background.draw(canvas, drawableVisitor)
             Stream.concat(
                 Stream.of(player),
                 Stream.of(panels, enemies, bullets, powerUps, ghosts).flatMap(
                     List<Drawable>::stream
                 )
-            ).forEach{el -> el.draw(canvas)}
+            ).forEach{el -> el.draw(canvas, drawableVisitor)}
         }
     }
 
@@ -124,7 +130,7 @@ class GameView(context: Context, private var player : Player, private var ghosts
      */
     private fun handleCollisions(){
         powerUps.filter {
-            el -> el.collide(player)
+            el -> el.collide(player) && el.shouldApply(player)
         }.forEach{
             el -> el.applyPowerUPEffects(player)
         }

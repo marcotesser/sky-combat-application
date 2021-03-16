@@ -1,10 +1,10 @@
 package com.skycombat.game.model.gui.element.bullet
 
 import com.skycombat.game.model.geometry.Entity
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
 import com.skycombat.game.model.gui.properties.HasHealth
-import com.skycombat.game.scene.ViewContext
 
 /**
  * Represents a bullet
@@ -12,7 +12,7 @@ import com.skycombat.game.scene.ViewContext
  * @param y : axis y coordinate of the bullet
  * @param direction : direction of the bullet
  */
-abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: CollisionStrategy, private val direction: Direction)
+abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: CollisionStrategy, private val direction: Direction, val displayDimension : DisplayDimension)
     : GUIElement, Entity {
 
     enum class Direction{
@@ -28,7 +28,6 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
         abstract fun apply(delta: Float) : Float
     }
 
-    val context: ViewContext = ViewContext.getInstance()
 
     private var isHit: Boolean = false
 
@@ -44,7 +43,7 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
      * @return isHit || this.y < 0 || this.y > scene.getMaxHeight()
      */
     override fun shouldRemove(): Boolean {
-        return isHit || this.y < 0 || this.y > context.getHeightScreen()
+        return isHit || this.y < 0 || this.y > displayDimension.height
     }
 
     abstract fun getDamage(): Float

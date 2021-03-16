@@ -64,7 +64,7 @@ class RemoteOpponentUpdaterService(var currentPlayer: Player, private var oppone
             partitions.first.forEach { p ->
                 val op = result.data.items.first { req -> req.id == p.first.id }
                 p.second.aimedPositionX =
-                        op.positionX.toFloat() * p.second.context.width
+                        op.positionX.toFloat() * p.second.displayDimension.width
             }
 
             // quelli non presenti nella risposta dell'API

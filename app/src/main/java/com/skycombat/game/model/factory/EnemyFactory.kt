@@ -1,5 +1,6 @@
 package com.skycombat.game.model.factory
 
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.enemy.Enemy
@@ -12,7 +13,7 @@ import kotlin.random.Random
 /**
  * Represents an Enemy Factory
  */
-class EnemyFactory(var seed: Long) {
+class EnemyFactory(var seed: Long, val displayDimension: DisplayDimension) {
 
     private val random = Random(seed)
     private var iteration = 0
@@ -41,10 +42,10 @@ class EnemyFactory(var seed: Long) {
         }
 
         return when (random.nextInt(1,7)) {
-            1 -> PlaneEnemy(bulletType, randMovement, 1 + (iteration.toFloat() / 3))
-            2,4 -> JetEnemy(bulletType, randMovement)
-            3,5,6 -> SpaceShipEnemy(bulletType, randMovement)
-            else-> SpaceShipEnemy(bulletType, randMovement)
+            1 -> PlaneEnemy(bulletType, randMovement,displayDimension, 1 + (iteration.toFloat() / 3))
+            2,4 -> JetEnemy(bulletType, randMovement,displayDimension)
+            3,5,6 -> SpaceShipEnemy(bulletType, randMovement,displayDimension)
+            else-> SpaceShipEnemy(bulletType, randMovement,displayDimension)
         }
     }
 }

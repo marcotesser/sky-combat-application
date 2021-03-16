@@ -1,16 +1,15 @@
 package com.skycombat.game.model.gui.component
 
 import android.graphics.RectF
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
-import com.skycombat.game.scene.ViewContext
 
-class PlayerHealthBar(var element : Player): HealthBar() {
+class PlayerHealthBar(var element : Player, val displayDimension: DisplayDimension): HealthBar() {
 
-    var context: ViewContext = ViewContext.getInstance()
-    val initialLife:RectF
+    private val initialLife:RectF
 
     init{
-        life=RectF(20f, context.getHeightScreen() - 50, context.getWidthScreen()-20, context.getHeightScreen() - 10)
+        life=RectF(20f, displayDimension.height - 50, displayDimension.width-20, displayDimension.height - 10)
         initialLife = RectF(life)
     }
 

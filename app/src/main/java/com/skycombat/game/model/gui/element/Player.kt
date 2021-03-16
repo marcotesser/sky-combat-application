@@ -8,6 +8,8 @@ import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.geometry.Entity
 import com.skycombat.game.model.geometry.Rectangle
+import com.skycombat.game.model.gui.DisplayDimension
+import com.skycombat.game.model.gui.DrawVisitor
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.component.PlayerHealthBar
@@ -20,12 +22,11 @@ import com.skycombat.game.model.gui.event.ShootObservable
 import com.skycombat.game.model.gui.properties.AimToPositionX
 import com.skycombat.game.model.gui.properties.CanShoot
 import com.skycombat.game.model.gui.properties.HasHealth
-import com.skycombat.game.scene.ViewContext
 
 /**
  * Represents an Player
  */
-class Player(private val velocity : Float, val aimedPositionStrategy: AimedPositionStrategy) : HasHealth, Circle, GUIElement, CanShoot, AimToPositionX {
+class Player(private val velocity : Float, val aimedPositionStrategy: AimedPositionStrategy, val displayDimension: DisplayDimension) : HasHealth, Circle, GUIElement, CanShoot, AimToPositionX {
 
     companion object{
         const val MAX_HEALTH : Float = 500f
@@ -33,42 +34,32 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     }
     private var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH
-    private var playerImg : Bitmap
+    var playerImg : Int = R.drawable.player
     private var startTime : Long = System.currentTimeMillis()
-    private var playerShieldImg : Bitmap
+    var playerShieldImg : Int = R.drawable.playershield
     private var deathObservable : PlayerDeathObservable = PlayerDeathObservable()
     var deadAt : Long? = null
 
 
-    var context: ViewContext = ViewContext.getInstance()
-
-
-    private var positionY:Float = context.getHeightScreen()/ 5 * 4
-    private var positionX:Float = context.getWidthScreen()/2F
+    private var positionY:Float = displayDimension.height/ 5 * 4
+    private var positionX:Float = displayDimension.width/2F
     var aimedPositionX:Float = this.positionX
 
-    override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP)
+    override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP, displayDimension)
     override var shootObservable = ShootObservable()
 
-    private var healthBar : HealthBar = PlayerHealthBar(this)
+    var healthBar : HealthBar = PlayerHealthBar(this, displayDimension)
 
-    init {
-        playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
-        playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
-    }
     /**
      * Draws the player and player's health-bar
      * @param canvas : the canvas onto which the player will be drawn
      * @see HealthBar
      */
-    override fun draw(canvas: Canvas?) {
-        if(isAlive()) {
-            if (hasShield()) {
-                canvas?.drawBitmap(playerShieldImg, positionX - RADIUS / 2, positionY - RADIUS / 2, null)
-            } else {
-                canvas?.drawBitmap(playerImg, positionX - RADIUS / 2, positionY - RADIUS / 2, null)
-            }
-            healthBar.draw(canvas)
+    override fun draw(canvas: Canvas?, visitor: DrawVisitor) {
+
+        if(this.isAlive()) {
+            visitor.draw(canvas, this)
+            this.healthBar.draw(canvas, visitor)
         }
     }
 
@@ -79,7 +70,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     fun applyShield(duration: Long){
         updatesFromEndShield = duration
     }
-    private fun hasShield():Boolean{
+    fun hasShield():Boolean{
         return updatesFromEndShield >0
     }
 
@@ -101,12 +92,12 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
      * @param y : player's Y position
      */
     fun setPosition(x: Float, y: Float) {
-        positionX = if(x > RADIUS && x < context.getWidthScreen() - RADIUS){
+        positionX = if(x > RADIUS && x < displayDimension.width - RADIUS){
             x
         } else if (x < RADIUS) {
             RADIUS
         } else {
-            context.getWidthScreen() - RADIUS
+            displayDimension.width - RADIUS
         }
         positionY = y
     }
@@ -141,6 +132,9 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
 
     override fun getX(): Float {
         return this.positionX
+    }
+    fun getY(): Float {
+        return this.positionY
     }
 
     override fun aimToPos(): Float {

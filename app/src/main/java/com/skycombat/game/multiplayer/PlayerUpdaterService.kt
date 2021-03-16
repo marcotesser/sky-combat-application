@@ -18,7 +18,7 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
                     .name(remote.name)
                     .id(remote.id)
                     .gameroom(remote.gameroom)
-                    .positionX(player.getX().toDouble() / player.context.width.toDouble())
+                    .positionX(player.getX().toDouble() / player.displayDimension.width.toDouble())
                     .score((Math.random() * 10000).toInt())
                     .lastinteraction(Temporal.Timestamp.now())
                     .build()
@@ -40,7 +40,7 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
                     .name(remote.name)
                     .id(remote.id)
                     .gameroom(remote.gameroom)
-                    .positionX(player.getX().toDouble() / player.context.width.toDouble())
+                    .positionX(player.getX().toDouble() / player.displayDimension.width.toDouble())
                     .score(score)
                     .lastinteraction(Temporal.Timestamp.now())
                     .dead(true)
@@ -50,7 +50,6 @@ class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : T
                             playerOnline,
                             RemotePlayer.ID.eq(remote.id)
                     ), {
-                        Log.e("idk", "segno player come morto")
                         player.kill()
                     },
                     { error ->

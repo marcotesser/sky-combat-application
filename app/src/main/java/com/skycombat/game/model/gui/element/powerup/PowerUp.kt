@@ -3,32 +3,36 @@ package com.skycombat.game.model.gui.element.powerup
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
+import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
+import com.skycombat.game.model.gui.DisplayDimension
+import com.skycombat.game.model.gui.DrawVisitor
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
-import com.skycombat.game.scene.ViewContext
 
-abstract class PowerUp(var x : Float, var y : Float) : Circle, GUIElement {
+abstract class PowerUp(var x : Float, var y : Float, val displayDimension : DisplayDimension) : Circle, GUIElement {
 
     companion object {
         const val RADIUS: Float = 50f
         const val SPEED: Float = 8F
     }
 
-    abstract var powerUpImg : Bitmap
-    val context : ViewContext = ViewContext.getInstance()
+    abstract var powerUpImg : Int
     var used : Boolean = false
 
+    fun shouldApply(player: Player) : Boolean{
+        return player.isAlive()
+    }
     override fun update(){
         this.y += SPEED
     }
 
-    override fun draw(canvas : Canvas?){
-        canvas?.drawBitmap(powerUpImg,x - getRadius(),y - getRadius(),null)
+    override fun draw(canvas: Canvas?, visitor: DrawVisitor) {
+        visitor.draw(canvas, this)
     }
 
     override fun shouldRemove(): Boolean {
-        return this.used || this.y > context.getHeightScreen()
+        return this.used || this.y > displayDimension.height
     }
 
     override fun getCenter(): PointF {
