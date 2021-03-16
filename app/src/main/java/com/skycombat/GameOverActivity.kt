@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.AWSMobileClient
@@ -31,7 +32,7 @@ class GameOverActivity : AppCompatActivity() {
         val gameType : GameActivity.GAMETYPE =
                 intent.getSerializableExtra(GameActivity.SIGLA_TYPE)!! as GameActivity.GAMETYPE
 
-        findViewById<Button>(R.id.backToHome).setOnClickListener {
+        findViewById<ImageButton>(R.id.backToHome).setOnClickListener {
             startActivity(Intent(this, MainActivity::class.java))
         }
 

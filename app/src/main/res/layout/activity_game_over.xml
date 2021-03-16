@@ -74,11 +74,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/stars" />
 
-    <Button
+    <ImageButton
         android:id="@+id/backToHome"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="117dp"
+        android:layout_height="61dp"
         android:layout_marginBottom="68dp"
+        android:background="@drawable/homebutton_animated"
         android:fontFamily="@font/old_school_united_stencil"
         android:text="Back to home"
         android:textColor="#354815"
