@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.amplifyframework.core.Amplify
@@ -39,22 +40,22 @@ class LeaderboardsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_leaderboards)
 
-        val playerSconfitti = findViewById<Button>(R.id.playersconfitti)
-        val punteggioMaggiore = findViewById<Button>(R.id.punteggiomaggiore)
+        val playerSconfitti = findViewById<ImageButton>(R.id.playersconfitti)
+        val punteggioMaggiore = findViewById<ImageButton>(R.id.punteggiomaggiore)
         val playerLeaderboard = findViewById<TextView>(R.id.playerleaderboard)
         val whileLoading = "Loading ..."
         playerSconfitti.isEnabled=false
         playerLeaderboard.text = whileLoading
         getLeaderboard (SCOPE.DEFEATED)
 
-        findViewById<Button>(R.id.playersconfitti).setOnClickListener{
+        findViewById<ImageButton>(R.id.playersconfitti).setOnClickListener{
             playerSconfitti.isEnabled=false
             punteggioMaggiore.isEnabled=true
             playerLeaderboard.text = whileLoading
             getLeaderboard(SCOPE.DEFEATED)
         }
 
-        findViewById<Button>(R.id.punteggiomaggiore).setOnClickListener{
+        findViewById<ImageButton>(R.id.punteggiomaggiore).setOnClickListener{
             playerSconfitti.isEnabled=true
             punteggioMaggiore.isEnabled=false
             playerLeaderboard.text = whileLoading

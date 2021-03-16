@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.api.graphql.GraphQLOperation
@@ -37,7 +38,7 @@ class LobbyActivity : AppCompatActivity() {
         MultiplayerSession.player = null
         MultiplayerSession.opponents = CopyOnWriteArrayList()
 
-        findViewById<Button>(R.id.remove_from_queue).setOnClickListener{
+        findViewById<ImageButton>(R.id.remove_from_queue).setOnClickListener{
             this.removeFromQueue()
             this.finish()
         }
