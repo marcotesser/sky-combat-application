@@ -1,7 +1,7 @@
-package com.skycombat.game.model.gui.element.ghost.strategy
+package com.skycombat.game.model.gui.element.ghost.movement
 
 import com.skycombat.game.model.gui.properties.AimToPositionX
 
-interface AimedPositionStrategy {
+interface MovementStrategy {
     fun move(entity : AimToPositionX)
 }

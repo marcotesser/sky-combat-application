@@ -1,8 +1,8 @@
 package com.skycombat.game.model.gui
 
 import com.skycombat.game.model.factory.bullet.BulletFactory
-import com.skycombat.game.model.gui.element.bullet.*
-import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.gui.element.bullet.Bullet
+import com.skycombat.game.model.gui.element.bullet.collision.CollisionStrategy
 import com.skycombat.game.model.gui.properties.CanShoot
 
 class Weapon(private val owner: CanShoot, var bulletFactory: BulletFactory, private var collisionStrategy: CollisionStrategy, private var direction: Bullet.Direction, private val dimension: DisplayDimension): Updatable {

@@ -1,6 +1,5 @@
 package com.skycombat.game.model.gui.component
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import com.skycombat.R
 import com.skycombat.game.model.gui.DisplayDimension

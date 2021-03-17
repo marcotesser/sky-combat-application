@@ -1,4 +1,4 @@
-package com.skycombat.game.model.factory
+package com.skycombat.game.model.factory.enemy
 
 import com.skycombat.game.model.factory.bullet.*
 import com.skycombat.game.model.gui.DisplayDimension
@@ -10,10 +10,7 @@ import com.skycombat.game.model.gui.element.enemy.SpaceShipEnemy
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 import kotlin.random.Random
 
-/**
- * Represents an Enemy Factory
- */
-class EnemyFactory(var seed: Long, val displayDimension: DisplayDimension) {
+class SeedGeneralEnemyFactory(var seed: Long, val displayDimension: DisplayDimension) : GeneralEnemyFactory{
 
     private val random = Random(seed)
     private var iteration = 0
@@ -22,7 +19,7 @@ class EnemyFactory(var seed: Long, val displayDimension: DisplayDimension) {
      * @return Enemy to the scene
      * @see Player
      */
-    fun generate(): Enemy {
+    override fun generate(): Enemy {
         iteration++;
 
         val randMovement : Movement = when(random.nextInt(1,11)){

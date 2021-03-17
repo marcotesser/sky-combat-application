@@ -2,12 +2,14 @@ package com.skycombat.game.scene
 
 import android.content.Context
 import android.graphics.*
-import com.skycombat.R
 import com.skycombat.game.model.gui.DrawVisitor
 import com.skycombat.game.model.gui.component.Background
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.element.Player
-import com.skycombat.game.model.gui.element.bullet.*
+import com.skycombat.game.model.gui.element.bullet.ClassicBullet
+import com.skycombat.game.model.gui.element.bullet.GustBullet
+import com.skycombat.game.model.gui.element.bullet.LaserBullet
+import com.skycombat.game.model.gui.element.bullet.MultipleBullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
 import com.skycombat.game.model.gui.element.enemy.JetEnemy
 import com.skycombat.game.model.gui.element.ghost.Ghost

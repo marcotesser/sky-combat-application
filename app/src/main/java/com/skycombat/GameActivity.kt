@@ -10,7 +10,7 @@ import android.view.WindowManager
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
-import com.skycombat.game.model.gui.element.ghost.strategy.LinearPositionStrategy
+import com.skycombat.game.model.gui.element.ghost.movement.LinearAimedPositionMovement
 import com.skycombat.game.multiplayer.MultiplayerSession
 import com.skycombat.game.multiplayer.OpponentsUpdater
 import com.skycombat.game.multiplayer.PlayerUpdaterService
@@ -71,7 +71,7 @@ class GameActivity : Activity() {
 
 
         // creazione GameView
-        player = Player(velocity, LinearPositionStrategy(), displayDimension)
+        player = Player(velocity, LinearAimedPositionMovement(), displayDimension)
         player.addOnDeathOccurListener{
             score = when(currentGametype){
                 GAMETYPE.MULTI_PLAYER -> getCountDeadOpponents()
@@ -103,7 +103,7 @@ class GameActivity : Activity() {
             // opponenti
             ghosts = CopyOnWriteArrayList(IntStream
                 .range(0, MultiplayerSession.opponents.size)
-                .mapToObj{ Ghost(LinearPositionStrategy(), velocity, displayDimension) }
+                .mapToObj{ Ghost(LinearAimedPositionMovement(), velocity, displayDimension) }
                 .collect(Collectors.toList()))
             opponentsUpdater = RemoteOpponentUpdaterService(
                 MultiplayerSession.player!!,
@@ -124,7 +124,7 @@ class GameActivity : Activity() {
             currentGAMETYPE = GAMETYPE.MULTI_PLAYER
             ghosts = CopyOnWriteArrayList(IntStream
                     .range(0, 4)
-                    .mapToObj{ Ghost(LinearPositionStrategy(), velocity) }
+                    .mapToObj{ Ghost(LinearAimedPositionMovement(), velocity) }
                     .collect(Collectors.toList()))
             opponentsUpdater = MockOpponentsUpdaterService(ghosts)
             opponentsUpdater?.start()

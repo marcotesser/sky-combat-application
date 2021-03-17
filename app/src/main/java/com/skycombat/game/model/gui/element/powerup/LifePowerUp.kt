@@ -1,7 +1,5 @@
 package com.skycombat.game.model.gui.element.powerup
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.skycombat.R
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player

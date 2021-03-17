@@ -1,6 +1,8 @@
 package com.skycombat.game.model.gui.element.ghost
 
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PointF
 import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.geometry.Entity
@@ -9,10 +11,10 @@ import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.DrawVisitor
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.Player
-import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
+import com.skycombat.game.model.gui.element.ghost.movement.MovementStrategy
 import com.skycombat.game.model.gui.properties.AimToPositionX
 
-class Ghost(val aimedPos : AimedPositionStrategy, val velocity: Float, val displayDimension : DisplayDimension) : GUIElement,  Circle, AimToPositionX {
+class Ghost(val aimedPos : MovementStrategy, val velocity: Float, val displayDimension : DisplayDimension) : GUIElement,  Circle, AimToPositionX {
     companion object{
         var RADIUS: Float = Player.RADIUS
     }

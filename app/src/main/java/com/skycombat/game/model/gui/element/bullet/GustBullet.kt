@@ -1,14 +1,12 @@
 package com.skycombat.game.model.gui.element.bullet
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.PointF
 import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.DrawVisitor
-import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.gui.element.bullet.collision.CollisionStrategy
 
 class GustBullet(x : Float, y : Float, collisionStrategy: CollisionStrategy, direction: Direction, val dimension: DisplayDimension)
     : Bullet(x,y, collisionStrategy, direction, dimension), Circle {

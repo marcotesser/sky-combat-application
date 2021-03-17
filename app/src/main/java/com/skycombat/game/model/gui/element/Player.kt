@@ -1,7 +1,5 @@
 package com.skycombat.game.model.gui.element
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.PointF
 import com.skycombat.R
@@ -16,8 +14,8 @@ import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.component.PlayerHealthBar
 import com.skycombat.game.model.gui.element.bullet.Bullet
-import com.skycombat.game.model.gui.element.bullet.strategy.PlayerCollisionStrategy
-import com.skycombat.game.model.gui.element.ghost.strategy.AimedPositionStrategy
+import com.skycombat.game.model.gui.element.bullet.collision.PlayerCollisionStrategy
+import com.skycombat.game.model.gui.element.ghost.movement.MovementStrategy
 import com.skycombat.game.model.gui.event.PlayerDeathObservable
 import com.skycombat.game.model.gui.event.PlayerDeathObserver
 import com.skycombat.game.model.gui.event.ShootObservable
@@ -28,7 +26,7 @@ import com.skycombat.game.model.gui.properties.HasHealth
 /**
  * Represents an Player
  */
-class Player(private val velocity : Float, val aimedPositionStrategy: AimedPositionStrategy, val displayDimension: DisplayDimension) : HasHealth, Circle, GUIElement, CanShoot, AimToPositionX {
+class Player(private val velocity : Float, val movementStrategy: MovementStrategy, val displayDimension: DisplayDimension) : HasHealth, Circle, GUIElement, CanShoot, AimToPositionX {
 
     companion object{
         const val MAX_HEALTH : Float = 500f
@@ -82,7 +80,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     override fun update() {
         setDeadAtIfDead(System.currentTimeMillis())
         if(isAlive()) {
-            aimedPositionStrategy.move(this)
+            movementStrategy.move(this)
             weapon.update()
             if (updatesFromEndShield > 0) updatesFromEndShield--
         }

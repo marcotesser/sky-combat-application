@@ -1,9 +1,7 @@
 package com.skycombat.game.model.gui.element.powerup
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
-import com.skycombat.R
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.DrawVisitor

@@ -1,4 +1,4 @@
-package com.skycombat.game.model.gui.element.bullet.strategy
+package com.skycombat.game.model.gui.element.bullet.collision
 
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.properties.HasHealth

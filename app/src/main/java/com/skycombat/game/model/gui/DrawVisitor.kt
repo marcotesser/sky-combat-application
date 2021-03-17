@@ -4,7 +4,10 @@ import android.graphics.Canvas
 import com.skycombat.game.model.gui.component.Background
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.element.Player
-import com.skycombat.game.model.gui.element.bullet.*
+import com.skycombat.game.model.gui.element.bullet.ClassicBullet
+import com.skycombat.game.model.gui.element.bullet.GustBullet
+import com.skycombat.game.model.gui.element.bullet.LaserBullet
+import com.skycombat.game.model.gui.element.bullet.MultipleBullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.element.powerup.PowerUp

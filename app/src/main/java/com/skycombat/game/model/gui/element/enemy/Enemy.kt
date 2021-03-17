@@ -12,7 +12,7 @@ import com.skycombat.game.model.gui.component.EnemyHealthBar
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.element.GUIElement
 import com.skycombat.game.model.gui.element.bullet.Bullet
-import com.skycombat.game.model.gui.element.bullet.strategy.EnemyCollisionStrategy
+import com.skycombat.game.model.gui.element.bullet.collision.EnemyCollisionStrategy
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 import com.skycombat.game.model.gui.event.ShootObservable
 import com.skycombat.game.model.gui.properties.CanShoot

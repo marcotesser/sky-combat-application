@@ -13,13 +13,12 @@ package com.skycombat.game.scene
 
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.view.*
-import com.skycombat.R
-import com.skycombat.game.model.factory.EnemyFactory
-import com.skycombat.game.model.factory.PowerUpFactory
+import com.skycombat.game.model.factory.enemy.GeneralEnemyFactory
+import com.skycombat.game.model.factory.enemy.SeedGeneralEnemyFactory
+import com.skycombat.game.model.factory.powerup.GeneralPowerUpFactory
+import com.skycombat.game.model.factory.powerup.SeedGeneralPowerUpFactory
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.Drawable
 import com.skycombat.game.model.gui.component.Background
@@ -29,9 +28,7 @@ import com.skycombat.game.model.gui.element.bullet.Bullet
 import com.skycombat.game.model.gui.element.enemy.Enemy
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.element.powerup.PowerUp
-import com.skycombat.game.model.gui.panel.FPSPanel
 import com.skycombat.game.model.gui.panel.GamePanel
-import com.skycombat.game.model.gui.panel.UPSPanel
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Stream
 import kotlin.random.Random
@@ -46,24 +43,24 @@ class GameView(
         private var player : Player,
         private var drawableVisitor: GameViewDrawableVisitor = GameViewDrawableVisitor(context),
         private var ghosts : CopyOnWriteArrayList<Ghost> = CopyOnWriteArrayList(),
-        seed : Long = Random.nextLong()
+        seed : Long = Random.nextLong(),
+        val generalEnemyFactory: GeneralEnemyFactory = SeedGeneralEnemyFactory(seed, displayDimension),
+        val generalPowerUpFactory: GeneralPowerUpFactory = SeedGeneralPowerUpFactory(seed, displayDimension),
+        var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList(),
+        var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList(),
+        val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList(),
+        var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(),
+        val background : Background = Background(displayDimension),
 ) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
 
-    private val enemyFactory: EnemyFactory = EnemyFactory(seed, displayDimension)
-    private val powerUpFactory: PowerUpFactory = PowerUpFactory(seed, displayDimension)
-
     private val startTime = System.currentTimeMillis()
     private var gameLoop: GameLoop = GameLoop(this, holder)
-    private var enemies : CopyOnWriteArrayList<Enemy>    = CopyOnWriteArrayList()
 
-    private var powerUps : CopyOnWriteArrayList<PowerUp> = CopyOnWriteArrayList()
-    private val bullets : CopyOnWriteArrayList<Bullet>   = CopyOnWriteArrayList()
-    private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(listOf(
+    /*private var panels : CopyOnWriteArrayList<GamePanel> = CopyOnWriteArrayList(listOf(
         FPSPanel(20F, displayDimension.height/2, gameLoop, this ),
         UPSPanel(20F, displayDimension.height/2 + 100, gameLoop, this )
-    ))
-    private val background : Background = Background(displayDimension)
+    ))*/
 
     val deadEnemies: ArrayList<Enemy> = ArrayList()
 
@@ -109,10 +106,10 @@ class GameView(
             }
 
             if (enemies.isEmpty()) {
-                val enemy = enemyFactory.generate()
+                val enemy = generalEnemyFactory.generate()
                 enemies.add(enemy)
                 enemy.addOnShootListener { bullet -> bullets.add(bullet) }
-                powerUps.add(powerUpFactory.generate())
+                powerUps.add(generalPowerUpFactory.generate())
             }
 
             player.update()
