@@ -1,5 +1,6 @@
 package com.skycombat.game.model.factory
 
+import com.skycombat.game.model.factory.bullet.*
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.element.powerup.GunsPowerUp
@@ -33,18 +34,17 @@ class PowerUpFactory(var seed : Long, val displayDimension: DisplayDimension) {
             }
         }, GUNS {
             override fun generate(x: Float, iteration: Int, random: Random, displayDimension: DisplayDimension) : PowerUp {
-                val improvement = if(iteration < 20) 6 * iteration / 20 else 6
-                 val bulletType =  when(random.nextInt(1, 4 + improvement)){
-                    1 -> Weapon.BulletType.CLASSIC
-                    2,5 -> Weapon.BulletType.GUST
-                    3,6,8 -> Weapon.BulletType.MULTIPLE
-                    4,7,9 -> Weapon.BulletType.LASER
-                    else -> Weapon.BulletType.CLASSIC
+                val bulletFactory: BulletFactory = when (random.nextInt(1, 11)) {
+                    1,5,8,10 -> LaserBulletFactory()
+                    2,6,9 -> MultipleBulletFactory()
+                    3,7 -> GustBulletFactory()
+                    4 -> ClassicBulletFactory()
+                    else -> ClassicBulletFactory()
                 }
                 return GunsPowerUp(
                     x,
                     0F,
-                    bulletType,
+                    bulletFactory,
                     displayDimension
                 )
             }

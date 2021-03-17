@@ -1,9 +1,9 @@
 package com.skycombat.game.model.gui.element.enemy
 
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.PointF
 import android.graphics.RectF
+import com.skycombat.game.model.factory.bullet.BulletFactory
 import com.skycombat.game.model.geometry.Rectangle
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.DrawVisitor
@@ -21,14 +21,14 @@ import com.skycombat.game.model.gui.properties.HasHealth
 /**
  * Represents an Enemy
  */
-abstract class Enemy(bulletType: Weapon.BulletType, val movement: Movement, val displayDimension : DisplayDimension)
+abstract class Enemy(bulletFactory: BulletFactory, val movement: Movement, val displayDimension : DisplayDimension)
     : HasHealth, Rectangle, GUIElement, CanShoot {
     abstract var enemyImg : Int
     var left: Float = -100f
     var top: Float = -100f
     var points : Long = 100
     override var shootObservable = ShootObservable()
-    override var weapon: Weapon = Weapon(this, bulletType, EnemyCollisionStrategy(), Bullet.Direction.DOWN, displayDimension)
+    override var weapon: Weapon = Weapon(this, bulletFactory, EnemyCollisionStrategy(), Bullet.Direction.DOWN, displayDimension)
     var healthBar : HealthBar = EnemyHealthBar(this)
 
     override var health : Float = this.getMaxHealth()

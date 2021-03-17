@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.PointF
 import com.skycombat.R
+import com.skycombat.game.model.factory.bullet.BulletFactory
+import com.skycombat.game.model.factory.bullet.ClassicBulletFactory
 import com.skycombat.game.model.geometry.Circle
 import com.skycombat.game.model.geometry.Entity
 import com.skycombat.game.model.geometry.Rectangle
@@ -45,7 +47,7 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
     private var positionX:Float = displayDimension.width/2F
     var aimedPositionX:Float = this.positionX
 
-    override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP, displayDimension)
+    override var weapon: Weapon = Weapon(this, ClassicBulletFactory() , PlayerCollisionStrategy(), Bullet.Direction.UP, displayDimension)
     override var shootObservable = ShootObservable()
 
     var healthBar : HealthBar = PlayerHealthBar(this, displayDimension)
@@ -106,8 +108,8 @@ class Player(private val velocity : Float, val aimedPositionStrategy: AimedPosit
      * @see Bullet
      */
 
-    fun setBulletType(bulletType: Weapon.BulletType){
-        weapon.setBulletType(bulletType)
+    fun setBulletType(bulletFactory: BulletFactory){
+        weapon.setBulletType(bulletFactory)
     }
 
     override fun getMaxHealth(): Float {
