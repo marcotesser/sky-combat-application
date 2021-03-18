@@ -11,7 +11,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ImageButton
-import android.widget.RelativeLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
@@ -52,7 +52,6 @@ class GameActivity : Activity() {
     private var remotePlayer: PlayerUpdaterService? = null
     private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
     private lateinit var player : Player
-    private lateinit var quitButton : ImageButton
     private var score = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -103,6 +102,11 @@ class GameActivity : Activity() {
         // creazione dinamiche multiplayer
         val ghosts: CopyOnWriteArrayList<Ghost>
 
+
+        //creazione del FrameLayout per contenere gameView e il bottone di uscita precoce
+        val fw = FrameLayout(this)
+        fw.addView(gameView)
+
         if(MultiplayerSession.player != null) {
             currentGametype = GAMETYPE.MULTI_PLAYER
 
@@ -117,33 +121,26 @@ class GameActivity : Activity() {
             )
             opponentsUpdater?.start()
 
-            // gestiamo il player corrente
+            // player corrente
             remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!)
             remotePlayer?.start()
 
             gameView?.setGhosts(ghosts)
 
-            //aggiunto il listener per l'uscita precoce solo in multiplayer
-            gameView!!.addPlayerIsDeadListener {
+            // listener per l'uscita precoce solo in multiplayer
+            player.addOnDeathOccurListener {
                 showQuit()
             }
+            val overlay : ConstraintLayout = LayoutInflater.from(this).inflate(R.layout.activity_game_quit, fw, false) as ConstraintLayout
 
-            //creazione del FrameLayout per contenere gameView e il bottone di uscita precoce
-            var fw : FrameLayout = FrameLayout(this)
-            var overlay : RelativeLayout = LayoutInflater.from(this).inflate(R.layout.activity_game_quit, fw, false) as RelativeLayout
-            fw.addView(gameView)
             fw.addView(overlay)
 
-            setContentView(fw)
-
-
             // imposta onClickListener per uscire prima dalla partita multiplayer
-            quitButton = findViewById<ImageButton>(com.skycombat.R.id.quit)
+            val quitButton = overlay.findViewById<ImageButton>(R.id.quit)
             quitButton.setOnClickListener{
                 this.callGameOverActivity()
                 this.finish()
             }
-            //toglie l'allocazione sulla GUI del bottone cosi` puo` riapparire sopra la gameView
             quitButton.visibility = View.GONE
 
         } else {
@@ -151,7 +148,6 @@ class GameActivity : Activity() {
             ghosts = CopyOnWriteArrayList()
 
             gameView?.setGhosts(ghosts)
-            setContentView(gameView)
 
             /*
             // serve solo per simulare il multiplayer in locale utilizzato la modalità "singleplayer" del gioco
@@ -164,6 +160,9 @@ class GameActivity : Activity() {
             opponentsUpdater?.start()
             */
         }
+
+        //toglie l'allocazione sulla GUI del bottone cosi` puo` riapparire sopra la gameView
+        setContentView(fw)
 
     }
 
@@ -188,6 +187,7 @@ class GameActivity : Activity() {
         val intent = Intent(this, GameOverActivity::class.java)
 
         // in caso ci fossero servizi di aggiornamento remoti, li fermo
+        gameView?.pause()
         remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
 
@@ -199,7 +199,9 @@ class GameActivity : Activity() {
 
 
     private fun showQuit() {
-        runOnUiThread{ quitButton.visibility = View.VISIBLE }
+        runOnUiThread{
+            findViewById<ImageButton>(R.id.quit)?.visibility = View.VISIBLE
+        }
     }
 
     override fun onPause() {
