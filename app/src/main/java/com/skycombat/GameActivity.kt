@@ -5,8 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.view.LayoutInflater
+import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.FrameLayout
+import android.widget.ImageButton
+import android.widget.RelativeLayout
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
@@ -47,6 +52,7 @@ class GameActivity : Activity() {
     private var remotePlayer: PlayerUpdaterService? = null
     private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
     private lateinit var player : Player
+    private lateinit var quitButton : ImageButton
     private var score = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -115,9 +121,37 @@ class GameActivity : Activity() {
             remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!)
             remotePlayer?.start()
 
+            gameView?.setGhosts(ghosts)
+
+            //aggiunto il listener per l'uscita precoce solo in multiplayer
+            gameView!!.addPlayerIsDeadListener {
+                showQuit()
+            }
+
+            //creazione del FrameLayout per contenere gameView e il bottone di uscita precoce
+            var fw : FrameLayout = FrameLayout(this)
+            var overlay : RelativeLayout = LayoutInflater.from(this).inflate(R.layout.activity_game_quit, fw, false) as RelativeLayout
+            fw.addView(gameView)
+            fw.addView(overlay)
+
+            setContentView(fw)
+
+
+            // imposta onClickListener per uscire prima dalla partita multiplayer
+            quitButton = findViewById<ImageButton>(com.skycombat.R.id.quit)
+            quitButton.setOnClickListener{
+                this.callGameOverActivity()
+                this.finish()
+            }
+            //toglie l'allocazione sulla GUI del bottone cosi` puo` riapparire sopra la gameView
+            quitButton.visibility = View.GONE
+
         } else {
             currentGametype = GAMETYPE.SINGLE_PLAYER
             ghosts = CopyOnWriteArrayList()
+
+            gameView?.setGhosts(ghosts)
+            setContentView(gameView)
 
             /*
             // serve solo per simulare il multiplayer in locale utilizzato la modalità "singleplayer" del gioco
@@ -130,8 +164,6 @@ class GameActivity : Activity() {
             opponentsUpdater?.start()
             */
         }
-        gameView?.setGhosts(ghosts)
-        setContentView(gameView)
 
     }
 
@@ -163,6 +195,11 @@ class GameActivity : Activity() {
         intent.putExtra(SIGLA_SCORE, score)
 
         startActivity(intent)
+    }
+
+
+    private fun showQuit() {
+        runOnUiThread{ quitButton.visibility = View.VISIBLE }
     }
 
     override fun onPause() {

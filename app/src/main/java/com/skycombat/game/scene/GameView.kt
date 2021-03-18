@@ -53,6 +53,7 @@ class GameView(
         val background : Background = Background(displayDimension),
 ) : SurfaceView(context), SurfaceHolder.Callback {
     private val gameOverObservable : GameOverObservable = GameOverObservable()
+    private val playerIsDeadObservable : GameOverObservable = GameOverObservable()
 
     private val startTime = System.currentTimeMillis()
     private var gameLoop: GameLoop = GameLoop(this, holder)
@@ -95,6 +96,9 @@ class GameView(
      * Aggiorna i vari componenti e verifica se è gameover
      */
     fun update() {
+        if(player.isDead()){
+            playerIsDeadObservable.notify(getMillisFromStart())
+        }
         if (isGameOver()) {
             gameLoop.killLoop()
             gameOverObservable.notify(getMillisFromStart())
@@ -169,6 +173,13 @@ class GameView(
      */
     fun addGameOverListener(observer : GameOverObserver) {
         gameOverObservable.attach(observer)
+    }
+    /**
+     * aggiunge un listener alla morte del player
+     * @see GameOverObserver
+     */
+    fun addPlayerIsDeadListener(observer : GameOverObserver) {
+        playerIsDeadObservable.attach(observer)
     }
 
     /**
