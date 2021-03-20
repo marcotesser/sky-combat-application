@@ -10,7 +10,7 @@ import com.amplifyframework.datastore.generated.model.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import java.util.concurrent.TimeUnit
 
-class RemoteOpponentUpdaterService(var currentPlayer: Player, private var opponents : List<Pair<Player, Ghost>>) : OpponentsUpdater(){
+class RemoteOpponentUpdaterService(var currentPlayer: Player, private var opponents : List<Pair<Player, Ghost>>) : OpponentsUpdaterService(){
     private var elapsedTime : Long = 0
     private var alive = true
     override fun getOpponents(): List<Ghost> {

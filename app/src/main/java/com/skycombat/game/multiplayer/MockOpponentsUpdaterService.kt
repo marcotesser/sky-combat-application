@@ -3,7 +3,7 @@ package com.skycombat.game.multiplayer
 import android.util.Log
 import com.skycombat.game.model.gui.element.ghost.Ghost
 
-class MockOpponentsUpdaterService (private var opponents : List<Ghost>) : OpponentsUpdater(){
+class MockOpponentsUpdaterService (private var opponents : List<Ghost>) : OpponentsUpdaterService(){
     private var elapsedTime : Long = 0
     private var alive = true
     override fun getOpponents(): List<Ghost> {

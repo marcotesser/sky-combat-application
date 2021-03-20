@@ -21,6 +21,7 @@ import java.util.concurrent.CopyOnWriteArrayList
 
 class LobbyActivity : AppCompatActivity() {
     lateinit var id : String
+    val session = MultiplayerSession.reset()
     override fun onCreate(savedInstanceState: Bundle?) {
         if(!intent.hasExtra("id-player")){
             this.finish()
@@ -34,8 +35,7 @@ class LobbyActivity : AppCompatActivity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
 
-        MultiplayerSession.player = null
-        MultiplayerSession.opponents = CopyOnWriteArrayList()
+
 
         findViewById<ImageButton>(R.id.remove_from_queue).setOnClickListener{
             this.removeFromQueue()
@@ -46,19 +46,21 @@ class LobbyActivity : AppCompatActivity() {
                 ModelSubscription.onCreate(Player::class.java),
                 { Log.i("ApiQuickStart", "Subscription established") },
                 { onCreated ->
-                    if (onCreated.data.id == id && MultiplayerSession.player == null) {
-                        MultiplayerSession.player = onCreated.data
-                        MultiplayerSession.opponents = CopyOnWriteArrayList(
-                            onCreated.data.gameroom.players.filter { op ->
-                                op.id != onCreated.data.id
-                            }
+                    if (onCreated.data.id == id && session.player == null) {
+                        session.set(
+                            onCreated.data,
+                            CopyOnWriteArrayList(
+                                onCreated.data.gameroom.players.filter { op ->
+                                    op.id != onCreated.data.id
+                                }
+                            )
                         )
                         startGameIfReady(sub)
                     } else if (
-                        MultiplayerSession.player != null &&
-                        onCreated.data.gameroom.id == MultiplayerSession.player!!.gameroom.id) {
-                            MultiplayerSession.opponents.add(onCreated.data)
-                            startGameIfReady(sub)
+                        session.player != null &&
+                        onCreated.data.gameroom.id == session.player!!.gameroom.id) {
+                        session.opponents.add(onCreated.data)
+                        startGameIfReady(sub)
                     }
                 },
                 { onFailure -> Log.e("ApiQuickStart", "Subscription failed", onFailure) },
@@ -66,8 +68,8 @@ class LobbyActivity : AppCompatActivity() {
         )
     }
      private fun startGameIfReady(subscription : GraphQLOperation<Player>?){
-        if(MultiplayerSession.player != null &&
-            MultiplayerSession.opponents.size == MultiplayerSession.player!!.gameroom.gamers - 1){
+        if(session.player != null &&
+            session.opponents.size == session.player!!.gameroom.gamers - 1){
 
                 val intent = Intent(this, GameActivity::class.java)
                 startActivity(intent)

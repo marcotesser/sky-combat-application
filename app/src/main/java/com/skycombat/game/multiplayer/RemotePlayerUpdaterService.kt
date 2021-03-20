@@ -7,7 +7,7 @@ import com.amplifyframework.core.model.temporal.Temporal
 import com.amplifyframework.datastore.generated.model.Player as RemotePlayer
 import com.skycombat.game.model.gui.element.Player as GUIPlayer
 
-class PlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : Thread() {
+class RemotePlayerUpdaterService(val player : GUIPlayer, var remote: RemotePlayer) : Thread() {
     private var alive = true
     override fun run() {
         super.run()

@@ -17,8 +17,8 @@ import com.skycombat.game.model.gui.element.Player
 import com.skycombat.game.model.gui.element.ghost.Ghost
 import com.skycombat.game.model.gui.element.ghost.movement.LinearAimedPositionMovement
 import com.skycombat.game.multiplayer.MultiplayerSession
-import com.skycombat.game.multiplayer.OpponentsUpdater
-import com.skycombat.game.multiplayer.PlayerUpdaterService
+import com.skycombat.game.multiplayer.OpponentsUpdaterService
+import com.skycombat.game.multiplayer.RemotePlayerUpdaterService
 import com.skycombat.game.multiplayer.RemoteOpponentUpdaterService
 import com.skycombat.game.scene.GameView
 import java.io.Serializable
@@ -48,8 +48,8 @@ class GameActivity : Activity() {
     //gameView will be the mainview and it will manage the game's logic
     private val velocity = 4f
     private var gameView: GameView? = null
-    private var opponentsUpdater : OpponentsUpdater? = null
-    private var remotePlayer: PlayerUpdaterService? = null
+    private var opponentsUpdater : OpponentsUpdaterService? = null
+    private var remoteRemotePlayer: RemotePlayerUpdaterService? = null
     private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
     private lateinit var player : Player
     private var score = 0L
@@ -73,6 +73,7 @@ class GameActivity : Activity() {
                 metrics.heightPixels.toFloat()
         )
 
+        val session = MultiplayerSession.get()
 
 
         // creazione GameView
@@ -85,13 +86,13 @@ class GameActivity : Activity() {
                 }?.reduceOrNull(Long::plus) ?: 0L
 
             }
-            remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
+            remoteRemotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         }
         gameView = GameView(
             this,
             displayDimension,
             player,
-            seed = MultiplayerSession.player?.gameroom?.seed?.toLong() ?: Random.nextLong()
+            seed = session.player?.gameroom?.seed?.toLong() ?: Random.nextLong()
         )
         gameView!!.addGameOverListener {
             callGameOverActivity()
@@ -107,23 +108,23 @@ class GameActivity : Activity() {
         val fw = FrameLayout(this)
         fw.addView(gameView)
 
-        if(MultiplayerSession.player != null) {
+        if(session.player != null) {
             currentGametype = GAMETYPE.MULTI_PLAYER
 
             // opponenti
             ghosts = CopyOnWriteArrayList(IntStream
-                .range(0, MultiplayerSession.opponents.size)
+                .range(0, session.opponents.size)
                 .mapToObj{ Ghost(LinearAimedPositionMovement(), velocity, displayDimension) }
                 .collect(Collectors.toList()))
             opponentsUpdater = RemoteOpponentUpdaterService(
-                MultiplayerSession.player!!,
-                MultiplayerSession.opponents.zip(ghosts)
+                session.player!!,
+                session.opponents.zip(ghosts)
             )
             opponentsUpdater?.start()
 
             // player corrente
-            remotePlayer = PlayerUpdaterService(gameView!!.getPlayer(), MultiplayerSession.player!!)
-            remotePlayer?.start()
+            remoteRemotePlayer = RemotePlayerUpdaterService(gameView!!.getPlayer(), session.player!!)
+            remoteRemotePlayer?.start()
 
             gameView?.setGhosts(ghosts)
 
@@ -188,7 +189,7 @@ class GameActivity : Activity() {
 
         // in caso ci fossero servizi di aggiornamento remoti, li fermo
         gameView?.pause()
-        remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
+        remoteRemotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
 
         intent.putExtra(SIGLA_TYPE, currentGametype)
@@ -211,7 +212,7 @@ class GameActivity : Activity() {
 
     override fun onStop() {
         super.onStop()
-        remotePlayer?.setAsDead(getCountDeadOpponents().toInt())
+        remoteRemotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
     }
 
