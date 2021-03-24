@@ -157,7 +157,7 @@ class GameActivity : Activity() {
                     .range(0, 4)
                     .mapToObj{ Ghost(LinearAimedPositionMovement(), velocity) }
                     .collect(Collectors.toList()))
-            opponentsUpdater = MockOpponentsUpdaterService(ghosts)
+            opponentsUpdater = LocalOpponentsUpdaterService(ghosts)
             opponentsUpdater?.start()
             */
         }
