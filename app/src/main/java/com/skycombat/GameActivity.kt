@@ -13,7 +13,7 @@ import com.skycombat.game.scene.GameView
 class GameActivity : Activity() {
 
     //gameView will be the mainview and it will manage the game's logic
-    private var gameView: GameView? = null
+    privar gameView: GameVidhv ds adew? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
