@@ -88,7 +88,17 @@ class PlayerTest {
         assertTrue(player.getCurrentHealth() == player.getMaxHealth())
     }
 
+    @Test
+    fun `check shield is due to date`(){
+        val width = 100f; val height = 100f
+        var player = Player(10f, LinearAimedPositionMovement(), DisplayDimension(10f, 10f))
+        var bullet = ClassicBullet(1f,1f, EnemyCollisionStrategy(),  Bullet.Direction.DOWN, DisplayDimension(width, height))
 
+        player.applyShield(1)
+        player.update()
+
+        assertFalse(player.hasShield())
+    }
 
 }
 
