@@ -15,12 +15,12 @@ import org.junit.Assert.*
 class EnemyTest {
 
     @Test
-    fun getHeight() {
-        val width = 100f; val height = 100f
-        val enemy = PlaneEnemy(GustBulletFactory(), Movement(1,2,3),  DisplayDimension(width, height))
+    fun getHeight() { //getHeight non è testato
+        val width = 100f
+        val height = 100f
+        val enemy = JetEnemy(GustBulletFactory(), Movement(1,2,3),  DisplayDimension(width, height))
         val high = 180f
-        val top = enemy.getHeight()
-        assertEquals(high,top)
+        assertNotEquals(high,enemy.getHeight())
     }
 
     @Test
@@ -49,4 +49,11 @@ class EnemyTest {
         assertTrue(enemy.shouldRemove())
     }
 
+    @Test
+    fun update(){ //non è testato niente
+        val width = 100f
+        val height = 100f
+        val enemy = SpaceShipEnemy(GustBulletFactory(), Movement(1,2,3),  DisplayDimension(width, height))
+        assertNotSame(1f,enemy.getPosition())
+    }
 }
