@@ -45,7 +45,7 @@ class PowerUpTest {
         val height = 10f
         var player = Player(10f, LinearAimedPositionMovement(), DisplayDimension(10f, 10f))
         val power = GunsPowerUp(1f, 1f, LaserBulletFactory(), DisplayDimension(width, height))
-        
+
         power.update()
         assertTrue(power.collide(player))
     }
