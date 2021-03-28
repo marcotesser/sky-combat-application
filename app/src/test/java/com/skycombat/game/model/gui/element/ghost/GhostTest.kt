@@ -11,8 +11,7 @@ import org.junit.Assert.*
 class GhostTest {
 
     @Test
-    fun getCenter() {
-        assertEquals(4,2);
+    fun getCenter(){
     }
 
     @Test

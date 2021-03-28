@@ -39,7 +39,7 @@ class BulletFactoryTest {
         player.health=player.getMaxHealth()
 
         GustBullet.applyCollisionEffects(player)
-        assertEquals(player.getMaxHealth()-player.health+5, GustBullet.getDamage())
+        assertEquals(player.getMaxHealth()-player.health, GustBullet.getDamage())
     }
 
     @Test
