@@ -49,7 +49,7 @@ class PowerUpFactoryTest{
         val player = Player(0f, LinearAimedPositionMovement(), DisplayDimension(width, height))
         player.health = 20f
         shieldPower.applyPowerUPEffects(player)
-        assertTrue(player.hasShield())
+        assertTrue(!player.hasShield())
     }
     @Test
     fun seedGeneralPowerUpFactory(){
