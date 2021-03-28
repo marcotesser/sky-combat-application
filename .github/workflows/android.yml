@@ -20,5 +20,5 @@ jobs:
     #- name: Build with Gradle
     #  run: ./gradlew build
     - name: Unit Test
-      run: ./gradlew test --info
+      run: ./gradlew test
     

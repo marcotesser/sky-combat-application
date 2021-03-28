@@ -12,7 +12,7 @@ class GhostTest {
 
     @Test
     fun getCenter() {
-        assertEquals(4,2)
+        assertEquals(4,2);
     }
 
     @Test
