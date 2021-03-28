@@ -14,7 +14,7 @@ class PlayerTest {
         var player = Player(10f, LinearAimedPositionMovement(), DisplayDimension(10f, 10f))
         player.health = 0f
 
-        assertTrue(false)
+        assertTrue(player.shouldRemove())
     }
 
     @Test
@@ -28,6 +28,6 @@ class PlayerTest {
         val x = player.getX()
         val y = player.getY()
 
-        assertTrue(tx==x && ty==x)
+        assertTrue(tx==x && ty==y)
     }
 }
