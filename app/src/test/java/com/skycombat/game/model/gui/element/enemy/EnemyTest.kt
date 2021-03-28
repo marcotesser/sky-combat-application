@@ -4,6 +4,9 @@ import com.skycombat.game.model.factory.bullet.ClassicBulletFactory
 import com.skycombat.game.model.factory.bullet.GustBulletFactory
 import com.skycombat.game.model.factory.bullet.LaserBulletFactory
 import com.skycombat.game.model.gui.DisplayDimension
+import com.skycombat.game.model.gui.element.bullet.Bullet
+import com.skycombat.game.model.gui.element.bullet.LaserBullet
+import com.skycombat.game.model.gui.element.bullet.collision.PlayerCollisionStrategy
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 
 import org.junit.Test
@@ -64,5 +67,18 @@ class EnemyTest {
         val height = 100f
         val enemy = PlaneEnemy(ClassicBulletFactory(), Movement(1,2,3),  DisplayDimension(width, height))
         assertNotSame(1f,enemy.getPosition())
+    }
+
+    @Test
+    fun `Testing Rectangle Colliding Bullet`(){
+        val width = 100f
+        val height = 100f
+        val enemy = SpaceShipEnemy(GustBulletFactory(), Movement(1,2,3),  DisplayDimension(width, height))
+        val bullet = LaserBullet(enemy.left, enemy.top, PlayerCollisionStrategy(), Bullet.Direction.UP, DisplayDimension(width, height))
+        enemy.health=1f
+
+        bullet.applyCollisionEffects(enemy)
+
+        assertTrue(bullet.shouldRemove() && enemy.shouldRemove())
     }
 }
