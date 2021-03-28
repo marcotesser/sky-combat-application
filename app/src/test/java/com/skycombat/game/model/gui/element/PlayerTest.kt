@@ -28,6 +28,6 @@ class PlayerTest {
         val x = player.getX()
         val y = player.getY()
 
-        assertTrue(tx==x && ty==y)
+        assertTrue(tx==x && ty==x)
     }
 }
