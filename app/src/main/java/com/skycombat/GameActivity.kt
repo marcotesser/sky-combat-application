@@ -3,6 +3,7 @@ package com.skycombat
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -51,6 +52,7 @@ class GameActivity : Activity() {
     private var opponentsUpdater : OpponentsUpdaterService? = null
     private var remoteRemotePlayer: RemotePlayerUpdaterService? = null
     private var currentGametype : GAMETYPE = GAMETYPE.SINGLE_PLAYER
+    private lateinit var mediaPlayer: MediaPlayer
     private lateinit var player : Player
     private var score = 0L
 
@@ -63,6 +65,8 @@ class GameActivity : Activity() {
             WindowManager.LayoutParams.FLAG_FULLSCREEN,
             WindowManager.LayoutParams.FLAG_FULLSCREEN
         )
+
+        mediaPlayer = MediaPlayer.create(this, R.raw.game_song)
 
         // ottenere dimensioni schermo
         val metrics = DisplayMetrics()
@@ -164,6 +168,8 @@ class GameActivity : Activity() {
 
         //toglie l'allocazione sulla GUI del bottone cosi` puo` riapparire sopra la gameView
         setContentView(fw)
+        mediaPlayer.isLooping = true;
+        mediaPlayer.start()
 
     }
 
@@ -192,6 +198,7 @@ class GameActivity : Activity() {
         remoteRemotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
 
+        mediaPlayer.stop()
         intent.putExtra(SIGLA_TYPE, currentGametype)
         intent.putExtra(SIGLA_SCORE, score)
 
@@ -212,6 +219,7 @@ class GameActivity : Activity() {
 
     override fun onStop() {
         super.onStop()
+        mediaPlayer.release()
         remoteRemotePlayer?.setAsDead(getCountDeadOpponents().toInt())
         opponentsUpdater?.stopUpdates()
     }
