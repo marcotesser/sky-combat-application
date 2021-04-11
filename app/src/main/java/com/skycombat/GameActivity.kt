@@ -6,6 +6,7 @@ import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.Window
@@ -22,6 +23,7 @@ import com.skycombat.game.multiplayer.OpponentsUpdaterService
 import com.skycombat.game.multiplayer.RemotePlayerUpdaterService
 import com.skycombat.game.multiplayer.RemoteOpponentUpdaterService
 import com.skycombat.game.scene.GameView
+import com.skycombat.setting.GameSettingsService
 import java.io.Serializable
 import java.util.concurrent.CopyOnWriteArrayList
 import java.util.stream.Collectors
@@ -55,6 +57,7 @@ class GameActivity : Activity() {
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var player : Player
     private var score = 0L
+    private val settings = GameSettingsService(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -120,6 +123,7 @@ class GameActivity : Activity() {
                 .range(0, session.opponents.size)
                 .mapToObj{ Ghost(LinearAimedPositionMovement(), velocity, displayDimension) }
                 .collect(Collectors.toList()))
+            ghosts.forEach {  g -> g.visible = settings.ghostVisibility}
             opponentsUpdater = RemoteOpponentUpdaterService(
                 session.player!!,
                 session.opponents.zip(ghosts)
@@ -169,6 +173,8 @@ class GameActivity : Activity() {
         //toglie l'allocazione sulla GUI del bottone cosi` puo` riapparire sopra la gameView
         setContentView(fw)
         mediaPlayer.isLooping = true;
+        val volume = settings.songVolume.toFloat() / GameSettingsService.VOLUME_MAX
+        mediaPlayer.setVolume(volume, volume)
         mediaPlayer.start()
 
     }

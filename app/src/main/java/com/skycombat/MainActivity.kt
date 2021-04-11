@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity() {
         login.setOnClickListener{ login() }
         logout.setOnClickListener{ logout() }
         settings.setOnClickListener{
-            // TODO startActivity(Intent(this, SettingsActivity::class.java))
+            startActivity(Intent(this, SettingsActivity::class.java))
         }
         leaderboard.setOnClickListener {
             startActivity(Intent(this, LeaderboardsActivity::class.java))

@@ -69,19 +69,14 @@ class RemoteOpponentUpdaterService(var currentPlayer: Player, private var oppone
 
             // quelli non presenti nella risposta dell'API
             partitions.second.forEach { p ->
-                if(p.second.isAlive()) {
-                    Log.e("idk", "È MORTO ${p.first.name}")
-                }
                 p.second.kill()
             }
         }
     }
     @Synchronized override fun stopUpdates(){
         if(alive) {
-            Log.e("test", "INIZIO STOPPO CICLO")
             this.alive = false
             this.join()
-            Log.e("test", "FINE STOPPO CICLO")
         }
     }
 }
