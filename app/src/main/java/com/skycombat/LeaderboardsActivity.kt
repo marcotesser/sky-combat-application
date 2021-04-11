@@ -1,13 +1,32 @@
 package com.skycombat
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import com.amplifyframework.core.Amplify
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.skycombat.api.leaderboard.Leaderboard
+import com.skycombat.api.leaderboard.Me
 
 class LeaderboardsActivity : AppCompatActivity() {
+    companion object{
+        enum class SCOPE{
+            SCORE {
+                override fun toString(): String {
+                    return "score"
+                }
+            }, DEFEATED{
+                override fun toString(): String {
+                    return "defeated"
+                }
+            };
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -20,18 +39,71 @@ class LeaderboardsActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_leaderboards)
 
-        findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(1)
-        findViewById<Button>(R.id.playersconfitti).isEnabled=false
+        val playerSconfitti = findViewById<ImageButton>(R.id.playersconfitti)
+        val punteggioMaggiore = findViewById<ImageButton>(R.id.punteggiomaggiore)
+        val playerLeaderboard = findViewById<TextView>(R.id.playerleaderboard)
+        val whileLoading = "Loading ..."
+        playerSconfitti.isEnabled=false
+        playerLeaderboard.text = whileLoading
+        getLeaderboard (SCOPE.DEFEATED)
 
-        findViewById<Button>(R.id.playersconfitti).setOnClickListener{
-            findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(1)
-            findViewById<Button>(R.id.playersconfitti).isEnabled=false
-            findViewById<Button>(R.id.punteggiomaggiore).isEnabled=true
+        findViewById<ImageButton>(R.id.playersconfitti).setOnClickListener{
+            playerSconfitti.isEnabled=false
+            punteggioMaggiore.isEnabled=true
+            playerLeaderboard.text = whileLoading
+            getLeaderboard(SCOPE.DEFEATED)
         }
-        findViewById<Button>(R.id.punteggiomaggiore).setOnClickListener{
-            findViewById<TextView>(R.id.playerleaderboard).text = setLeaderboardText(2)
-            findViewById<Button>(R.id.playersconfitti).isEnabled=true
-            findViewById<Button>(R.id.punteggiomaggiore).isEnabled=false
+
+        findViewById<ImageButton>(R.id.punteggiomaggiore).setOnClickListener{
+            playerSconfitti.isEnabled=true
+            punteggioMaggiore.isEnabled=false
+            playerLeaderboard.text = whileLoading
+            getLeaderboard(SCOPE.SCORE)
+        }
+    }
+
+    private fun getLeaderboard (scope: SCOPE) {
+        val url : String = if(Amplify.Auth.currentUser != null) {
+           "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope&username=${Amplify.Auth.currentUser.username}"
+        }
+        else {
+            "https://dmh7jq3nqi.execute-api.eu-central-1.amazonaws.com/V1/get-leaderboard?scope=$scope"
+        }
+        val queue  = Volley.newRequestQueue(this)
+        val jsonObjectRequest = object: JsonObjectRequest(Method.GET, url, null,
+            { response ->
+                val leaderboard = Leaderboard(response)
+                val me = leaderboard.me
+                if(me != null) {
+                    setPlayerPositionGUI(scope, me)
+                }
+                setLeaderboardGUI(leaderboard, scope)
+            },
+            { error -> Log.e("ERRORE LEADERBOARD", error.toString())}
+        ) {}
+        queue.add(jsonObjectRequest)
+    }
+
+    private fun setPlayerPositionGUI(scope: SCOPE, me: Me) {
+        runOnUiThread {
+            findViewById<TextView>(R.id.playerScore).text = when (scope) {
+                SCOPE.DEFEATED -> "Sei in posizione: ${me.pos.defeated} \nIl tuo punteggio è: ${me.defeated}"
+                SCOPE.SCORE -> "Sei in posizione: ${me.pos.score} \nIl tuo punteggio è: ${me.score}"
+            }
+        }
+    }
+
+    private fun setLeaderboardGUI(leaderboard: Leaderboard, scope: SCOPE) {
+        runOnUiThread {
+            findViewById<TextView>(R.id.playerleaderboard).text = leaderboard.results
+                .map { result ->
+                    result.username + " " + when (scope) {
+                        SCOPE.DEFEATED -> result.defeated.toString()
+                        SCOPE.SCORE -> result.score.toString()
+                    } + "\n"
+                }.mapIndexed{ index, el ->
+                    " ${index+1} $el"
+                }.joinToString(separator = "")
         }
     }
 
@@ -40,77 +112,4 @@ class LeaderboardsActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    fun setLeaderboardText(code: Int) : String{
-        //fare le query qua e creare una stringa contenente la posizione del player, il nome e lo score
-        var leaderboardText: String
-        if(code==1){
-            leaderboardText="1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n" +
-                    " 1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n"+
-                    " 1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n"+
-                    " 1 Vittorio 10000\n" +
-                    "2 Marco 2000\n" +
-                    "3 Riccardo 3000\n" +
-                    "4 Samuele 1000\n" +
-                    "5 Alberto 900\n" +
-                    "6 Alice 50 \n" +
-                    "7 Giovanni 20\n"
-        }else{
-            leaderboardText="1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n" +
-                    "1 Marco 400\n" +
-                    "2 Vittorio 300\n" +
-                    "3 Riccardo 200\n" +
-                    "4 Samuele 100\n" +
-                    "5 Alberto 90\n" +
-                    "6 Alice 40 \n" +
-                    "7 Giovanni 20\n"
-
-        }
-        return leaderboardText
-
-    }
 }

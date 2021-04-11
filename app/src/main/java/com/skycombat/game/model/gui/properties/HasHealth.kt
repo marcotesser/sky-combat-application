@@ -29,4 +29,17 @@ interface HasHealth {
     fun isDead() : Boolean{
         return this.health <= 0
     }
+
+    fun isAlive() : Boolean{
+        return this.health > 0
+    }
+
+    /**
+     * Checks if the enemy is dead
+     * @see HealthBar
+     */
+    fun kill(){
+        this.health = 0f
+    }
+
 }

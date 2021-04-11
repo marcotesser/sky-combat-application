@@ -17,10 +17,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/menu" />
+
     <TextView
         android:id="@+id/gameover"
-        android:layout_width="392dp"
+        android:layout_width="match_parent"
         android:layout_height="161dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="200dp"
+        android:layout_marginEnd="15dp"
         android:fontFamily="@font/old_school_united_stencil"
         android:gravity="center"
         android:shadowColor="#282827"
@@ -30,12 +34,10 @@
         android:text="WAITING FOR OPPONENTS"
         android:textColor="#354815"
         android:textSize="70sp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.441" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -50,4 +52,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gameover"
         app:layout_constraintVertical_bias="0.048" />
+
+    <ImageButton
+        android:id="@+id/remove_from_queue"
+        android:layout_width="159dp"
+        android:layout_height="63dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
+        android:background="@drawable/homebutton_animated"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:text="ABBANDONA"
+        android:textColor="#354815"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

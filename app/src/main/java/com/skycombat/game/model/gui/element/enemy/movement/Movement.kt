@@ -1,11 +1,9 @@
 package com.skycombat.game.model.gui.element.enemy.movement
 
-import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.gui.element.enemy.Enemy
 
 class Movement (private val deltaX: Int, private val deltaY: Int, private var updateFor: Int) {
 
-    val context: ViewContext = ViewContext.getInstance()
     var horizontalAttitude : Int =1
     var verticalAttitude : Int= 1
 
@@ -16,12 +14,12 @@ class Movement (private val deltaX: Int, private val deltaY: Int, private var up
 
             val randleft = (deltaX * (horizontalAttitude))
             val randtop = (deltaY * (verticalAttitude))
-            if (enemy.left + randleft + enemy.getWidth() > enemy.context.getWidthScreen()) {
+            if (enemy.left + randleft + enemy.getWidth() > enemy.displayDimension.width) {
                 horizontalAttitude = -1
             } else if (enemy.left +randleft < 0) {
                 horizontalAttitude = 1
             }
-            if (enemy.top + randtop + enemy.getHeight() > (enemy.context.getHeightScreen()) * 0.3) {
+            if (enemy.top + randtop + enemy.getHeight() > (enemy.displayDimension.height) * 0.3) {
                 verticalAttitude = -1
             } else if (enemy.top + randtop < 0) {
                 verticalAttitude = 1

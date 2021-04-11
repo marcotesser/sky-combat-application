@@ -11,9 +11,9 @@ class SkyCombatApp : Application() {
     override fun onCreate() {
         super.onCreate()
         try {
-            // Add this line, to include the Auth plugin.
             Amplify.addPlugin(AWSCognitoAuthPlugin())
-            Amplify.addPlugin(AWSApiPlugin())
+            val plugin = AWSApiPlugin()
+            Amplify.addPlugin(plugin)
             Amplify.configure(applicationContext)
             Log.i("MyAmplifyApp", "Initialized Amplify")
         } catch (error: AmplifyException) {

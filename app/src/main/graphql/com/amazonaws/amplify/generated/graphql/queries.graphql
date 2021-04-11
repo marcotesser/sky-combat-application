@@ -1,37 +1,9 @@
 # this is an auto generated file. This will be overwritten
-query SyncGameRooms(
-  $filter: ModelGameRoomFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncGameRooms(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      id
-      seed
-      players {
-        nextToken
-        startedAt
-      }
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-    nextToken
-    startedAt
-  }
-}
 query GetGameRoom($id: ID!) {
   getGameRoom(id: $id) {
     id
     seed
+    gamers
     players {
       items {
         lastinteraction
@@ -42,18 +14,11 @@ query GetGameRoom($id: ID!) {
         dead
         id
         gameid
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -67,58 +32,14 @@ query ListGameRooms(
     items {
       id
       seed
+      gamers
       players {
         nextToken
-        startedAt
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
     nextToken
-    startedAt
-  }
-}
-query SyncPlayers(
-  $filter: ModelPlayerFilterInput
-  $limit: Int
-  $nextToken: String
-  $lastSync: AWSTimestamp
-) {
-  syncPlayers(
-    filter: $filter
-    limit: $limit
-    nextToken: $nextToken
-    lastSync: $lastSync
-  ) {
-    items {
-      lastinteraction
-      name
-      score
-      positionX
-      positionY
-      dead
-      id
-      gameid
-      gameroom {
-        id
-        seed
-        _version
-        _deleted
-        _lastChangedAt
-        createdAt
-        updatedAt
-      }
-      _version
-      _deleted
-      _lastChangedAt
-      createdAt
-      updatedAt
-    }
-    nextToken
-    startedAt
   }
 }
 query GetPlayer($id: ID!) {
@@ -134,19 +55,13 @@ query GetPlayer($id: ID!) {
     gameroom {
       id
       seed
+      gamers
       players {
         nextToken
-        startedAt
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -169,19 +84,13 @@ query ListPlayers(
       gameroom {
         id
         seed
-        _version
-        _deleted
-        _lastChangedAt
+        gamers
         createdAt
         updatedAt
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
     nextToken
-    startedAt
   }
 }

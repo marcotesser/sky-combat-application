@@ -17,4 +17,8 @@ interface Circle : Entity{
 
         return dist < el.getRadius() + getRadius();
     }
+
+    override fun collide(el: Entity): Boolean {
+        return el.collide(this)
+    }
 }

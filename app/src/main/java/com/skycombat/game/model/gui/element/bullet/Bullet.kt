@@ -1,9 +1,9 @@
 package com.skycombat.game.model.gui.element.bullet
 
-import com.skycombat.game.model.ViewContext
 import com.skycombat.game.model.geometry.Entity
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.GUIElement
-import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.gui.element.bullet.collision.CollisionStrategy
 import com.skycombat.game.model.gui.properties.HasHealth
 
 /**
@@ -12,7 +12,7 @@ import com.skycombat.game.model.gui.properties.HasHealth
  * @param y : axis y coordinate of the bullet
  * @param direction : direction of the bullet
  */
-abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: CollisionStrategy, private val direction: Direction)
+abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: CollisionStrategy, private val direction: Direction, val displayDimension : DisplayDimension)
     : GUIElement, Entity {
 
     enum class Direction{
@@ -28,7 +28,6 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
         abstract fun apply(delta: Float) : Float
     }
 
-    val context: ViewContext = ViewContext.getInstance()
 
     private var isHit: Boolean = false
 
@@ -44,46 +43,16 @@ abstract class Bullet(var x : Float, var y : Float, var collisionStrategy: Colli
      * @return isHit || this.y < 0 || this.y > scene.getMaxHeight()
      */
     override fun shouldRemove(): Boolean {
-        return isHit || this.y < 0 || this.y > context.getHeightScreen()
+        return isHit || this.y < 0 || this.y > displayDimension.height
     }
 
     abstract fun getDamage(): Float
     abstract fun getSpeed(): Float
 
-    fun applyCollisionEffects(entityHitted: HasHealth) {
-        if (collisionStrategy.shouldCollide(entityHitted)) {
+    fun applyCollisionEffects(entityHit: HasHealth) {
+        if (collisionStrategy.shouldCollide(entityHit)) {
             isHit = true
-            entityHitted.updateHealth(-getDamage())
+            entityHit.updateHealth(-getDamage())
         }
     }
-
 }
-
-
-/*
-    constructor(parcel: Parcel) : this(
-        parcel.readFloat(),
-        parcel.readFloat(),
-        TODO("target")
-    ){
-        isHit = parcel.readByte() != 0.toByte()
-    }
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeFloat(x)
-        parcel.writeFloat(y)
-        parcel.writeFloat(getSpeed())
-        parcel.writeFloat(getDamage())
-        parcel.writeByte(if (isHit) 1 else 0)
-    }
-    override fun describeContents(): Int {
-        return 0
-    }
-    companion object CREATOR : Parcelable.Creator<Bullet> {
-        override fun createFromParcel(parcel: Parcel): Bullet {
-            return Bullet(parcel)
-        }
-        override fun newArray(size: Int): Array<Bullet?> {
-            return arrayOfNulls(size)
-        }
-    }
- */

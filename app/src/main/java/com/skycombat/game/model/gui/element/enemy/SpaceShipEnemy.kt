@@ -1,12 +1,11 @@
 package com.skycombat.game.model.gui.element.enemy
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.skycombat.R
-import com.skycombat.game.model.gui.Weapon
+import com.skycombat.game.model.factory.bullet.BulletFactory
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.enemy.movement.Movement
 
-class SpaceShipEnemy(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bulletType, mov) {
+class SpaceShipEnemy(bulletFactory: BulletFactory, mov : Movement, displayDimension: DisplayDimension) : Enemy(bulletFactory, mov, displayDimension) {
 
     companion object{
         const val MAX_HEALTH : Float = 400f
@@ -18,7 +17,7 @@ class SpaceShipEnemy(bulletType: Weapon.BulletType, mov : Movement) : Enemy(bull
         return MAX_HEALTH
     }
 
-    override var enemyImg : Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.enemythree)), WIDTH.toInt(), HEIGHT.toInt(),false)
+    override var enemyImg = R.drawable.enemythree
 
     override fun getWidth(): Float {
         return WIDTH

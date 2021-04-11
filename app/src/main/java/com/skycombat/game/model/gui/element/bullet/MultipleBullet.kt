@@ -1,15 +1,15 @@
 package com.skycombat.game.model.gui.element.bullet
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.RectF
 import com.skycombat.R
 import com.skycombat.game.model.geometry.Rectangle
-import com.skycombat.game.model.gui.element.bullet.strategy.CollisionStrategy
+import com.skycombat.game.model.gui.DisplayDimension
+import com.skycombat.game.model.gui.DrawVisitor
+import com.skycombat.game.model.gui.element.bullet.collision.CollisionStrategy
 
-class MultipleBullet (left : Float,top : Float, collisionStrategy: CollisionStrategy, direction: Direction)
-    : Bullet(left+ WIDTH /2F,top+ HEIGHT /2F, collisionStrategy, direction), Rectangle{
+class MultipleBullet (left : Float,top : Float, collisionStrategy: CollisionStrategy, direction: Direction, val dimension: DisplayDimension)
+    : Bullet(left+ WIDTH /2F,top+ HEIGHT /2F, collisionStrategy, direction, dimension), Rectangle{
 
     companion object {
         const val DAMAGE: Float = 50.0F
@@ -18,14 +18,14 @@ class MultipleBullet (left : Float,top : Float, collisionStrategy: CollisionStra
         const val HEIGHT: Float = 40F
     }
 
-    var bulletImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.bullet3)), WIDTH.toInt(), HEIGHT.toInt(),false)
+    var bulletImg = R.drawable.bullet3
 
     /**
      * Draws the bullet
      * @param canvas : the canvas onto which the bullet will be drawn
      */
-    override fun draw(canvas: Canvas?) {
-        canvas?.drawBitmap(bulletImg,x- WIDTH /2F,y- HEIGHT /2F,null)
+    override fun draw(canvas: Canvas?, visitor: DrawVisitor) {
+        visitor.draw(canvas, this)
     }
 
     override fun getDamage():Float{

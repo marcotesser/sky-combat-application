@@ -3,6 +3,7 @@ subscription OnCreateGameRoom {
   onCreateGameRoom {
     id
     seed
+    gamers
     players {
       items {
         lastinteraction
@@ -13,18 +14,11 @@ subscription OnCreateGameRoom {
         dead
         id
         gameid
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -33,6 +27,7 @@ subscription OnUpdateGameRoom {
   onUpdateGameRoom {
     id
     seed
+    gamers
     players {
       items {
         lastinteraction
@@ -43,18 +38,11 @@ subscription OnUpdateGameRoom {
         dead
         id
         gameid
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -63,6 +51,7 @@ subscription OnDeleteGameRoom {
   onDeleteGameRoom {
     id
     seed
+    gamers
     players {
       items {
         lastinteraction
@@ -73,18 +62,11 @@ subscription OnDeleteGameRoom {
         dead
         id
         gameid
-        _version
-        _deleted
-        _lastChangedAt
         createdAt
         updatedAt
       }
       nextToken
-      startedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -102,19 +84,13 @@ subscription OnCreatePlayer {
     gameroom {
       id
       seed
+      gamers
       players {
         nextToken
-        startedAt
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -132,19 +108,13 @@ subscription OnUpdatePlayer {
     gameroom {
       id
       seed
+      gamers
       players {
         nextToken
-        startedAt
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }
@@ -162,19 +132,13 @@ subscription OnDeletePlayer {
     gameroom {
       id
       seed
+      gamers
       players {
         nextToken
-        startedAt
       }
-      _version
-      _deleted
-      _lastChangedAt
       createdAt
       updatedAt
     }
-    _version
-    _deleted
-    _lastChangedAt
     createdAt
     updatedAt
   }

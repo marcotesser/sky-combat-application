@@ -7,8 +7,8 @@ import com.skycombat.game.model.gui.event.ShootObserver
 
 interface CanShoot {
 
-    var weapon: Weapon
-    var shootObservable: ShootObservable
+    val weapon: Weapon
+    val shootObservable: ShootObservable
 
     fun startPointOfShoot():PointF
 

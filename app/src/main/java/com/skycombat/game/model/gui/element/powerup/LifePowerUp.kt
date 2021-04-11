@@ -1,14 +1,13 @@
 package com.skycombat.game.model.gui.element.powerup
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import com.skycombat.R
+import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
 
-class LifePowerUp(x: Float, y: Float, var healthIncrease: Float)
-    : PowerUp(x,y) {
+class LifePowerUp(x: Float, y: Float, var healthIncrease: Float, val dimension: DisplayDimension)
+    : PowerUp(x,y, dimension) {
 
-    override var powerUpImg: Bitmap = Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.lifepowerup)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
+    override var powerUpImg: Int = R.drawable.lifepowerup
 
     override fun applyPowerUPEffects(player: Player){
         player.updateHealth(healthIncrease)

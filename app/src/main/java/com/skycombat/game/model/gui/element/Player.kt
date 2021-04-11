@@ -1,22 +1,32 @@
 package com.skycombat.game.model.gui.element
 
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.PointF
 import com.skycombat.R
-import com.skycombat.game.model.ViewContext
+import com.skycombat.game.model.factory.bullet.BulletFactory
+import com.skycombat.game.model.factory.bullet.ClassicBulletFactory
 import com.skycombat.game.model.geometry.Circle
+import com.skycombat.game.model.geometry.Entity
+import com.skycombat.game.model.geometry.Rectangle
+import com.skycombat.game.model.gui.DisplayDimension
+import com.skycombat.game.model.gui.DrawVisitor
 import com.skycombat.game.model.gui.Weapon
 import com.skycombat.game.model.gui.component.HealthBar
 import com.skycombat.game.model.gui.component.PlayerHealthBar
 import com.skycombat.game.model.gui.element.bullet.Bullet
-import com.skycombat.game.model.gui.element.bullet.strategy.PlayerCollisionStrategy
+import com.skycombat.game.model.gui.element.bullet.collision.PlayerCollisionStrategy
+import com.skycombat.game.model.gui.element.ghost.movement.MovementStrategy
+import com.skycombat.game.model.gui.event.PlayerDeathObservable
+import com.skycombat.game.model.gui.event.PlayerDeathObserver
 import com.skycombat.game.model.gui.event.ShootObservable
+import com.skycombat.game.model.gui.properties.AimToPositionX
 import com.skycombat.game.model.gui.properties.CanShoot
 import com.skycombat.game.model.gui.properties.HasHealth
 
 /**
  * Represents an Player
  */
-class Player : HasHealth, Circle, GUIElement, CanShoot {
+class Player(private val velocity : Float, val movementStrategy: MovementStrategy, val displayDimension: DisplayDimension) : HasHealth, Circle, GUIElement, CanShoot, AimToPositionX {
 
     companion object{
         const val MAX_HEALTH : Float = 500f
@@ -24,37 +34,33 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
     }
     private var updatesFromEndShield: Long= 0
     override var health : Float = MAX_HEALTH
-    private var positionX:Float
-    private var playerImg : Bitmap
-    private var playerShieldImg : Bitmap
+    var playerImg : Int = R.drawable.player
+    private var startTime : Long = System.currentTimeMillis()
+    var playerShieldImg : Int = R.drawable.playershield
+    private var deathObservable : PlayerDeathObservable = PlayerDeathObservable()
+    var deadAt : Long? = null
 
-    private var healthBar : HealthBar
-    var positionY:Float
-    var context: ViewContext = ViewContext.getInstance()
 
-    override var weapon: Weapon = Weapon(this, Weapon.BulletType.CLASSIC, PlayerCollisionStrategy(), Bullet.Direction.UP)
+    private var positionY:Float = displayDimension.height/ 5 * 4
+    private var positionX:Float = displayDimension.width/2F
+    var aimedPositionX:Float = this.positionX
+
+    override var weapon: Weapon = Weapon(this, ClassicBulletFactory() , PlayerCollisionStrategy(), Bullet.Direction.UP, displayDimension)
     override var shootObservable = ShootObservable()
 
-    init {
-        positionX=context.getWidthScreen()/2F
-        positionY= context.getHeightScreen()/ 5 * 4
-        healthBar = PlayerHealthBar(this)
-        playerImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.player)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
-        playerShieldImg= Bitmap.createScaledBitmap((BitmapFactory.decodeResource(context.getResources(), R.drawable.playershield)), RADIUS.toInt()*2, RADIUS.toInt()*2,false)
+    var healthBar : HealthBar = PlayerHealthBar(this, displayDimension)
 
-    }
     /**
      * Draws the player and player's health-bar
      * @param canvas : the canvas onto which the player will be drawn
      * @see HealthBar
      */
-    override fun draw(canvas: Canvas?) {
-        if(hasShield()){
-            canvas?.drawBitmap(playerShieldImg,positionX- RADIUS /2,positionY- RADIUS /2,null)
-        }else{
-            canvas?.drawBitmap(playerImg,positionX- RADIUS /2,positionY- RADIUS /2,null)
+    override fun draw(canvas: Canvas?, visitor: DrawVisitor) {
+
+        if(this.isAlive()) {
+            visitor.draw(canvas, this)
+            this.healthBar.draw(canvas, visitor)
         }
-        healthBar.draw(canvas)
     }
 
     override fun shouldRemove(): Boolean {
@@ -64,22 +70,21 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
     fun applyShield(duration: Long){
         updatesFromEndShield = duration
     }
-    private fun hasShield():Boolean{
+    fun hasShield():Boolean{
         return updatesFromEndShield >0
     }
 
     override fun isDamageable():Boolean{
         return !hasShield()
     }
-
     override fun update() {
-
-        weapon.update()
-
-        if(updatesFromEndShield >0) updatesFromEndShield --
-
+        setDeadAtIfDead(System.currentTimeMillis())
+        if(isAlive()) {
+            movementStrategy.move(this)
+            weapon.update()
+            if (updatesFromEndShield > 0) updatesFromEndShield--
+        }
     }
-
 
     /**
      * Sets the player position
@@ -87,12 +92,12 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
      * @param y : player's Y position
      */
     fun setPosition(x: Float, y: Float) {
-        positionX = if(x > RADIUS && x < context.getWidthScreen() - RADIUS){
+        positionX = if(x > RADIUS && x < displayDimension.width - RADIUS){
             x
         } else if (x < RADIUS) {
             RADIUS
         } else {
-            context.getWidthScreen() - RADIUS
+            displayDimension.width - RADIUS
         }
         positionY = y
     }
@@ -101,8 +106,8 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
      * @see Bullet
      */
 
-    fun setBulletType(bulletType: Weapon.BulletType){
-        weapon.setBulletType(bulletType)
+    fun setBulletType(bulletFactory: BulletFactory){
+        weapon.setBulletType(bulletFactory)
     }
 
     override fun getMaxHealth(): Float {
@@ -121,4 +126,61 @@ class Player : HasHealth, Circle, GUIElement, CanShoot {
         return PointF(positionX, positionY - RADIUS - 2F)
     }
 
+    override fun setX(pos: Float) {
+        this.positionX = pos
+    }
+
+    override fun getX(): Float {
+        return this.positionX
+    }
+    fun getY(): Float {
+        return this.positionY
+    }
+
+    override fun aimToPos(): Float {
+        return this.aimedPositionX
+    }
+
+    override fun velocity(): Float {
+        return this.velocity
+    }
+
+    override fun collide(el: Rectangle): Boolean {
+        if(isDead()) return false
+        return super.collide(el)
+    }
+
+    override fun collide(el: Circle): Boolean {
+        if(isDead()) return false
+        return super.collide(el)
+    }
+
+    override fun collide(el: Entity): Boolean {
+        if(isDead()) return false
+        return super.collide(el)
+    }
+
+    override fun isDead(): Boolean {
+        setDeadAtIfDead(System.currentTimeMillis())
+        return super.isDead()
+    }
+
+    override fun isAlive(): Boolean {
+        setDeadAtIfDead(System.currentTimeMillis())
+        return super.isAlive()
+    }
+
+    private fun setDeadAtIfDead(time : Long){
+        if(this.health <= 0 && this.deadAt == null){
+            this.deadAt = time
+            deathObservable.notify(time)
+        }
+    }
+    fun addOnDeathOccurListener(listener: PlayerDeathObserver){
+        deathObservable.attach(listener)
+    }
+    fun aliveFor() : Long?{
+        return if(deadAt != null) deadAt?.minus(startTime)
+        else null
+    }
 }

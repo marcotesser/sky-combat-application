@@ -20,4 +20,7 @@ interface Rectangle : Entity{
             el.getCenter().x+el.getRadius(), el.getCenter().y+el.getRadius())
         return collidePartial(this.getPosition(),rect)||collidePartial(rect,this.getPosition())
     }
+    override fun collide(el: Entity): Boolean {
+        return el.collide(this)
+    }
 }
