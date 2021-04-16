@@ -25,6 +25,7 @@ class Ghost(val aimedPos : MovementStrategy, val velocity: Float, val displayDim
     var deadAt : Long? = null
     var paint = Paint()
     var ghostImg : Int = R.drawable.opponent
+    var visible : Boolean = true
     init {
         paint.alpha = 127
     }
@@ -57,7 +58,7 @@ class Ghost(val aimedPos : MovementStrategy, val velocity: Float, val displayDim
 
     override fun draw(canvas: Canvas?, visitor: DrawVisitor) {
 
-        if(this.isAlive()) {
+        if(this.isAlive() && visible) {
             visitor.draw(canvas, this)
         }
     }
