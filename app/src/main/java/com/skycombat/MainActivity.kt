@@ -165,7 +165,7 @@ class MainActivity : AppCompatActivity() {
         val login = findViewById<ImageButton>(R.id.login)
         val logout = findViewById<ImageButton>(R.id.logout)
         this.runOnUiThread {
-            if(Amplify.Auth.currentUser != null) {
+            if(Amplify.Auth?.currentUser != null) {
                 login.visibility = View.GONE
                 logout.visibility = View.VISIBLE
                 toggleMultiplayer(true)
