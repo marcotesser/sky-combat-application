@@ -1,9 +1,11 @@
 package com.skycombat
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
+import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.Switch
 import com.skycombat.setting.GameSettingsService
@@ -26,6 +28,12 @@ class SettingsActivity : AppCompatActivity() {
         ghostSwitch.setOnCheckedChangeListener { _, isChecked ->
             gameSettings.ghostVisibility = isChecked
         }
+
+        val tutorial = findViewById<ImageButton>(R.id.tutorialButton)
+        tutorial.setOnClickListener{
+            startActivity(Intent(this, TutorialActivity::class.java))
+        }
+
 
         val volumeSeekBar = findViewById<SeekBar>(R.id.volume_seekBar)
         volumeSeekBar.progress = gameSettings.songVolume
