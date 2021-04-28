@@ -87,8 +87,8 @@ class LeaderboardsActivity : AppCompatActivity() {
     private fun setPlayerPositionGUI(scope: SCOPE, me: Me) {
         runOnUiThread {
             findViewById<TextView>(R.id.playerScore).text = when (scope) {
-                SCOPE.DEFEATED -> "Sei in posizione: ${me.pos.defeated} \nIl tuo punteggio è: ${me.defeated}"
-                SCOPE.SCORE -> "Sei in posizione: ${me.pos.score} \nIl tuo punteggio è: ${me.score}"
+                SCOPE.DEFEATED -> "You're in position n°: ${me.pos.defeated} \nYour score is: ${me.defeated}"
+                SCOPE.SCORE -> "You're in position n°: ${me.pos.score} \nYour score is: ${me.score}"
             }
         }
     }

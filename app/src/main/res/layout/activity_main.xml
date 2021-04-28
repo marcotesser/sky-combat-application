@@ -6,21 +6,10 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
-    android:background="@drawable/menu"
+    android:background="@drawable/background_gradient"
     tools:context=".MainActivity">
 
     //app:srcCompat="@tools:sample/avatars"
-
-    <ImageView
-        android:id="@+id/imageView4"
-
-        android:layout_width="fill_parent"
-        android:layout_height="750dp"
-        android:scaleType="fitXY"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/menu" />
-
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="297dp"
@@ -38,15 +27,13 @@
         android:id="@+id/login"
         android:layout_width="49dp"
         android:layout_height="46dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/login_animated"
         android:text="Login"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_chainStyle="spread"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.037" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
         android:id="@+id/singleplayer"
@@ -106,14 +93,12 @@
         android:id="@+id/logout"
         android:layout_width="58dp"
         android:layout_height="47dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/logout_animated"
         android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.953"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.036" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
