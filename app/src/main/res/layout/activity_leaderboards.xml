@@ -29,7 +29,7 @@
         android:shadowDx="+6"
         android:shadowDy="+6"
         android:shadowRadius="3"
-        android:text="LEADERBOARDS"
+        android:text="CLASSIFICHE"
 
         android:textColor="#354815"
         android:textSize="50sp"
