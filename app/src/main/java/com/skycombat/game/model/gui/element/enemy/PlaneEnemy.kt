@@ -15,12 +15,12 @@ class PlaneEnemy(bulletFactory: BulletFactory, mov : Movement, displayDimension:
 
     companion object{
         const val MAX_HEALTH : Float = 200f
-        const val WIDTH : Float = 200F
-        const val HEIGHT : Float = 180F
+        const val WIDTH : Float = 150F
+        const val HEIGHT : Float = 150F
     }
 
     override fun getMaxHealth(): Float {
-        return MAX_HEALTH * healthCoefficient
+        return MAX_HEALTH //* healthCoefficient
     }
 
     override var enemyImg : Int = R.drawable.enemyone

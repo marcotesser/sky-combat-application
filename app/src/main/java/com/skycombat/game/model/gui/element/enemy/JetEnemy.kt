@@ -10,7 +10,7 @@ class JetEnemy(bulletFactory: BulletFactory, mov : Movement, displayDimension: D
     companion object{
         const val MAX_HEALTH : Float = 300f
         const val WIDTH : Float = 250F
-        const val HEIGHT : Float = 220F
+        const val HEIGHT : Float = 200F
     }
     override var enemyImg : Int = R.drawable.enemytwo
 
