@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/slideImage"
-        android:layout_width="316dp"
-        android:layout_height="277dp"
+        android:layout_width="323dp"
+        android:layout_height="266dp"
         android:layout_marginTop="35dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
@@ -21,15 +21,14 @@
         android:id="@+id/slideText"
         android:layout_width="348dp"
         android:layout_height="285dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="22dp"
+        android:layout_marginTop="12dp"
         android:fontFamily="@font/old_school_united_stencil"
         android:gravity="center"
-        android:textSize="20sp"
+        android:lineSpacingExtra="3dp"
         android:textColor="#ecb02c"
-        app:layout_constraintBottom_toTopOf="@+id/beforeButton"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/slideImage" />
 
