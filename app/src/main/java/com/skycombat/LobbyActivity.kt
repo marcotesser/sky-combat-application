@@ -119,7 +119,7 @@ class LobbyActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    val timer = object: CountDownTimer(10000, 1000) {
+    val timer = object: CountDownTimer(60000, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             findViewById<TextView>(R.id.countDown).setText("${millisUntilFinished/1000} secondi rimanenti")
         }
