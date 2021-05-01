@@ -49,7 +49,7 @@ class GameActivity : Activity() {
     }
 
     //gameView will be the mainview and it will manage the game's logic
-    private val velocity = 4f
+    private val velocity = 5f
     private var gameView: GameView? = null
     private var opponentsUpdater : OpponentsUpdaterService? = null
     private var remoteRemotePlayer: RemotePlayerUpdaterService? = null

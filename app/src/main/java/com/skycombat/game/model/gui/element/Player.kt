@@ -142,7 +142,7 @@ class Player(private val velocity : Float, val movementStrategy: MovementStrateg
     }
 
     override fun velocity(): Float {
-        return this.velocity
+        return this.velocity * displayDimension.width / displayDimension.standardX
     }
 
     override fun collide(el: Rectangle): Boolean {

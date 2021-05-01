@@ -22,8 +22,9 @@ class SeedGeneralEnemyFactory(var seed: Long, val displayDimension: DisplayDimen
      */
     override fun generate(): Enemy {
         iteration++;
-        val deltaY : Float = displayDimension.height / 1440
-        val deltaX : Float = displayDimension.width / 1440
+        val deltaY : Float = displayDimension.height / displayDimension.standardY
+        val deltaX : Float = displayDimension.width / displayDimension.standardX
+
         val randMovement : Movement = when(random.nextInt(1,11)){
             1 ->        Movement((4 * deltaX).toInt(),(3 * deltaY).toInt(),600 + iteration * 10)
             2,5 ->      Movement((3 * deltaX).toInt(),(4 * deltaY).toInt(),500 + iteration * 10)
