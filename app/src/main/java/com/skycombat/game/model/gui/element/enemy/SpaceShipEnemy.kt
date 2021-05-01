@@ -9,15 +9,15 @@ class SpaceShipEnemy(bulletFactory: BulletFactory, mov : Movement, displayDimens
 
     companion object{
         const val MAX_HEALTH : Float = 400f
-        const val WIDTH : Float = 300F
-        const val HEIGHT : Float = 270F
+        const val WIDTH : Float = 250F
+        const val HEIGHT : Float = 250F
     }
 
     override fun getMaxHealth(): Float {
         return MAX_HEALTH
     }
 
-    override var enemyImg = R.drawable.enemythree
+    override var enemyImg : Int = R.drawable.enemythree
 
     override fun getWidth(): Float {
         return WIDTH

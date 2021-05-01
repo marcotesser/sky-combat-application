@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         val logout = findViewById<ImageButton>(R.id.logout)
         val settings = findViewById<ImageButton>(R.id.settings)
 
-
         // crea stanza e ci associa un giocatore
         multiplayer.setOnClickListener {
             toggleMultiplayer(false)

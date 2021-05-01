@@ -6,71 +6,113 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="0dp"
     android:layout_marginRight="0dp"
-    android:background="@drawable/menu"
+    android:alpha="255"
+    android:background="@drawable/background_gradient"
     tools:context=".SettingsActivity">
 
     <TextView
-        android:id="@+id/score"
-        android:layout_height="78dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:id="@+id/settings_title"
+        android:layout_width="285dp"
+        android:layout_height="75dp"
         android:fontFamily="@font/old_school_united_stencil"
         android:gravity="center"
-        android:shadowColor="#a0771e"
+        android:shadowColor="#282827"
         android:shadowDx="+6"
         android:shadowDy="+6"
         android:shadowRadius="3"
-        android:text="Volume musica"
+        android:text="IMPOSTAZIONI"
         android:textColor="#ecb02c"
         android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/score"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="0dp"
+        android:layout_height="78dp"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:gravity="center"
+
+        android:shadowColor="#282827"
+        android:shadowDx="+6"
+        android:shadowDy="+6"
+        android:shadowRadius="3"
+        android:text="MUSICA"
+        android:textColor="#354815"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_width="0dp"/>
+        app:layout_constraintVertical_bias="0.385" />
 
     <TextView
         android:id="@+id/score2"
-        android:layout_width="0dp"
-        android:layout_height="78dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="250dp"
+        android:layout_height="75dp"
         android:fontFamily="@font/old_school_united_stencil"
         android:gravity="center"
         android:lineSpacingExtra="10sp"
-        android:shadowColor="#a0771e"
+        android:shadowColor="#282827"
         android:shadowDx="+6"
         android:shadowDy="+6"
         android:shadowRadius="3"
-        android:text="Modalità \nfantasma"
-        android:textColor="#ecb02c"
+        android:text="MODALITA' FANTASMA"
+        android:textColor="#354815"
         android:textSize="40sp"
-        app:layout_constraintEnd_toStartOf="@+id/ghost_switch"
-        app:layout_constraintHorizontal_bias="0.513"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.335"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/volume_seekBar" />
 
     <SeekBar
         android:id="@+id/volume_seekBar"
         style="@style/Widget.AppCompat.SeekBar"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="376dp"
+        android:layout_height="36dp"
         android:max="10"
         android:progress="10"
         android:progressTint="#ecb02c"
+        android:thumbTint="#354815"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/score" />
 
     <Switch
         android:id="@+id/ghost_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="78dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="20dp"
+        android:layout_width="58dp"
+        android:layout_height="75dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/score2"
+        app:layout_constraintTop_toBottomOf="@+id/volume_seekBar"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <TextView
+        android:id="@+id/DeleteAccount"
+        android:layout_width="243dp"
+        android:layout_height="80dp"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:gravity="center"
+        android:text="Per eliminare il profilo inviare un email a everbuilds@gmail.com"
+        android:textColor="#354815"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/volume_seekBar" />
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageButton
+        android:id="@+id/tutorialButton"
+        android:layout_width="203dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/tutorial_button_animated"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/score2" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

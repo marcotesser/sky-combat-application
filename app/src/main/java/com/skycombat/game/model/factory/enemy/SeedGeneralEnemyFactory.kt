@@ -31,18 +31,19 @@ class SeedGeneralEnemyFactory(var seed: Long, val displayDimension: DisplayDimen
         }
 
         val bulletFactory: BulletFactory = when (random.nextInt(1, 11)) {
-            1,5,8,10 -> LaserBulletFactory()
+            5,8,10 -> LaserBulletFactory()
             2,6,9 -> MultipleBulletFactory()
             3,7 -> GustBulletFactory()
-            4 -> ClassicBulletFactory()
+            1,4 -> ClassicBulletFactory()
             else -> ClassicBulletFactory()
         }
 
-        return when (random.nextInt(1,7)) {
-            1 -> PlaneEnemy(bulletFactory, randMovement,displayDimension, 1 + (iteration.toFloat() / 3))
-            2,4 -> JetEnemy(bulletFactory, randMovement,displayDimension)
-            3,5,6 -> SpaceShipEnemy(bulletFactory, randMovement,displayDimension)
-            else-> SpaceShipEnemy(bulletFactory, randMovement,displayDimension)
+        return when (random.nextInt(1,4)) {
+
+            1-> PlaneEnemy(bulletFactory, randMovement,displayDimension)
+            2-> JetEnemy(bulletFactory, randMovement,displayDimension)
+            3 -> SpaceShipEnemy(bulletFactory, randMovement,displayDimension)
+            else-> PlaneEnemy(bulletFactory, randMovement,displayDimension)
         }
     }
 }

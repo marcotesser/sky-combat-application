@@ -42,7 +42,7 @@ class LeaderboardsActivity : AppCompatActivity() {
         val playerSconfitti = findViewById<ImageButton>(R.id.playersconfitti)
         val punteggioMaggiore = findViewById<ImageButton>(R.id.punteggiomaggiore)
         val playerLeaderboard = findViewById<TextView>(R.id.playerleaderboard)
-        val whileLoading = "Loading ..."
+        val whileLoading = "Caricamento..."
         playerSconfitti.isEnabled=false
         playerLeaderboard.text = whileLoading
         getLeaderboard (SCOPE.DEFEATED)
@@ -87,8 +87,8 @@ class LeaderboardsActivity : AppCompatActivity() {
     private fun setPlayerPositionGUI(scope: SCOPE, me: Me) {
         runOnUiThread {
             findViewById<TextView>(R.id.playerScore).text = when (scope) {
-                SCOPE.DEFEATED -> "Sei in posizione: ${me.pos.defeated} \nIl tuo punteggio è: ${me.defeated}"
-                SCOPE.SCORE -> "Sei in posizione: ${me.pos.score} \nIl tuo punteggio è: ${me.score}"
+                SCOPE.DEFEATED -> "Sei in ${me.pos.defeated}° posizione \nIl tuo punteggio è di ${me.defeated}"
+                SCOPE.SCORE -> "Sei in ${me.pos.score}° posizione\nIl tuo punteggio è di ${me.score}"
             }
         }
     }

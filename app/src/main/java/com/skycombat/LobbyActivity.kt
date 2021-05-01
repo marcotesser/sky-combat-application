@@ -2,9 +2,11 @@ package com.skycombat
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.WindowManager
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.amazonaws.mobile.client.AWSMobileClient
 import com.amplifyframework.api.graphql.GraphQLOperation
@@ -26,6 +28,7 @@ class LobbyActivity : AppCompatActivity() {
         if(!intent.hasExtra("id-player")){
             this.finish()
         }
+
         id = intent.getStringExtra("id-player")!!
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lobby)
@@ -115,4 +118,16 @@ class LobbyActivity : AppCompatActivity() {
         this.removeFromQueue()
         super.onBackPressed()
     }
+
+    val timer = object: CountDownTimer(60000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            findViewById<TextView>(R.id.countDown).setText("${millisUntilFinished/1000} secondi rimanenti")
+        }
+
+        override fun onFinish() {
+            onBackPressed()
+        }
+    }.start()
+
 }
+
