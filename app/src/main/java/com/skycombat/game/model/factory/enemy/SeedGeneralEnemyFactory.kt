@@ -1,5 +1,6 @@
 package com.skycombat.game.model.factory.enemy
 
+import android.util.Log
 import com.skycombat.game.model.factory.bullet.*
 import com.skycombat.game.model.gui.DisplayDimension
 import com.skycombat.game.model.gui.element.Player
@@ -21,13 +22,14 @@ class SeedGeneralEnemyFactory(var seed: Long, val displayDimension: DisplayDimen
      */
     override fun generate(): Enemy {
         iteration++;
-
+        val deltaY : Float = displayDimension.height / 1440
+        val deltaX : Float = displayDimension.width / 1440
         val randMovement : Movement = when(random.nextInt(1,11)){
-            1 -> Movement(4,3,600 + iteration * 10)
-            2,5 -> Movement(3,4,500 + iteration * 10)
-            3,6,8 -> Movement(6,2,700 + iteration * 10)
-            4,7,9,10 -> Movement(2,5,400 + iteration * 10)
-            else -> Movement(2,5,400 + iteration * 10)
+            1 ->        Movement((4 * deltaX).toInt(),(3 * deltaY).toInt(),600 + iteration * 10)
+            2,5 ->      Movement((3 * deltaX).toInt(),(4 * deltaY).toInt(),500 + iteration * 10)
+            3,6,8 ->    Movement((6 * deltaX).toInt(),(2 * deltaY).toInt(),700 + iteration * 10)
+            4,7,9,10 -> Movement((2 * deltaX).toInt(),(5 * deltaY).toInt(),400 + iteration * 10)
+            else ->     Movement((2 * deltaX).toInt(),(5 * deltaY).toInt(),400 + iteration * 10)
         }
 
         val bulletFactory: BulletFactory = when (random.nextInt(1, 11)) {
