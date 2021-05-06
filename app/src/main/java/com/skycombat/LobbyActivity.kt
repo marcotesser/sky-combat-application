@@ -24,6 +24,16 @@ import java.util.concurrent.CopyOnWriteArrayList
 class LobbyActivity : AppCompatActivity() {
     lateinit var id : String
     val session = MultiplayerSession.reset()
+    val timer = object: CountDownTimer(60000, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            findViewById<TextView>(R.id.countDown).setText("${millisUntilFinished/1000} secondi rimanenti")
+        }
+
+        override fun onFinish() {
+            onBackPressed()
+        }
+    }.start()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         if(!intent.hasExtra("id-player")){
             this.finish()
@@ -111,6 +121,7 @@ class LobbyActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
+        timer.cancel()
         //this.removeFromQueue()
         super.finish()
     }
@@ -119,15 +130,6 @@ class LobbyActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
-    val timer = object: CountDownTimer(60000, 1000) {
-        override fun onTick(millisUntilFinished: Long) {
-            findViewById<TextView>(R.id.countDown).setText("${millisUntilFinished/1000} secondi rimanenti")
-        }
-
-        override fun onFinish() {
-            onBackPressed()
-        }
-    }.start()
 
 }
 
