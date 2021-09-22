@@ -1,0 +1,11 @@
+{
+  "AppSyncApiName": "skycombat",
+  "DynamoDBBillingMode": "PAY_PER_REQUEST",
+  "DynamoDBEnableServerSideEncryption": false,
+  "AuthCognitoUserPoolId": {
+    "Fn::GetAtt": [
+      "authskycombat035ea5b4",
+      "Outputs.UserPoolId"
+    ]
+  }
+}

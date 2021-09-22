@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.skycombat">
+
+    <application
+        android:name=".SkyCombatApp"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SkyCombat">
+        <activity android:name=".TutorialActivity"
+            android:screenOrientation="portrait"
+        />
+        <activity android:name=".SettingsActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".GameOverActivity"
+            android:noHistory="true"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".GameActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true" />
+        <activity
+            android:name=".LobbyActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true" />
+        <activity
+            android:name=".LeaderboardsActivity"
+            android:screenOrientation="portrait"
+            android:noHistory="true" />
+        <activity android:name=".MainActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.amazonaws.mobileconnectors.cognitoauth.activities.CustomTabsRedirectActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="myapp" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

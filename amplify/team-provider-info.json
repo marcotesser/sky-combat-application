@@ -1,0 +1,42 @@
+{
+  "prod": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-skycombat-prod-153152-authRole",
+      "UnauthRoleArn": "arn:aws:iam::942766427804:role/amplify-skycombat-prod-153152-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::942766427804:role/amplify-skycombat-prod-153152-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-skycombat-prod-153152-deployment",
+      "UnauthRoleName": "amplify-skycombat-prod-153152-unauthRole",
+      "StackName": "amplify-skycombat-prod-153152",
+      "StackId": "arn:aws:cloudformation:us-east-2:942766427804:stack/amplify-skycombat-prod-153152/88ca31b0-7dbf-11eb-97c0-0a9d7de554de",
+      "AmplifyAppId": "d3hveow1amo2ir"
+    }
+  },
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-skycombat-dev-153826-authRole",
+      "UnauthRoleArn": "arn:aws:iam::942766427804:role/amplify-skycombat-dev-153826-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::942766427804:role/amplify-skycombat-dev-153826-authRole",
+      "Region": "eu-central-1",
+      "DeploymentBucketName": "amplify-skycombat-dev-153826-deployment",
+      "UnauthRoleName": "amplify-skycombat-dev-153826-unauthRole",
+      "StackName": "amplify-skycombat-dev-153826",
+      "StackId": "arn:aws:cloudformation:eu-central-1:942766427804:stack/amplify-skycombat-dev-153826/73006290-7dc0-11eb-b840-0a70aaa96428",
+      "AmplifyAppId": "dk4vtrtm4mwpl"
+    },
+    "categories": {
+      "function": {
+        "skycombat79ace6e4CustomMessage": {
+          "REDIRECTURL": "myapp://signin",
+          "EMAILSUBJECT": "Confirm email",
+          "EMAILMESSAGE": "",
+          "deploymentBucketName": "amplify-skycombat-dev-153826-deployment",
+          "s3Key": "amplify-builds/skycombat79ace6e4CustomMessage-766c5a6365354e354176-build.zip"
+        }
+      },
+      "auth": {
+        "skycombat035ea5b4": {}
+      }
+    }
+  }
+}

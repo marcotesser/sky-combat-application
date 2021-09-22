@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    android:background="@drawable/background_gradient"
+    tools:context=".GameOverActivity">
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="375dp"
+        android:layout_height="78dp"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:gravity="center"
+        android:shadowColor="#a0771e"
+        android:shadowDx="+6"
+        android:shadowDy="+6"
+        android:shadowRadius="3"
+        android:textColor="#ecb02c"
+        android:textSize="50sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/yourscoreis" />
+
+    <TextView
+        android:id="@+id/yourscoreis"
+        android:layout_width="375dp"
+        android:layout_height="45dp"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:gravity="center"
+        android:shadowColor="#282827"
+        android:shadowDx="+6"
+        android:shadowDy="+6"
+        android:shadowRadius="1"
+        android:text="IL TUO PUNTEGGIO E':"
+        android:textColor="#354815"
+        android:textSize="30sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gameover" />
+
+    <TextView
+        android:id="@+id/gameover"
+        android:layout_width="375dp"
+        android:layout_height="160dp"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:gravity="center"
+        android:shadowColor="#282827"
+        android:shadowDx="+6"
+        android:shadowDy="+6"
+        android:shadowRadius="3"
+        android:text="GAME OVER"
+        android:textColor="#354815"
+        android:textSize="90sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.441" />
+
+    <ImageView
+        android:id="@+id/stars"
+        android:layout_width="146dp"
+        android:layout_height="58dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/gameover"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/stars" />
+
+    <ImageButton
+        android:id="@+id/backToHome"
+        android:layout_width="117dp"
+        android:layout_height="61dp"
+        android:layout_marginBottom="68dp"
+        android:background="@drawable/quitbutton_animated"
+        android:fontFamily="@font/old_school_united_stencil"
+        android:text="Back to home"
+        android:textColor="#354815"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
